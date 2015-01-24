@@ -72,13 +72,13 @@ namespace WindowsFormsApplication1
             string mainDir5 = ECLIPSE_MAIN_INI_ARRAY["MainDirectory5"];
             string userFile5 = ECLIPSE_MAIN_INI_ARRAY["UserFile5"];
             USERFILE5_LINE = userFile5;
-            eclipseiniListBox.Items.Add(USERFILE5_LINE);
+            eclipseiniInfoListBox.Items.Add(USERFILE5_LINE);
             string USER_ECLIPSE_FOLDER_COMPARE = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\Eclipse";
             USER_ECLIPSE_FOLDER = mainDir5.Replace("{DOC}", Path.Combine(Environment.ExpandEnvironmentVariables("%userprofile%"), "Documents\\"));
             
             CURRENT_MAINDIRECTORY5 = USER_ECLIPSE_FOLDER;
-            transferToComboBox.Items.Add(USER_ECLIPSE_FOLDER);
-            transferToComboBox.Items.Add(USER_ECLIPSE_FOLDER_COMPARE);
+            transferToQuickPickComboBox.Items.Add(USER_ECLIPSE_FOLDER);
+            transferToQuickPickComboBox.Items.Add(USER_ECLIPSE_FOLDER_COMPARE);
 
             /*if (loadEclipseFilesFromPath(USER_ECLIPSE_FOLDER)) {
                 unpack();            
@@ -87,22 +87,45 @@ namespace WindowsFormsApplication1
             DriveInfo[] files = DriveInfo.GetDrives();
             foreach (DriveInfo d in files)
             {
-                transferToComboBox.Items.Add(String.Format(d.Name));
+                transferToQuickPickComboBox.Items.Add(String.Format(d.Name));
                 // can convert to GB free: (decided to take this out)
                 //freeSpaceLabel.Text = (d.AvailableFreeSpace / 1000000000 + "gb free");
             }
         }
 
-        public bool RestoreEclipseFilesToLocalPC(EclipseObject iniObject)
+        /*public bool RestoreEclipseFilesToLocalPC(EclipseObject iniObject)
         {
-            writeINIbackup(CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER+".ini", iniObject.INI_INFO_ARRAY);
-            string[] filePathArray = new string[] {  };
+            writeINIbackup(CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER + ".ini", iniObject.INI_INFO_ARRAY);
+            string[] filePathArray = new string[] { iniObject.FILE_PATH.Split('\\') };
+            int numToDeleteForPath =filePathArray.Length;
+            string copyFolder = iniObject.FILE_PATH.TrimEnd(numToDeleteForPath);
             string destination = CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER;
+            string CurrentINILocation;
+            DirectoryCopy(copyFolder, destination, true);
+
+            writeINIbackup(CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER+".ini", iniObject.INI_INFO_ARRAY);
+            //string[] filePathArray = new string[] {  };
+            //string destination = CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER;
             foreach (EclipseObject i in FILE_MAP)
             {
                 copyFile(i.FILE_PATH, iniObject.FILE_PATH, destination);
             }
             DirectoryCopy(iniObject.INI_BLOCK_PATH, destination + "\\" + iniObject.INI_BLOCK_FOLDER + "\\", true);
+
+            //EclipseObject newIniObject = new EclipseObject("recreated" + iniObject.FILE_NAME, ".INI", iniObject.INI_JOB_PATH);
+            //iniObject.INI_JOB_FOLDER = CURRENT_MAINDIRECTORY5 + 
+
+            return true;
+        }*/
+        public bool RestoreEclipseFilesToLocalPC(EclipseObject iniObject)
+        {
+            writeINIbackup(CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER + ".ini", iniObject.INI_INFO_ARRAY);
+            string[] filePathArray = iniObject.FILE_PATH.Split('\\');
+            string copyFolder = iniObject.FILE_PATH.TrimEnd(iniObject.FILE_NAME.ToCharArray());
+            string destination = CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER;
+            string CurrentINILocation;
+            DirectoryCopy(copyFolder, destination, true);
+            //DirectoryCopy(CurrentINILocation+iniObject.INI_BLOCK_FOLDER, destination + "\\" + iniObject.INI_BLOCK_FOLDER + "\\", true);
 
             //EclipseObject newIniObject = new EclipseObject("recreated" + iniObject.FILE_NAME, ".INI", iniObject.INI_JOB_PATH);
             //iniObject.INI_JOB_FOLDER = CURRENT_MAINDIRECTORY5 + 
@@ -382,7 +405,7 @@ namespace WindowsFormsApplication1
 
         private void loadButton_Click(object sender, EventArgs e)
         {
-            treeView1.Nodes.Clear();
+            fileInfoView.Nodes.Clear();
             if (loadEclipseFilesFromLocalDisk())
             {
                 unpack();
@@ -399,16 +422,16 @@ namespace WindowsFormsApplication1
             foreach (EclipseObject obj in INI_LIST)
             {
                 //MessageBox.Show(obj.FILE_NAME);
-                treeView1.Nodes.Add(obj.FILE_NAME + " - " + obj.INI_JOB_PATH);
+                fileInfoView.Nodes.Add(obj.FILE_NAME + " - " + obj.INI_JOB_PATH);
 
-                treeView1.Nodes[count].Nodes.Add("File Name: " + obj.FILE_NAME);
+                fileInfoView.Nodes[count].Nodes.Add("File Name: " + obj.FILE_NAME);
            
-                treeView1.Nodes[count].Nodes.Add("Job Path: " + obj.INI_JOB_PATH);
-                treeView1.Nodes[count].Nodes.Add("Main Dictionary: " + obj.INI_MAIN_DICTIONARY);
-                treeView1.Nodes[count].Nodes.Add("Blocks Path: " + obj.INI_BLOCK_PATH);
-                treeView1.Nodes[count].Nodes.Add("Blocks Folder: " + obj.INI_BLOCK_FOLDER);
-                treeView1.Nodes[count].Nodes.Add("Spell Dictionary: " + obj.INI_SPELL_DIX);
-                treeView1.Nodes[count].Nodes.Add("INI File Location: " + obj.FILE_PATH);
+                fileInfoView.Nodes[count].Nodes.Add("Job Path: " + obj.INI_JOB_PATH);
+                fileInfoView.Nodes[count].Nodes.Add("Main Dictionary: " + obj.INI_MAIN_DICTIONARY);
+                fileInfoView.Nodes[count].Nodes.Add("Blocks Path: " + obj.INI_BLOCK_PATH);
+                fileInfoView.Nodes[count].Nodes.Add("Blocks Folder: " + obj.INI_BLOCK_FOLDER);
+                fileInfoView.Nodes[count].Nodes.Add("Spell Dictionary: " + obj.INI_SPELL_DIX);
+                fileInfoView.Nodes[count].Nodes.Add("INI File Location: " + obj.FILE_PATH);
                 currentUsersDropdown.Items.Add(obj.FILE_NAME);
                 count += 1;
             }
@@ -623,7 +646,7 @@ namespace WindowsFormsApplication1
         private void transferToComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             destinationText.Text = "";
-            destinationText.Text = (transferToComboBox.Text);
+            destinationText.Text = (transferToQuickPickComboBox.Text);
 
         }
 
@@ -708,11 +731,11 @@ namespace WindowsFormsApplication1
 
         private void button4_Click(object sender, EventArgs e)
         {
-            transferToComboBox.Items.Clear();
+            transferToQuickPickComboBox.Items.Clear();
             DriveInfo[] files = DriveInfo.GetDrives();
             foreach (DriveInfo d in files)
             {
-                transferToComboBox.Items.Add(String.Format(d.Name));
+                transferToQuickPickComboBox.Items.Add(String.Format(d.Name));
                 //freeSpaceLabel.Text = (d.AvailableFreeSpace / 1000000000 + "gb free");
             }
         }
@@ -735,7 +758,7 @@ namespace WindowsFormsApplication1
 
         private void button7_Click(object sender, EventArgs e)
         {
-            treeView1.Nodes.Clear();
+            fileInfoView.Nodes.Clear();
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 //treeView1.Nodes.Add(folderBrowserDialog1.SelectedPath);
