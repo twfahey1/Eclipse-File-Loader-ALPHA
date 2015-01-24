@@ -1,0 +1,12 @@
+c:\users\tyler\documents\visual studio 2013\Projects\WindowsFormsApplication1\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Form1.resources
+c:\users\tyler\documents\visual studio 2013\Projects\WindowsFormsApplication1\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.csproj.GenerateResource.Cache
+c:\users\tyler\documents\visual studio 2013\Projects\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Eclipse File Helper.exe.config
+c:\users\tyler\documents\visual studio 2013\Projects\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Eclipse File Helper.exe
+c:\users\tyler\documents\visual studio 2013\Projects\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Eclipse File Helper.pdb
+c:\users\tyler\documents\visual studio 2013\Projects\WindowsFormsApplication1\WindowsFormsApplication1\obj\Debug\EclipseFileHelper.Properties.Resources.resources
+c:\users\tyler\documents\visual studio 2013\Projects\WindowsFormsApplication1\WindowsFormsApplication1\obj\Debug\Eclipse File Helper.exe
+c:\users\tyler\documents\visual studio 2013\Projects\WindowsFormsApplication1\WindowsFormsApplication1\obj\Debug\Eclipse File Helper.pdb
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\WindowsFormsApplication1\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.csprojResolveAssemblyReference.cache
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\WindowsFormsApplication1\bin\Debug\Eclipse File Helper.exe.config
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\WindowsFormsApplication1\obj\Debug\Eclipse File Helper.exe
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\WindowsFormsApplication1\obj\Debug\Eclipse File Helper.pdb
