@@ -564,7 +564,7 @@ namespace WindowsFormsApplication1
             try
             {
                 System.IO.File.WriteAllLines(destination, iniLinesArray);
-                System.IO.File.WriteAllLines(destination + ".set", iniLinesArray);
+                System.IO.File.WriteAllLines(destination.TrimEnd(".ini".ToCharArray()) + ".set", iniLinesArray);
             }
             catch (System.IO.IOException)
             {
