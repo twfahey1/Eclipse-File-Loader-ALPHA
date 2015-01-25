@@ -57,6 +57,8 @@
             this.button2 = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.transferProgressBar = new System.Windows.Forms.ProgressBar();
+            this.transferProgressLabel = new System.Windows.Forms.Label();
             this.panel2.SuspendLayout();
             this.restorePanel.SuspendLayout();
             this.backupPanel.SuspendLayout();
@@ -103,7 +105,7 @@
             // BrowseForDestinationButton
             // 
             this.BrowseForDestinationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BrowseForDestinationButton.Location = new System.Drawing.Point(11, 64);
+            this.BrowseForDestinationButton.Location = new System.Drawing.Point(11, 47);
             this.BrowseForDestinationButton.Name = "BrowseForDestinationButton";
             this.BrowseForDestinationButton.Size = new System.Drawing.Size(97, 24);
             this.BrowseForDestinationButton.TabIndex = 11;
@@ -124,7 +126,7 @@
             // 
             // destinationText
             // 
-            this.destinationText.Location = new System.Drawing.Point(11, 36);
+            this.destinationText.Location = new System.Drawing.Point(11, 19);
             this.destinationText.Name = "destinationText";
             this.destinationText.Size = new System.Drawing.Size(157, 22);
             this.destinationText.TabIndex = 17;
@@ -155,13 +157,13 @@
             // 
             this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panel2.Controls.Add(this.chooseUserPanel);
-            this.panel2.Controls.Add(this.restorePanel);
             this.panel2.Controls.Add(this.backupPanel);
             this.panel2.Controls.Add(this.eclipseiniInfoListBox);
             this.panel2.Controls.Add(this.loadEclipseFilesButton);
             this.panel2.Controls.Add(this.thisPCEclipseINIinfoLabel);
             this.panel2.Controls.Add(this.fileInfoView);
             this.panel2.Controls.Add(this.findEclipseFilesOnThisPCButton);
+            this.panel2.Controls.Add(this.restorePanel);
             this.panel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panel2.Location = new System.Drawing.Point(-1, 2);
             this.panel2.Name = "panel2";
@@ -256,6 +258,8 @@
             // 
             // backupPanel
             // 
+            this.backupPanel.Controls.Add(this.transferProgressBar);
+            this.backupPanel.Controls.Add(this.transferProgressLabel);
             this.backupPanel.Controls.Add(this.cancelButton);
             this.backupPanel.Controls.Add(this.button1);
             this.backupPanel.Controls.Add(this.destinationLabel);
@@ -275,7 +279,7 @@
             // 
             this.destinationLabel.AutoSize = true;
             this.destinationLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.destinationLabel.Location = new System.Drawing.Point(8, 17);
+            this.destinationLabel.Location = new System.Drawing.Point(8, 0);
             this.destinationLabel.Name = "destinationLabel";
             this.destinationLabel.Size = new System.Drawing.Size(78, 16);
             this.destinationLabel.TabIndex = 13;
@@ -322,6 +326,23 @@
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Visible = false;
+            // 
+            // transferProgressBar
+            // 
+            this.transferProgressBar.Location = new System.Drawing.Point(145, 59);
+            this.transferProgressBar.Name = "transferProgressBar";
+            this.transferProgressBar.Size = new System.Drawing.Size(148, 26);
+            this.transferProgressBar.TabIndex = 35;
+            // 
+            // transferProgressLabel
+            // 
+            this.transferProgressLabel.AutoSize = true;
+            this.transferProgressLabel.Location = new System.Drawing.Point(203, 40);
+            this.transferProgressLabel.Name = "transferProgressLabel";
+            this.transferProgressLabel.Size = new System.Drawing.Size(27, 16);
+            this.transferProgressLabel.TabIndex = 35;
+            this.transferProgressLabel.Text = "0%";
+            this.transferProgressLabel.Visible = false;
             // 
             // Form1
             // 
@@ -379,6 +400,8 @@
         private System.Windows.Forms.Button button1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.ProgressBar transferProgressBar;
+        private System.Windows.Forms.Label transferProgressLabel;
     }
 }
 
