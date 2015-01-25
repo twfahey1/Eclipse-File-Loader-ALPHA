@@ -515,6 +515,21 @@ namespace WindowsFormsApplication1
 
         }
 
+        public void backupAllUserFiles(EclipseObject userIniObject, string destination)
+        {
+            writeINIbackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
+            /*string[] filePathArray = new string[] { userIniObject.INI_MAIN_DICTIONARY, userIniObject.INI_JOB_PATH, userIniObject.INI_SPELL_DIX, userIniObject.INI_BLOCK_PATH };
+            foreach (string i in filePathArray)
+            {
+                copyFile(i, userIniObject.INI_JOB_PATH, destination);
+            }*/
+            DirectoryCopy(userIniObject.INI_JOB_PATH, destination, true);
+            MessageBox.Show("Full Backup complete", "Full Backup Complete", MessageBoxButtons.OK);
+
+
+        }
+
+
         //Here's a method we give a source directory, a destination directory, and true/false to also
         //copy the sub directories
         private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
@@ -788,6 +803,36 @@ namespace WindowsFormsApplication1
                     MessageBox.Show("Files Restored");
                 }
 
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e){
+        if (currentUsersDropdown.Text == "")
+            {
+                MessageBox.Show("Choose User to Backup from Drop Down Menu", "Choose User to Backup", MessageBoxButtons.OK);
+
+            }
+            else if (destinationText.Text == "")
+            {
+                MessageBox.Show("Set Destination either by browse or quick pick from the dropdown for drive select", "Set Destination", MessageBoxButtons.OK);
+
+            }
+            else
+            {
+                string findString = currentUsersDropdown.Text.ToString();
+                bool done = false;
+                foreach (EclipseObject obj in INI_LIST)
+                {
+                    if (obj.FILE_NAME.Equals(findString) && done == false)
+                    {
+                        backupAllUserFiles(obj, destinationText.Text);
+                        done = true;
+                    }
+                    else
+                    {
+                        //MessageBox.Show("Backup did not succeed", "Backup did not succeed", MessageBoxButtons.OK);
+                    }
+                }
             }
         }
 

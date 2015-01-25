@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.findEclipseFilesOnThisPCButton = new System.Windows.Forms.Button();
             this.currentSelectedFileLabel = new System.Windows.Forms.Label();
             this.transferToQuickPickComboBox = new System.Windows.Forms.ComboBox();
@@ -299,6 +300,7 @@
             this.button1.TabIndex = 33;
             this.button1.Text = "Backup ALL Files";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
@@ -318,6 +320,7 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.currentSelectedFileLabel);
             this.Controls.Add(this.ExitButton);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
