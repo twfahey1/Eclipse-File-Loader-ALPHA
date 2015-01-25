@@ -13,6 +13,12 @@ using System.Windows.Forms;
 namespace WindowsFormsApplication1
 {
     public partial class Form1 : Form
+
+        ////TODO : Make a sort of INI maintenance, try to figure out bad values, or recreate
+        ///from say a scratch ini, replace just the key values... could potentially be a way
+        ///to help and avoid having to manually do UserFIle5= blank and redo wizard, instead
+        ///we could have preloaded default set w/ your values plugged in and there we go back up
+        ///
     {
         //The variables here are used for referencing the system, the various ini parsings that take
         //place and corresponding paths
@@ -74,6 +80,9 @@ namespace WindowsFormsApplication1
                 // can convert to GB free: (decided to take this out)
                 //freeSpaceLabel.Text = (d.AvailableFreeSpace / 1000000000 + "gb free");
             }
+            backgroundWorker1.WorkerReportsProgress = true;
+            backgroundWorker1.WorkerSupportsCancellation = true;
+
         }
 
         //The ReWriteMainEclipseINI method was intended to change the
@@ -514,7 +523,8 @@ namespace WindowsFormsApplication1
 
 
         }
-
+        //This method takes ALL user files and dumps to destination. Looking to add progress bar
+        //to this in NumeratedDirectoryCopy method to replace this.
         public void backupAllUserFiles(EclipseObject userIniObject, string destination)
         {
             writeINIbackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
@@ -526,6 +536,49 @@ namespace WindowsFormsApplication1
             DirectoryCopy(userIniObject.INI_JOB_PATH, destination, true);
             MessageBox.Show("Full Backup complete", "Full Backup Complete", MessageBoxButtons.OK);
 
+
+        }
+
+        //Here's a method we give a source directory, a destination directory, and true/false to also
+        //copy the sub directories
+        private static bool NumeratedDirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+        {
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            if (!dir.Exists)
+            {
+                throw new DirectoryNotFoundException(
+                    "Source directory does not exist or could not be found: "
+                    + sourceDirName);
+            }
+
+            // If the destination directory doesn't exist, create it. 
+            if (!Directory.Exists(destDirName))
+            {
+                Directory.CreateDirectory(destDirName);
+            }
+
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                
+                string temppath = Path.Combine(destDirName, file.Name);
+                file.CopyTo(temppath, true);
+            }
+
+            // If copying subdirectories, copy them and their contents to new location. 
+            if (copySubDirs)
+            {
+                foreach (DirectoryInfo subdir in dirs)
+                {
+                    string temppath = Path.Combine(destDirName, subdir.Name);
+                    DirectoryCopy(subdir.FullName, temppath, copySubDirs);
+                }
+            }
+            return true;
 
         }
 
@@ -821,6 +874,7 @@ namespace WindowsFormsApplication1
             {
                 string findString = currentUsersDropdown.Text.ToString();
                 bool done = false;
+                
                 foreach (EclipseObject obj in INI_LIST)
                 {
                     if (obj.FILE_NAME.Equals(findString) && done == false)

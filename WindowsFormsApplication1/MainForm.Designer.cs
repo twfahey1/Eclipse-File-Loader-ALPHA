@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.findEclipseFilesOnThisPCButton = new System.Windows.Forms.Button();
             this.currentSelectedFileLabel = new System.Windows.Forms.Label();
@@ -50,13 +49,14 @@
             this.fileInfoView = new System.Windows.Forms.TreeView();
             this.directorySearcher1 = new System.DirectoryServices.DirectorySearcher();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
-            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.restorePanel = new System.Windows.Forms.Panel();
             this.backupPanel = new System.Windows.Forms.Panel();
             this.destinationLabel = new System.Windows.Forms.Label();
             this.chooseUserPanel = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.cancelButton = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.restorePanel.SuspendLayout();
             this.backupPanel.SuspendLayout();
@@ -222,7 +222,7 @@
             // BackupEssentialFilesButton
             // 
             this.BackupEssentialFilesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BackupEssentialFilesButton.Location = new System.Drawing.Point(11, 145);
+            this.BackupEssentialFilesButton.Location = new System.Drawing.Point(3, 144);
             this.BackupEssentialFilesButton.Name = "BackupEssentialFilesButton";
             this.BackupEssentialFilesButton.Size = new System.Drawing.Size(116, 58);
             this.BackupEssentialFilesButton.TabIndex = 32;
@@ -256,6 +256,7 @@
             // 
             // backupPanel
             // 
+            this.backupPanel.Controls.Add(this.cancelButton);
             this.backupPanel.Controls.Add(this.button1);
             this.backupPanel.Controls.Add(this.destinationLabel);
             this.backupPanel.Controls.Add(this.destinationText);
@@ -266,7 +267,7 @@
             this.backupPanel.Controls.Add(this.BackupEssentialFilesButton);
             this.backupPanel.Location = new System.Drawing.Point(13, 152);
             this.backupPanel.Name = "backupPanel";
-            this.backupPanel.Size = new System.Drawing.Size(266, 206);
+            this.backupPanel.Size = new System.Drawing.Size(296, 206);
             this.backupPanel.TabIndex = 40;
             this.backupPanel.Visible = false;
             // 
@@ -294,9 +295,9 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(133, 144);
+            this.button1.Location = new System.Drawing.Point(125, 144);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(116, 58);
+            this.button1.Size = new System.Drawing.Size(105, 58);
             this.button1.TabIndex = 33;
             this.button1.Text = "Backup ALL Files";
             this.button1.UseVisualStyleBackColor = true;
@@ -311,6 +312,16 @@
             this.button2.TabIndex = 34;
             this.button2.Text = "Restore ALL Files";
             this.button2.UseVisualStyleBackColor = true;
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.Location = new System.Drawing.Point(229, 163);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(64, 39);
+            this.cancelButton.TabIndex = 34;
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Visible = false;
             // 
             // Form1
             // 
@@ -356,7 +367,6 @@
         private System.Windows.Forms.ListBox eclipseiniInfoListBox;
         private System.Windows.Forms.Button TransferToThisComputerButton;
         private System.Windows.Forms.TreeView fileInfoView;
-        private System.IO.Ports.SerialPort serialPort1;
         private System.Windows.Forms.Button BackupEssentialFilesButton;
         private System.Windows.Forms.Button loadEclipseFilesButton;
         private System.Windows.Forms.ComboBox currentUsersDropdown;
@@ -367,6 +377,8 @@
         private System.Windows.Forms.Panel chooseUserPanel;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Button cancelButton;
     }
 }
 

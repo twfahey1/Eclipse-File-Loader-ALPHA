@@ -16,3 +16,4 @@ C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\Eclipse-F
 C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\Eclipse-File-Loader-ALPHA\WindowsFormsApplication1\obj\Debug\Eclipse File Helper.exe
 C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\Eclipse-File-Loader-ALPHA\WindowsFormsApplication1\obj\Debug\Eclipse File Helper.pdb
 C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\Eclipse-File-Loader-ALPHA\WindowsFormsApplication1\obj\Debug\Eclipse File Loader.csprojResolveAssemblyReference.cache
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\Eclipse-File-Loader-ALPHA\WindowsFormsApplication1\obj\Debug\EclipseFileHelper.loadingForm.resources
