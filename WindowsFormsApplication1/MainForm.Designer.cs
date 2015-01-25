@@ -50,11 +50,12 @@
             this.directorySearcher1 = new System.DirectoryServices.DirectorySearcher();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
-            this.label1 = new System.Windows.Forms.Label();
             this.restorePanel = new System.Windows.Forms.Panel();
             this.backupPanel = new System.Windows.Forms.Panel();
             this.destinationLabel = new System.Windows.Forms.Label();
             this.chooseUserPanel = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.restorePanel.SuspendLayout();
             this.backupPanel.SuspendLayout();
@@ -64,11 +65,11 @@
             // findEclipseFilesOnThisPCButton
             // 
             this.findEclipseFilesOnThisPCButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.findEclipseFilesOnThisPCButton.Location = new System.Drawing.Point(27, 37);
+            this.findEclipseFilesOnThisPCButton.Location = new System.Drawing.Point(13, 10);
             this.findEclipseFilesOnThisPCButton.Name = "findEclipseFilesOnThisPCButton";
             this.findEclipseFilesOnThisPCButton.Size = new System.Drawing.Size(145, 68);
             this.findEclipseFilesOnThisPCButton.TabIndex = 1;
-            this.findEclipseFilesOnThisPCButton.Text = "Find This Computer\'s Eclipse Files";
+            this.findEclipseFilesOnThisPCButton.Text = "Backup Eclipse User";
             this.findEclipseFilesOnThisPCButton.UseVisualStyleBackColor = true;
             this.findEclipseFilesOnThisPCButton.Click += new System.EventHandler(this.loadButton_Click);
             // 
@@ -112,9 +113,9 @@
             // ExitButton
             // 
             this.ExitButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ExitButton.Location = new System.Drawing.Point(-1, 374);
+            this.ExitButton.Location = new System.Drawing.Point(-1, 366);
             this.ExitButton.Name = "ExitButton";
-            this.ExitButton.Size = new System.Drawing.Size(347, 27);
+            this.ExitButton.Size = new System.Drawing.Size(321, 27);
             this.ExitButton.TabIndex = 16;
             this.ExitButton.Text = "Exit";
             this.ExitButton.UseVisualStyleBackColor = true;
@@ -131,7 +132,7 @@
             // 
             this.thisPCEclipseINIinfoLabel.AutoSize = true;
             this.thisPCEclipseINIinfoLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.thisPCEclipseINIinfoLabel.Location = new System.Drawing.Point(218, 8);
+            this.thisPCEclipseINIinfoLabel.Location = new System.Drawing.Point(204, -19);
             this.thisPCEclipseINIinfoLabel.Name = "thisPCEclipseINIinfoLabel";
             this.thisPCEclipseINIinfoLabel.Size = new System.Drawing.Size(129, 16);
             this.thisPCEclipseINIinfoLabel.TabIndex = 19;
@@ -155,7 +156,6 @@
             this.panel2.Controls.Add(this.chooseUserPanel);
             this.panel2.Controls.Add(this.restorePanel);
             this.panel2.Controls.Add(this.backupPanel);
-            this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.eclipseiniInfoListBox);
             this.panel2.Controls.Add(this.loadEclipseFilesButton);
             this.panel2.Controls.Add(this.thisPCEclipseINIinfoLabel);
@@ -164,7 +164,7 @@
             this.panel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panel2.Location = new System.Drawing.Point(-1, 2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(347, 369);
+            this.panel2.Size = new System.Drawing.Size(335, 364);
             this.panel2.TabIndex = 32;
             // 
             // currentUsersDropdown
@@ -192,7 +192,7 @@
             this.TransferToThisComputerButton.Name = "TransferToThisComputerButton";
             this.TransferToThisComputerButton.Size = new System.Drawing.Size(126, 68);
             this.TransferToThisComputerButton.TabIndex = 33;
-            this.TransferToThisComputerButton.Text = "Transfer to this computer";
+            this.TransferToThisComputerButton.Text = "Restore Essential Files Only";
             this.TransferToThisComputerButton.UseVisualStyleBackColor = true;
             this.TransferToThisComputerButton.Click += new System.EventHandler(this.button4_Click_1);
             // 
@@ -200,7 +200,7 @@
             // 
             this.eclipseiniInfoListBox.FormattingEnabled = true;
             this.eclipseiniInfoListBox.ItemHeight = 16;
-            this.eclipseiniInfoListBox.Location = new System.Drawing.Point(221, -4);
+            this.eclipseiniInfoListBox.Location = new System.Drawing.Point(231, -21);
             this.eclipseiniInfoListBox.Name = "eclipseiniInfoListBox";
             this.eclipseiniInfoListBox.ScrollAlwaysVisible = true;
             this.eclipseiniInfoListBox.Size = new System.Drawing.Size(164, 52);
@@ -210,28 +210,28 @@
             // loadEclipseFilesButton
             // 
             this.loadEclipseFilesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.loadEclipseFilesButton.Location = new System.Drawing.Point(178, 37);
+            this.loadEclipseFilesButton.Location = new System.Drawing.Point(164, 10);
             this.loadEclipseFilesButton.Name = "loadEclipseFilesButton";
             this.loadEclipseFilesButton.Size = new System.Drawing.Size(145, 68);
             this.loadEclipseFilesButton.TabIndex = 34;
-            this.loadEclipseFilesButton.Text = "Get Eclipse Files To Put On This Computer";
+            this.loadEclipseFilesButton.Text = "Restore Eclipse User";
             this.loadEclipseFilesButton.UseVisualStyleBackColor = true;
             this.loadEclipseFilesButton.Click += new System.EventHandler(this.button7_Click);
             // 
             // BackupEssentialFilesButton
             // 
             this.BackupEssentialFilesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BackupEssentialFilesButton.Location = new System.Drawing.Point(34, 145);
+            this.BackupEssentialFilesButton.Location = new System.Drawing.Point(11, 145);
             this.BackupEssentialFilesButton.Name = "BackupEssentialFilesButton";
-            this.BackupEssentialFilesButton.Size = new System.Drawing.Size(162, 33);
+            this.BackupEssentialFilesButton.Size = new System.Drawing.Size(116, 58);
             this.BackupEssentialFilesButton.TabIndex = 32;
-            this.BackupEssentialFilesButton.Text = "Backup Essential Files";
+            this.BackupEssentialFilesButton.Text = "Backup Essential Files Only";
             this.BackupEssentialFilesButton.UseVisualStyleBackColor = true;
             this.BackupEssentialFilesButton.Click += new System.EventHandler(this.button5_Click);
             // 
             // fileInfoView
             // 
-            this.fileInfoView.Location = new System.Drawing.Point(300, -19);
+            this.fileInfoView.Location = new System.Drawing.Point(286, -46);
             this.fileInfoView.Name = "fileInfoView";
             this.fileInfoView.Size = new System.Drawing.Size(44, 43);
             this.fileInfoView.TabIndex = 31;
@@ -243,26 +243,19 @@
             this.directorySearcher1.ServerPageTimeLimit = System.TimeSpan.Parse("-00:00:01");
             this.directorySearcher1.ServerTimeLimit = System.TimeSpan.Parse("-00:00:01");
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(35, 8);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(119, 16);
-            this.label1.TabIndex = 37;
-            this.label1.Text = "First, choose one...";
-            // 
             // restorePanel
             // 
+            this.restorePanel.Controls.Add(this.button2);
             this.restorePanel.Controls.Add(this.TransferToThisComputerButton);
-            this.restorePanel.Location = new System.Drawing.Point(187, 100);
+            this.restorePanel.Location = new System.Drawing.Point(176, 84);
             this.restorePanel.Name = "restorePanel";
-            this.restorePanel.Size = new System.Drawing.Size(145, 96);
+            this.restorePanel.Size = new System.Drawing.Size(145, 162);
             this.restorePanel.TabIndex = 39;
             this.restorePanel.Visible = false;
             // 
             // backupPanel
             // 
+            this.backupPanel.Controls.Add(this.button1);
             this.backupPanel.Controls.Add(this.destinationLabel);
             this.backupPanel.Controls.Add(this.destinationText);
             this.backupPanel.Controls.Add(this.chooseAvailableDriveLabel);
@@ -270,9 +263,9 @@
             this.backupPanel.Controls.Add(this.BrowseForDestinationButton);
             this.backupPanel.Controls.Add(this.transferToQuickPickComboBox);
             this.backupPanel.Controls.Add(this.BackupEssentialFilesButton);
-            this.backupPanel.Location = new System.Drawing.Point(64, 190);
+            this.backupPanel.Location = new System.Drawing.Point(13, 152);
             this.backupPanel.Name = "backupPanel";
-            this.backupPanel.Size = new System.Drawing.Size(233, 197);
+            this.backupPanel.Size = new System.Drawing.Size(266, 206);
             this.backupPanel.TabIndex = 40;
             this.backupPanel.Visible = false;
             // 
@@ -291,17 +284,37 @@
             this.chooseUserPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.chooseUserPanel.Controls.Add(this.currentUsersDropdown);
             this.chooseUserPanel.Controls.Add(this.chooseUserLabel);
-            this.chooseUserPanel.Location = new System.Drawing.Point(27, 100);
+            this.chooseUserPanel.Location = new System.Drawing.Point(13, 84);
             this.chooseUserPanel.Name = "chooseUserPanel";
-            this.chooseUserPanel.Size = new System.Drawing.Size(154, 73);
+            this.chooseUserPanel.Size = new System.Drawing.Size(154, 62);
             this.chooseUserPanel.TabIndex = 41;
             this.chooseUserPanel.Visible = false;
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(133, 144);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(116, 58);
+            this.button1.TabIndex = 33;
+            this.button1.Text = "Backup ALL Files";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(10, 85);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(126, 68);
+            this.button2.TabIndex = 34;
+            this.button2.Text = "Restore ALL Files";
+            this.button2.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(346, 401);
+            this.ClientSize = new System.Drawing.Size(319, 393);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.currentSelectedFileLabel);
             this.Controls.Add(this.ExitButton);
@@ -345,11 +358,12 @@
         private System.Windows.Forms.Button loadEclipseFilesButton;
         private System.Windows.Forms.ComboBox currentUsersDropdown;
         private System.Windows.Forms.Label chooseUserLabel;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel backupPanel;
         private System.Windows.Forms.Label destinationLabel;
         private System.Windows.Forms.Panel restorePanel;
         private System.Windows.Forms.Panel chooseUserPanel;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
     }
 }
 
