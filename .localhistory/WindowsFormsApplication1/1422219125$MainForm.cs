@@ -567,7 +567,7 @@ namespace WindowsFormsApplication1
                 fileInfoView.Nodes[count].Nodes.Add("Blocks Folder: " + obj.INI_BLOCK_FOLDER);
                 fileInfoView.Nodes[count].Nodes.Add("Spell Dictionary: " + obj.INI_SPELL_DIX);
                 fileInfoView.Nodes[count].Nodes.Add("INI File Location: " + obj.FILE_PATH);
-                //currentUsersDropdown.Items.Add(obj.FILE_NAME);
+                currentUsersDropdown.Items.Add(obj.FILE_NAME);
                 count += 1;
             }
         }
@@ -933,11 +933,11 @@ namespace WindowsFormsApplication1
         private void button7_Click(object sender, EventArgs e)
         {
             fileInfoView.Nodes.Clear();
+            clearUserDropdown();
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 //treeView1.Nodes.Add(folderBrowserDialog1.SelectedPath);
                 if (loadEclipseFilesFromPath(folderBrowserDialog1.SelectedPath)) unpack();
-                LoadDataSource(INI_LIST);
                 restorePanel.Visible = true;
                 backupPanel.Visible = false;
                 chooseUserPanel.Visible = true;

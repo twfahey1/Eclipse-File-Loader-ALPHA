@@ -56,8 +56,6 @@ namespace WindowsFormsApplication1
         public int FILE_COUNTER = 0;
         public Dictionary<String, TreeNode> fileNodeList = new Dictionary<String, TreeNode>();
 
-
-
         public Form1()
         {
             InitializeComponent();
@@ -65,20 +63,6 @@ namespace WindowsFormsApplication1
             backgroundWorker1.WorkerReportsProgress = true;
             backgroundWorker1.WorkerSupportsCancellation = true;
         }
-
-        public void LoadDataSource(List<EclipseObject> list)
-        {
-            List<string> stringList = new List<string>();
-            foreach (EclipseObject obj in list)
-            {
-                if (obj.FILE_TYPE == ".INI")
-                {
-                    stringList.Add(obj.FILE_NAME);
-                }
-            }
-            currentUsersDropdown.DataSource = stringList;
-        }
-
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -138,19 +122,10 @@ namespace WindowsFormsApplication1
                     this.INI_INFO_ARRAY = File.ReadAllLines(this.FILE_PATH);
                     this.INI_INFO = ParseUserIni(this.INI_INFO_ARRAY);
 
-                    if (INI_INFO.ContainsKey("JobPath"))
-                    {
-                        this.INI_JOB_PATH = INI_INFO["JobPath"];
-                    }
-                    else
-                    {
-                        this.INI_JOB_PATH = "No job path found";
-                    }
-
+                    this.INI_JOB_PATH = INI_INFO["JobPath"];
                     string[] JOB_PATH_ARRAY = INI_JOB_PATH.Split('\\');
                     this.INI_JOB_FOLDER = JOB_PATH_ARRAY.Last();
                     this.INI_MAIN_DICTIONARY = INI_INFO["MainDictionary"];
-
                     if (INI_INFO.ContainsKey("BlockPath"))
                     {
                         this.INI_BLOCK_PATH = INI_INFO["BlockPath"];
@@ -293,7 +268,7 @@ namespace WindowsFormsApplication1
         //reference.
         public bool loadEclipseFilesFromPath(string path)
         {
-            
+            currentUsersDropdown.Items.Clear();
             ECL_OBJ_MAP.Clear();
             INI_LIST.Clear();
             DIX_LIST.Clear();
@@ -526,8 +501,7 @@ namespace WindowsFormsApplication1
         //Calls loadEclipseFilesFromLocalDisk, shows us options for backup
         private void loadButton_Click(object sender, EventArgs e)
         {
-
-           
+            currentUsersDropdown.Items.Clear();
             ECL_OBJ_MAP.Clear();
             INI_LIST.Clear();
             DIX_LIST.Clear();
@@ -537,7 +511,6 @@ namespace WindowsFormsApplication1
             if (loadEclipseFilesFromLocalDisk())
             {
                 unpack();
-                LoadDataSource(INI_LIST);
                 backupPanel.Visible = true;
                 restorePanel.Visible = false;
                 chooseUserPanel.Visible = true;
@@ -567,18 +540,12 @@ namespace WindowsFormsApplication1
                 fileInfoView.Nodes[count].Nodes.Add("Blocks Folder: " + obj.INI_BLOCK_FOLDER);
                 fileInfoView.Nodes[count].Nodes.Add("Spell Dictionary: " + obj.INI_SPELL_DIX);
                 fileInfoView.Nodes[count].Nodes.Add("INI File Location: " + obj.FILE_PATH);
-                //currentUsersDropdown.Items.Add(obj.FILE_NAME);
+                currentUsersDropdown.Items.Add(obj.FILE_NAME);
                 count += 1;
             }
         }
 
-        public void clearUserDropdown()
-        {
-            foreach (EclipseObject obj in INI_LIST)
-            {
-                currentUsersDropdown.Items.Remove(obj.FILE_NAME);
-            }
-        }
+        
 
         
         //Here's the method that will take w/e user we give it, in the form of an EclipseObject,
@@ -589,19 +556,12 @@ namespace WindowsFormsApplication1
         public void backupEssentialUserFiles(EclipseObject userIniObject, string destination)
         {
             writeINIbackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
-            string[] filePathArray = new string[] { userIniObject.INI_MAIN_DICTIONARY, userIniObject.INI_SPELL_DIX};
+            string[] filePathArray = new string[] { userIniObject.INI_MAIN_DICTIONARY, userIniObject.INI_SPELL_DIX, userIniObject.INI_BLOCK_PATH };
             foreach (string i in filePathArray)
             {
                 copyFile(i, userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
             }
-            if (userIniObject.INI_BLOCK_PATH != userIniObject.INI_JOB_PATH)
-            {
-                DirectoryCopy(userIniObject.INI_BLOCK_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER + "\\" + userIniObject.INI_BLOCK_FOLDER, true);
-            }
-            else
-            {
-                MessageBox.Show("Note: Blocks folder was not detected", "Note", MessageBoxButtons.OK);
-            }
+            DirectoryCopy(userIniObject.INI_BLOCK_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER + "\\" + userIniObject.INI_BLOCK_FOLDER, true);
             MessageBox.Show("Essential Backup complete", "Essential Backup Complete", MessageBoxButtons.OK);
 
 
@@ -672,53 +632,44 @@ namespace WindowsFormsApplication1
         {
             // Get the subdirectories for the specified directory.
             DirectoryInfo dir = new DirectoryInfo(sourceDirName);
-            try
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            if (!dir.Exists)
             {
-                DirectoryInfo[] dirs = dir.GetDirectories();
+                throw new DirectoryNotFoundException(
+                    "Source directory does not exist or could not be found: "
+                    + sourceDirName);
+            }
 
+            // If the destination directory doesn't exist, create it. 
+            if (!Directory.Exists(destDirName))
+            {
+                Directory.CreateDirectory(destDirName);
+            }
 
-                if (!dir.Exists)
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                try
                 {
-                    throw new DirectoryNotFoundException(
-                        "Source directory does not exist or could not be found: "
-                        + sourceDirName);
+                    string temppath = Path.Combine(destDirName, file.Name);
+                    file.CopyTo(temppath, true);
                 }
-
-                // If the destination directory doesn't exist, create it. 
-                if (!Directory.Exists(destDirName))
+                catch (System.IO.IOException e)
                 {
-                    Directory.CreateDirectory(destDirName);
-                }
-
-                // Get the files in the directory and copy them to the new location.
-                FileInfo[] files = dir.GetFiles();
-                foreach (FileInfo file in files)
-                {
-                    try
-                    {
-                        string temppath = Path.Combine(destDirName, file.Name);
-                        file.CopyTo(temppath, true);
-                    }
-                    catch (System.IO.IOException e)
-                    {
-                        Console.WriteLine(e);
-                    }
-                }
-
-                // If copying subdirectories, copy them and their contents to new location. 
-                if (copySubDirs)
-                {
-                    foreach (DirectoryInfo subdir in dirs)
-                    {
-                        string temppath = Path.Combine(destDirName, subdir.Name);
-                        DirectoryCopy(subdir.FullName, temppath, copySubDirs);
-                    }
+                    Console.WriteLine(e);
                 }
             }
 
-            catch (IOException e)
+            // If copying subdirectories, copy them and their contents to new location. 
+            if (copySubDirs)
             {
-                Console.WriteLine(e);
+                foreach (DirectoryInfo subdir in dirs)
+                {
+                    string temppath = Path.Combine(destDirName, subdir.Name);
+                    DirectoryCopy(subdir.FullName, temppath, copySubDirs);
+                }
             }
 
         }
@@ -937,7 +888,6 @@ namespace WindowsFormsApplication1
             {
                 //treeView1.Nodes.Add(folderBrowserDialog1.SelectedPath);
                 if (loadEclipseFilesFromPath(folderBrowserDialog1.SelectedPath)) unpack();
-                LoadDataSource(INI_LIST);
                 restorePanel.Visible = true;
                 backupPanel.Visible = false;
                 chooseUserPanel.Visible = true;
@@ -987,6 +937,7 @@ namespace WindowsFormsApplication1
         {
             BackgroundWorker worker = sender as BackgroundWorker;
             string findString = currentUsersDropdown.Text.ToString();
+            bool done = false;
             int count = 0;
             int reportPercentage = 0;
             EclipseObject obj = ECL_OBJ_MAP[findString];

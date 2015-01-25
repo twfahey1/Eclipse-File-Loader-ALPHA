@@ -567,7 +567,7 @@ namespace WindowsFormsApplication1
                 fileInfoView.Nodes[count].Nodes.Add("Blocks Folder: " + obj.INI_BLOCK_FOLDER);
                 fileInfoView.Nodes[count].Nodes.Add("Spell Dictionary: " + obj.INI_SPELL_DIX);
                 fileInfoView.Nodes[count].Nodes.Add("INI File Location: " + obj.FILE_PATH);
-                //currentUsersDropdown.Items.Add(obj.FILE_NAME);
+                currentUsersDropdown.Items.Add(obj.FILE_NAME);
                 count += 1;
             }
         }

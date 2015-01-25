@@ -56,8 +56,6 @@ namespace WindowsFormsApplication1
         public int FILE_COUNTER = 0;
         public Dictionary<String, TreeNode> fileNodeList = new Dictionary<String, TreeNode>();
 
-
-
         public Form1()
         {
             InitializeComponent();
@@ -65,20 +63,6 @@ namespace WindowsFormsApplication1
             backgroundWorker1.WorkerReportsProgress = true;
             backgroundWorker1.WorkerSupportsCancellation = true;
         }
-
-        public void LoadDataSource(List<EclipseObject> list)
-        {
-            List<string> stringList = new List<string>();
-            foreach (EclipseObject obj in list)
-            {
-                if (obj.FILE_TYPE == ".INI")
-                {
-                    stringList.Add(obj.FILE_NAME);
-                }
-            }
-            currentUsersDropdown.DataSource = stringList;
-        }
-
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -293,7 +277,7 @@ namespace WindowsFormsApplication1
         //reference.
         public bool loadEclipseFilesFromPath(string path)
         {
-            
+            currentUsersDropdown.Items.Clear();
             ECL_OBJ_MAP.Clear();
             INI_LIST.Clear();
             DIX_LIST.Clear();
@@ -526,8 +510,7 @@ namespace WindowsFormsApplication1
         //Calls loadEclipseFilesFromLocalDisk, shows us options for backup
         private void loadButton_Click(object sender, EventArgs e)
         {
-
-           
+            currentUsersDropdown.Items.Clear();
             ECL_OBJ_MAP.Clear();
             INI_LIST.Clear();
             DIX_LIST.Clear();
@@ -537,7 +520,6 @@ namespace WindowsFormsApplication1
             if (loadEclipseFilesFromLocalDisk())
             {
                 unpack();
-                LoadDataSource(INI_LIST);
                 backupPanel.Visible = true;
                 restorePanel.Visible = false;
                 chooseUserPanel.Visible = true;
@@ -567,18 +549,12 @@ namespace WindowsFormsApplication1
                 fileInfoView.Nodes[count].Nodes.Add("Blocks Folder: " + obj.INI_BLOCK_FOLDER);
                 fileInfoView.Nodes[count].Nodes.Add("Spell Dictionary: " + obj.INI_SPELL_DIX);
                 fileInfoView.Nodes[count].Nodes.Add("INI File Location: " + obj.FILE_PATH);
-                //currentUsersDropdown.Items.Add(obj.FILE_NAME);
+                currentUsersDropdown.Items.Add(obj.FILE_NAME);
                 count += 1;
             }
         }
 
-        public void clearUserDropdown()
-        {
-            foreach (EclipseObject obj in INI_LIST)
-            {
-                currentUsersDropdown.Items.Remove(obj.FILE_NAME);
-            }
-        }
+        
 
         
         //Here's the method that will take w/e user we give it, in the form of an EclipseObject,
@@ -937,7 +913,6 @@ namespace WindowsFormsApplication1
             {
                 //treeView1.Nodes.Add(folderBrowserDialog1.SelectedPath);
                 if (loadEclipseFilesFromPath(folderBrowserDialog1.SelectedPath)) unpack();
-                LoadDataSource(INI_LIST);
                 restorePanel.Visible = true;
                 backupPanel.Visible = false;
                 chooseUserPanel.Visible = true;
