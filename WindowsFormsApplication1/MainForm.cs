@@ -14,7 +14,8 @@ namespace WindowsFormsApplication1
 {
     public partial class Form1 : Form
     {
-
+        //The variables here are used for referencing the system, the various ini parsings that take
+        //place and corresponding paths
         public string CURRENT_SYSTEM_MAIN_DRIVE = Path.GetPathRoot(Environment.SystemDirectory);
         public string CURRENT_USERFILE5;
         public string CURRENT_MAINDIRECTORY5;
@@ -25,26 +26,63 @@ namespace WindowsFormsApplication1
         public string USERFILE5_LINE;
         public string USER_DOCUMENTS_PATH = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
+        //These lists and dictionaries are for referencing the objects that are browsed to
+        //or scanned for, and ultimately in each scenario the user is requesting to look
+        //at a directory for either backing up or restoring the eclipse related files
+        //in that directory.
         public List<EclipseObject> FILE_MAP = new List<EclipseObject>();
         public List<EclipseObject> INI_LIST = new List<EclipseObject>();
         public List<EclipseObject> ECL_LIST = new List<EclipseObject>();
         public List<EclipseObject> NOT_LIST = new List<EclipseObject>();
         public List<EclipseObject> DIX_LIST = new List<EclipseObject>();
-        //public List<string> results = new List<string>();
-
-        public Dictionary<String, TreeNode> fileNodeList = new Dictionary<String, TreeNode>();
-        public Dictionary<string, string> ECLIPSE_MAIN_INI_ARRAY = new Dictionary<string, string>();
+        
+        //Need to straighten out whether or not these collections FILE_LOCATION_MAP and 
+        //ECL_OBJ_MAP are actually needed right now.
+        //Was possibly having issues with referencing from the list, but can probably do away
+        //with these at some point.
         public Dictionary<EclipseObject, string> FILE_LOCATION_MAP = new Dictionary<EclipseObject, string>();
         public Dictionary<string, EclipseObject> ECL_OBJ_MAP = new Dictionary<string, EclipseObject>();
+        public Dictionary<string, string> ECLIPSE_MAIN_INI_ARRAY = new Dictionary<string, string>();
 
+        //These counters and node array are for the diagnostic node treeView1 that is not seen
+        //in the release
         public TreeNode[] fileNodeArray;
         public int FILE_COUNTER = 0;
+        public Dictionary<String, TreeNode> fileNodeList = new Dictionary<String, TreeNode>();
 
         public Form1()
         {
             InitializeComponent();            
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            ECLIPSE_MAIN_INI_ARRAY = parseMainEclipseIniToDictionary();
+            //CURRENT_MAINDIRECTORY5 = ECLIPSE_MAIN_INI_ARRAY;
+            string mainDir5 = ECLIPSE_MAIN_INI_ARRAY["MainDirectory5"];
+            string userFile5 = ECLIPSE_MAIN_INI_ARRAY["UserFile5"];
+            USERFILE5_LINE = userFile5;
+            eclipseiniInfoListBox.Items.Add(USERFILE5_LINE);
+            string USER_ECLIPSE_FOLDER_COMPARE = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\Eclipse";
+            USER_ECLIPSE_FOLDER = mainDir5.Replace("{DOC}", Path.Combine(Environment.ExpandEnvironmentVariables("%userprofile%"), "Documents\\"));
+            CURRENT_MAINDIRECTORY5 = USER_ECLIPSE_FOLDER;
+
+            DriveInfo[] files = DriveInfo.GetDrives();
+            foreach (DriveInfo d in files)
+            {
+                transferToQuickPickComboBox.Items.Add(String.Format(d.Name));
+                // can convert to GB free: (decided to take this out)
+                //freeSpaceLabel.Text = (d.AvailableFreeSpace / 1000000000 + "gb free");
+            }
+        }
+
+        //The ReWriteMainEclipseINI method was intended to change the
+        //"UserFile5=" line automatically in the Eclipse.ini.
+        //This was pretty much abandoned, as I realized that it makes more sense
+        //to have Eclipse load once, setup ini, possibly make changes to job 
+        //paths, etc., then we can use utility to restore, and theoretically
+        //we are in good shape at that point... but this was cool and possibly
+        // useful method to parse and rewrite the Eclipse.ini
         public void ReWriteMainEclipseINI(string newUserFile5Value)
         {
             ECLIPSE_MAIN_INI_ARRAY["UserFile5"] = newUserFile5Value;
@@ -65,58 +103,49 @@ namespace WindowsFormsApplication1
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        //Here's the method that parses out the eclipse.ini to a dictionary
+        //for reference. 
+        //to take the C:\Windows\Eclipse.ini and parse it out for basic info
+        //about the system. We are assuming the user has Total Eclipse installed and has
+        //actually ran it on this system.
+        public Dictionary<string, string> parseMainEclipseIniToDictionary()
         {
-            ECLIPSE_MAIN_INI_ARRAY = parseMainEclipseIniToDictionary();
-            //CURRENT_MAINDIRECTORY5 = ECLIPSE_MAIN_INI_ARRAY;
-            string mainDir5 = ECLIPSE_MAIN_INI_ARRAY["MainDirectory5"];
-            string userFile5 = ECLIPSE_MAIN_INI_ARRAY["UserFile5"];
-            USERFILE5_LINE = userFile5;
-            eclipseiniInfoListBox.Items.Add(USERFILE5_LINE);
-            string USER_ECLIPSE_FOLDER_COMPARE = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\Eclipse";
-            USER_ECLIPSE_FOLDER = mainDir5.Replace("{DOC}", Path.Combine(Environment.ExpandEnvironmentVariables("%userprofile%"), "Documents\\"));
-            
-            CURRENT_MAINDIRECTORY5 = USER_ECLIPSE_FOLDER;
-            transferToQuickPickComboBox.Items.Add(USER_ECLIPSE_FOLDER);
-            transferToQuickPickComboBox.Items.Add(USER_ECLIPSE_FOLDER_COMPARE);
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            string currentWindowsFolderEclipseIniLocation = Path.GetPathRoot(Environment.SystemDirectory) + "\\Windows\\eclipse.ini";
+            string[] result = File.ReadAllLines(currentWindowsFolderEclipseIniLocation);
+            string oneLineIniLines = "";
 
-            /*if (loadEclipseFilesFromPath(USER_ECLIPSE_FOLDER)) {
-                unpack();            
-            }*/
-
-            DriveInfo[] files = DriveInfo.GetDrives();
-            foreach (DriveInfo d in files)
+            foreach (String iniLine in result)
             {
-                transferToQuickPickComboBox.Items.Add(String.Format(d.Name));
-                // can convert to GB free: (decided to take this out)
-                //freeSpaceLabel.Text = (d.AvailableFreeSpace / 1000000000 + "gb free");
+                try
+                {
+
+                    if (iniLine.Contains('='))
+                    {
+                        var parts = iniLine.Split('=');
+                        dictionary.Add(parts[0], parts[1]);
+                    }
+                    else
+                    {
+                        oneLineIniLines += "\\\\" + iniLine;
+                    }
+                }
+                catch (IndexOutOfRangeException)
+                {
+
+                }
+                catch (System.ArgumentException)
+                {
+
+                }
+
             }
+            dictionary.Add("OneLineINILines", oneLineIniLines);
+            return dictionary;
         }
 
-        /*public bool RestoreEclipseFilesToLocalPC(EclipseObject iniObject)
-        {
-            writeINIbackup(CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER + ".ini", iniObject.INI_INFO_ARRAY);
-            string[] filePathArray = new string[] { iniObject.FILE_PATH.Split('\\') };
-            int numToDeleteForPath =filePathArray.Length;
-            string copyFolder = iniObject.FILE_PATH.TrimEnd(numToDeleteForPath);
-            string destination = CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER;
-            string CurrentINILocation;
-            DirectoryCopy(copyFolder, destination, true);
-
-            writeINIbackup(CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER+".ini", iniObject.INI_INFO_ARRAY);
-            //string[] filePathArray = new string[] {  };
-            //string destination = CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER;
-            foreach (EclipseObject i in FILE_MAP)
-            {
-                copyFile(i.FILE_PATH, iniObject.FILE_PATH, destination);
-            }
-            DirectoryCopy(iniObject.INI_BLOCK_PATH, destination + "\\" + iniObject.INI_BLOCK_FOLDER + "\\", true);
-
-            //EclipseObject newIniObject = new EclipseObject("recreated" + iniObject.FILE_NAME, ".INI", iniObject.INI_JOB_PATH);
-            //iniObject.INI_JOB_FOLDER = CURRENT_MAINDIRECTORY5 + 
-
-            return true;
-        }*/
+        //Here's method to restore files back to local pc, which is based on the
+        //info we get from eclipse.ini, MainDirectory5= line
         public bool RestoreEclipseFilesToLocalPC(EclipseObject iniObject)
         {
             writeINIbackup(CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER + ".ini", iniObject.INI_INFO_ARRAY);
@@ -133,6 +162,9 @@ namespace WindowsFormsApplication1
             return true;
         }
 
+        //This method will take w/e path we give it and scan for files, creating
+        //the objects in the INI_LIST, ECL_LIST, DIX_LIST, NOT_LIST for later
+        //reference.
         public bool loadEclipseFilesFromPath(string path)
         {
             ECL_OBJ_MAP.Clear();
@@ -237,8 +269,6 @@ namespace WindowsFormsApplication1
                     {
 
                     }
-                    
-
                 }
                 if (obj.FILE_TYPE == ".ECL")
                 {
@@ -255,7 +285,9 @@ namespace WindowsFormsApplication1
             }
             return true;
         }
-
+        //This method will use Eclipse.ini info for eclipse folder and scan for files, creating
+        //the objects in the INI_LIST, ECL_LIST, DIX_LIST, NOT_LIST for later
+        //reference.
         public bool loadEclipseFilesFromLocalDisk()
         {
             ECL_OBJ_MAP.Clear();
@@ -341,45 +373,6 @@ namespace WindowsFormsApplication1
                 Console.Write(excpt);
             }
 
-            
-            /*try
-            {
-                foreach (string d in Directory.GetDirectories(USER_DOCUMENTS_PATH))
-                {
-                    foreach (string f in Directory.EnumerateFiles(d))
-                    {
-                        if (f.Contains(".esp") || f.Contains(".esd"))
-                        {
-                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".ESP", f);
-                            FILE_MAP.Add(obj);
-                        }
-
-                        else if (f.Contains(".ini"))
-                        {
-                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".INI", f);
-                            FILE_COUNTER += 1;
-                            INI_LIST.Add(obj);
-                        }
-
-                        else if (f.Contains(".dix"))
-                        {
-                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".DIX", f);
-                            FILE_MAP.Add(obj);
-                        }
-                        else if (f.Contains(".ecl"))
-                        {
-                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".ECL", f);
-                            FILE_MAP.Add(obj);
-                        }
-                    }
-                }
-            }
-            catch (System.Exception excpt)
-            {
-
-                Console.Write(excpt);
-            }*/
-
             foreach (EclipseObject obj in FILE_MAP)
             {
                 if (obj.FILE_TYPE == ".INI")
@@ -403,16 +396,23 @@ namespace WindowsFormsApplication1
             return true;
         }
 
+        //Calls loadEclipseFilesFromLocalDisk, shows us options for backup
         private void loadButton_Click(object sender, EventArgs e)
         {
             fileInfoView.Nodes.Clear();
             if (loadEclipseFilesFromLocalDisk())
             {
                 unpack();
+                backupPanel.Visible = true;
+                restorePanel.Visible = false;
+                chooseUserPanel.Visible = true;
             }
 
         }
 
+        //This unpack was used to populate the nodeListView, which I was primarily
+        //using for diagnostic info. Not really using this in the release version,
+        //but didn't want to dump the cool node stuff I had worked on
         public void unpack()
         {
             int count = 0;
@@ -437,7 +437,12 @@ namespace WindowsFormsApplication1
             }
         }
 
-
+        //Here's the allmighty EclipseObject, which we are using to organize all objects
+        //found when scanning folders for objects. As we find objects we are creating simple
+        //string based entities, which if they are INI file type will get a few extra
+        //characteristics for use later on, otherwise we pretty much just have the file path and 
+        //the name is parsed out based on splitting the path to a string array, delimited by
+        // '//' and then grabbing the last chunk of that array for the actual file name reference
         public class EclipseObject
         {
             public string FILE_NAME;
@@ -488,47 +493,14 @@ namespace WindowsFormsApplication1
             }
 
 
-        }
-
-
-        public Dictionary<string, string> parseMainEclipseIniToDictionary()
-        {
-            Dictionary<string, string> dictionary = new Dictionary<string, string>();
-            string currentWindowsFolderEclipseIniLocation = Path.GetPathRoot(Environment.SystemDirectory) + "\\Windows\\eclipse.ini";
-            string[] result = File.ReadAllLines(currentWindowsFolderEclipseIniLocation);
-            string oneLineIniLines = "";
-
-            foreach (String iniLine in result)
-            {
-                try
-                {
-
-                    if (iniLine.Contains('='))
-                    {
-                        var parts = iniLine.Split('=');
-                        dictionary.Add(parts[0], parts[1]);
-                    }
-                    else
-                    {
-                        oneLineIniLines += "\\\\" + iniLine;
-                    }
-                }
-                catch (IndexOutOfRangeException)
-                {
-
-                }
-                catch (System.ArgumentException)
-                {
-
-                }
-
-            }
-            dictionary.Add("OneLineINILines", oneLineIniLines);
-            return dictionary;
-        }
+        }       
 
         
-
+        //Here's the method that will take w/e user we give it, in the form of an EclipseObject,
+        //and will then proceed to rewrite the ini data to new ini, create a set file from same data,
+        //then use the reference for the main dictionary and copy that file over, and then it will
+        //get the esp, esd, then it will take whatever blocks folder is available and copy that as
+        //well.
         public void backupEssentialUserFiles(EclipseObject userIniObject, string destination)
         {
             writeINIbackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
@@ -543,7 +515,8 @@ namespace WindowsFormsApplication1
 
         }
 
-
+        //Here's a method we give a source directory, a destination directory, and true/false to also
+        //copy the sub directories
         private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
             // Get the subdirectories for the specified directory.
@@ -583,6 +556,9 @@ namespace WindowsFormsApplication1
 
         }
 
+        //Here's the method that takes a destination, and a string[] that is assuming it is a
+        //text file that we did a ReadAllLines or something like that on so that we have a 
+        //string[]. Then it will create the .ini and the .set on the destination
         public void writeINIbackup(string destination, string[] iniLinesArray)
         {
             try
@@ -599,7 +575,11 @@ namespace WindowsFormsApplication1
                 MessageBox.Show("Unauthorized Access Exception - Access Denied");
             }
         }
+        
 
+        //Here's the method we give a source file, the location, and the destination.
+        //Yes it's an ugly method, and could definitely be more efficient, but this
+        //is getting the job done in one area of the project for now.
         public void copyFile(string sFile, string sLocation, string sDestLocation)
         {
             string fileName = sFile;
@@ -650,6 +630,10 @@ namespace WindowsFormsApplication1
 
         }
 
+        //Here's a dictionary method that returns a dictionary from a string[], so we
+        //are assuming you have an ini or text file that we do for example a ReadAllLines
+        //and we have a string[], so now from that string[] we delimit using '=' to generate
+        //key + value for easier reference. Probably a way to improve on this.
         public static Dictionary<string, string> ParseUserIni(string[] iniInfo)
         {
             string[] data = iniInfo;
@@ -671,11 +655,22 @@ namespace WindowsFormsApplication1
                 {
                     if (item.StartsWith("Path") && item.Contains("JOB="))
                     {
-                        result = line.Replace("{DOC}", (Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\"));
-                        string[] resultArray = result.Split(delimiter);
-                        result = resultArray[2];
-                        jobPathInterpret = result;
-                        results.Add("JobPath", result);
+                        if (item.Contains("{MAIN}"))
+                        {
+                            result = line.Replace("{MAIN}", USER_ECLIPSE_FOLDER + "\\");
+                            string[] resultArray = result.Split(delimiter);
+                            result = resultArray.Last();
+                            results.Add("JobPath", result);
+                        }
+                        else if (item.Contains("DOC"))
+                        {
+                            result = line.Replace("{DOC}", (Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\"));
+                            string[] resultArray = result.Split(delimiter);
+                            result = resultArray[2];
+                            jobPathInterpret = result;
+                            results.Add("JobPath", result);
+                        }
+                        
                     }
                     if (item.StartsWith("MainDictionary="))
                     {
@@ -718,16 +713,10 @@ namespace WindowsFormsApplication1
             return results;
         }
 
-
-
-
-
         private void button3_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
-
-        
 
         private void button4_Click(object sender, EventArgs e)
         {
@@ -743,16 +732,33 @@ namespace WindowsFormsApplication1
 
         private void button5_Click(object sender, EventArgs e)
         {
-            string findString = currentUsersDropdown.Text.ToString();
-            foreach (EclipseObject obj in INI_LIST)
+            if (currentUsersDropdown.Text == "")
             {
-                if (obj.FILE_NAME.Equals(findString))
+                MessageBox.Show("Choose User to Backup from Drop Down Menu", "Choose User to Backup", MessageBoxButtons.OK);
+
+            }
+            else if (destinationText.Text == "")
+            {
+                MessageBox.Show("Set Destination either by browse or quick pick from the dropdown for drive select", "Set Destination", MessageBoxButtons.OK);
+
+            }
+            else
+            {
+                string findString = currentUsersDropdown.Text.ToString();
+                bool done = false;
+                foreach (EclipseObject obj in INI_LIST)
                 {
-                    backupEssentialUserFiles(obj, destinationText.Text);
+                    if (obj.FILE_NAME.Equals(findString) && done == false)
+                    {
+                        backupEssentialUserFiles(obj, destinationText.Text);
+                        done = true;
+                    }
+                    else
+                    {
+                        //MessageBox.Show("Backup did not succeed", "Backup did not succeed", MessageBoxButtons.OK);
+                    }
                 }
             }
-
-
         }
 
 
@@ -763,7 +769,9 @@ namespace WindowsFormsApplication1
             {
                 //treeView1.Nodes.Add(folderBrowserDialog1.SelectedPath);
                 if (loadEclipseFilesFromPath(folderBrowserDialog1.SelectedPath)) unpack();
-
+                restorePanel.Visible = true;
+                backupPanel.Visible = false;
+                chooseUserPanel.Visible = true;
             }
         }
 
