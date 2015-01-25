@@ -251,7 +251,7 @@ namespace WindowsFormsApplication1
         public bool RestoreEclipseFilesToLocalPC(EclipseObject iniObject)
         {
             //First use our writeINIBackup to get an ini and a set file created right on the main dir 5 from the eclipse.ini
-            writeINIbackup(CURRENT_MAINDIRECTORY5 + "\\" + iniObject.FILE_NAME, iniObject.INI_INFO_ARRAY);
+            writeINIbackup(CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER + ".ini", iniObject.INI_INFO_ARRAY);
             ///Next we perform a quick assessment of the folder we want to actually copy, so this will be looking at the files
             ///current path for reference, then taking the ini part off the path, and replacing with referencing the job folder name. 
             ///Could maybe be done a better way
