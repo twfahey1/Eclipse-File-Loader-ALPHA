@@ -955,7 +955,6 @@ namespace WindowsFormsApplication1
         {
             //ReWriteMainEclipseINI(currentUsersDropdown.Text);
             string findString = currentUsersDropdown.Text.ToString();
-            
             foreach (EclipseObject obj in INI_LIST)
             {
                 if (obj.FILE_NAME.Equals(findString))
@@ -963,15 +962,8 @@ namespace WindowsFormsApplication1
                     RestoreEclipseFilesToLocalPC(obj);
                     MessageBox.Show("Files Restored");
                 }
-                else
-                {
-                    MessageBox.Show("User not found. Restoration not successful", "User Not Found", MessageBoxButtons.OK);
 
-                }
             }
-
-
-
         }
 
         private void button1_Click(object sender, EventArgs e){

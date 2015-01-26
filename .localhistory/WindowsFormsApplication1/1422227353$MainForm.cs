@@ -591,15 +591,9 @@ namespace WindowsFormsApplication1
             writeINIbackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
             string[] filePathArray = new string[] { userIniObject.INI_MAIN_DICTIONARY, userIniObject.INI_SPELL_DIX};
             foreach (string i in filePathArray)
-                if (File.Exists(i))
-                {
-                    copyFile(i, userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
-                }
-                else
-                {
-                    MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
-                }
-        
+            {
+                copyFile(i, userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
+            }
             if (userIniObject.INI_BLOCK_PATH != userIniObject.INI_JOB_PATH)
             {
                 DirectoryCopy(userIniObject.INI_BLOCK_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER + "\\" + userIniObject.INI_BLOCK_FOLDER, true);
@@ -955,7 +949,6 @@ namespace WindowsFormsApplication1
         {
             //ReWriteMainEclipseINI(currentUsersDropdown.Text);
             string findString = currentUsersDropdown.Text.ToString();
-            
             foreach (EclipseObject obj in INI_LIST)
             {
                 if (obj.FILE_NAME.Equals(findString))
@@ -963,15 +956,8 @@ namespace WindowsFormsApplication1
                     RestoreEclipseFilesToLocalPC(obj);
                     MessageBox.Show("Files Restored");
                 }
-                else
-                {
-                    MessageBox.Show("User not found. Restoration not successful", "User Not Found", MessageBoxButtons.OK);
 
-                }
             }
-
-
-
         }
 
         private void button1_Click(object sender, EventArgs e){

@@ -40,30 +40,29 @@
             this.thisPCEclipseINIinfoLabel = new System.Windows.Forms.Label();
             this.refreshButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.restorePanel = new System.Windows.Forms.Panel();
-            this.button2 = new System.Windows.Forms.Button();
-            this.TransferToThisComputerButton = new System.Windows.Forms.Button();
-            this.chooseUserPanel = new System.Windows.Forms.Panel();
             this.currentUsersDropdown = new System.Windows.Forms.ComboBox();
             this.chooseUserLabel = new System.Windows.Forms.Label();
-            this.backupPanel = new System.Windows.Forms.Panel();
-            this.transferProgressBar = new System.Windows.Forms.ProgressBar();
-            this.transferProgressLabel = new System.Windows.Forms.Label();
-            this.cancelButton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.destinationLabel = new System.Windows.Forms.Label();
-            this.BackupEssentialFilesButton = new System.Windows.Forms.Button();
+            this.TransferToThisComputerButton = new System.Windows.Forms.Button();
             this.eclipseiniInfoListBox = new System.Windows.Forms.ListBox();
             this.loadEclipseFilesButton = new System.Windows.Forms.Button();
+            this.BackupEssentialFilesButton = new System.Windows.Forms.Button();
             this.fileInfoView = new System.Windows.Forms.TreeView();
             this.directorySearcher1 = new System.DirectoryServices.DirectorySearcher();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
+            this.restorePanel = new System.Windows.Forms.Panel();
+            this.backupPanel = new System.Windows.Forms.Panel();
+            this.destinationLabel = new System.Windows.Forms.Label();
+            this.chooseUserPanel = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.cancelButton = new System.Windows.Forms.Button();
+            this.transferProgressBar = new System.Windows.Forms.ProgressBar();
+            this.transferProgressLabel = new System.Windows.Forms.Label();
             this.panel2.SuspendLayout();
             this.restorePanel.SuspendLayout();
-            this.chooseUserPanel.SuspendLayout();
             this.backupPanel.SuspendLayout();
+            this.chooseUserPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // findEclipseFilesOnThisPCButton
@@ -119,7 +118,7 @@
             this.ExitButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ExitButton.Location = new System.Drawing.Point(-1, 366);
             this.ExitButton.Name = "ExitButton";
-            this.ExitButton.Size = new System.Drawing.Size(460, 27);
+            this.ExitButton.Size = new System.Drawing.Size(321, 27);
             this.ExitButton.TabIndex = 16;
             this.ExitButton.Text = "Exit";
             this.ExitButton.UseVisualStyleBackColor = true;
@@ -157,7 +156,6 @@
             // panel2
             // 
             this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel2.Controls.Add(this.restorePanel);
             this.panel2.Controls.Add(this.chooseUserPanel);
             this.panel2.Controls.Add(this.backupPanel);
             this.panel2.Controls.Add(this.eclipseiniInfoListBox);
@@ -165,55 +163,12 @@
             this.panel2.Controls.Add(this.thisPCEclipseINIinfoLabel);
             this.panel2.Controls.Add(this.fileInfoView);
             this.panel2.Controls.Add(this.findEclipseFilesOnThisPCButton);
+            this.panel2.Controls.Add(this.restorePanel);
             this.panel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panel2.Location = new System.Drawing.Point(-1, 2);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(335, 364);
             this.panel2.TabIndex = 32;
-            // 
-            // restorePanel
-            // 
-            this.restorePanel.Controls.Add(this.checkBox1);
-            this.restorePanel.Controls.Add(this.button2);
-            this.restorePanel.Controls.Add(this.TransferToThisComputerButton);
-            this.restorePanel.Location = new System.Drawing.Point(176, 84);
-            this.restorePanel.Name = "restorePanel";
-            this.restorePanel.Size = new System.Drawing.Size(145, 162);
-            this.restorePanel.TabIndex = 39;
-            this.restorePanel.Visible = false;
-            // 
-            // button2
-            // 
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(10, 85);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(126, 68);
-            this.button2.TabIndex = 34;
-            this.button2.Text = "Restore ALL Files";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Visible = false;
-            // 
-            // TransferToThisComputerButton
-            // 
-            this.TransferToThisComputerButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TransferToThisComputerButton.Location = new System.Drawing.Point(10, 15);
-            this.TransferToThisComputerButton.Name = "TransferToThisComputerButton";
-            this.TransferToThisComputerButton.Size = new System.Drawing.Size(126, 68);
-            this.TransferToThisComputerButton.TabIndex = 33;
-            this.TransferToThisComputerButton.Text = "Click To Begin Restoration";
-            this.TransferToThisComputerButton.UseVisualStyleBackColor = true;
-            this.TransferToThisComputerButton.Click += new System.EventHandler(this.button4_Click_1);
-            // 
-            // chooseUserPanel
-            // 
-            this.chooseUserPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.chooseUserPanel.Controls.Add(this.currentUsersDropdown);
-            this.chooseUserPanel.Controls.Add(this.chooseUserLabel);
-            this.chooseUserPanel.Location = new System.Drawing.Point(13, 84);
-            this.chooseUserPanel.Name = "chooseUserPanel";
-            this.chooseUserPanel.Size = new System.Drawing.Size(154, 62);
-            this.chooseUserPanel.TabIndex = 41;
-            this.chooseUserPanel.Visible = false;
             // 
             // currentUsersDropdown
             // 
@@ -233,85 +188,16 @@
             this.chooseUserLabel.TabIndex = 36;
             this.chooseUserLabel.Text = "Choose Eclipse User:";
             // 
-            // backupPanel
+            // TransferToThisComputerButton
             // 
-            this.backupPanel.Controls.Add(this.transferProgressBar);
-            this.backupPanel.Controls.Add(this.transferProgressLabel);
-            this.backupPanel.Controls.Add(this.cancelButton);
-            this.backupPanel.Controls.Add(this.button1);
-            this.backupPanel.Controls.Add(this.destinationLabel);
-            this.backupPanel.Controls.Add(this.destinationText);
-            this.backupPanel.Controls.Add(this.chooseAvailableDriveLabel);
-            this.backupPanel.Controls.Add(this.refreshButton);
-            this.backupPanel.Controls.Add(this.BrowseForDestinationButton);
-            this.backupPanel.Controls.Add(this.transferToQuickPickComboBox);
-            this.backupPanel.Controls.Add(this.BackupEssentialFilesButton);
-            this.backupPanel.Location = new System.Drawing.Point(13, 152);
-            this.backupPanel.Name = "backupPanel";
-            this.backupPanel.Size = new System.Drawing.Size(296, 206);
-            this.backupPanel.TabIndex = 40;
-            this.backupPanel.Visible = false;
-            // 
-            // transferProgressBar
-            // 
-            this.transferProgressBar.Location = new System.Drawing.Point(145, 59);
-            this.transferProgressBar.Name = "transferProgressBar";
-            this.transferProgressBar.Size = new System.Drawing.Size(148, 26);
-            this.transferProgressBar.TabIndex = 35;
-            // 
-            // transferProgressLabel
-            // 
-            this.transferProgressLabel.AutoSize = true;
-            this.transferProgressLabel.Location = new System.Drawing.Point(203, 40);
-            this.transferProgressLabel.Name = "transferProgressLabel";
-            this.transferProgressLabel.Size = new System.Drawing.Size(27, 16);
-            this.transferProgressLabel.TabIndex = 35;
-            this.transferProgressLabel.Text = "0%";
-            this.transferProgressLabel.Visible = false;
-            // 
-            // cancelButton
-            // 
-            this.cancelButton.Location = new System.Drawing.Point(229, 163);
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(64, 39);
-            this.cancelButton.TabIndex = 34;
-            this.cancelButton.Text = "Cancel";
-            this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Visible = false;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
-            // 
-            // button1
-            // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(125, 144);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(105, 58);
-            this.button1.TabIndex = 33;
-            this.button1.Text = "Backup ALL Files";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // destinationLabel
-            // 
-            this.destinationLabel.AutoSize = true;
-            this.destinationLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.destinationLabel.Location = new System.Drawing.Point(8, 0);
-            this.destinationLabel.Name = "destinationLabel";
-            this.destinationLabel.Size = new System.Drawing.Size(78, 16);
-            this.destinationLabel.TabIndex = 13;
-            this.destinationLabel.Text = "Destination:";
-            // 
-            // BackupEssentialFilesButton
-            // 
-            this.BackupEssentialFilesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BackupEssentialFilesButton.Location = new System.Drawing.Point(3, 144);
-            this.BackupEssentialFilesButton.Name = "BackupEssentialFilesButton";
-            this.BackupEssentialFilesButton.Size = new System.Drawing.Size(116, 58);
-            this.BackupEssentialFilesButton.TabIndex = 32;
-            this.BackupEssentialFilesButton.Text = "Click To Backup Essential Files Only";
-            this.BackupEssentialFilesButton.UseVisualStyleBackColor = true;
-            this.BackupEssentialFilesButton.Click += new System.EventHandler(this.button5_Click);
+            this.TransferToThisComputerButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TransferToThisComputerButton.Location = new System.Drawing.Point(10, 15);
+            this.TransferToThisComputerButton.Name = "TransferToThisComputerButton";
+            this.TransferToThisComputerButton.Size = new System.Drawing.Size(126, 68);
+            this.TransferToThisComputerButton.TabIndex = 33;
+            this.TransferToThisComputerButton.Text = "Restore Essential Files Only";
+            this.TransferToThisComputerButton.UseVisualStyleBackColor = true;
+            this.TransferToThisComputerButton.Click += new System.EventHandler(this.button4_Click_1);
             // 
             // eclipseiniInfoListBox
             // 
@@ -335,6 +221,17 @@
             this.loadEclipseFilesButton.UseVisualStyleBackColor = true;
             this.loadEclipseFilesButton.Click += new System.EventHandler(this.button7_Click);
             // 
+            // BackupEssentialFilesButton
+            // 
+            this.BackupEssentialFilesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BackupEssentialFilesButton.Location = new System.Drawing.Point(3, 144);
+            this.BackupEssentialFilesButton.Name = "BackupEssentialFilesButton";
+            this.BackupEssentialFilesButton.Size = new System.Drawing.Size(116, 58);
+            this.BackupEssentialFilesButton.TabIndex = 32;
+            this.BackupEssentialFilesButton.Text = "Backup Essential Files Only";
+            this.BackupEssentialFilesButton.UseVisualStyleBackColor = true;
+            this.BackupEssentialFilesButton.Click += new System.EventHandler(this.button5_Click);
+            // 
             // fileInfoView
             // 
             this.fileInfoView.Location = new System.Drawing.Point(286, -46);
@@ -349,22 +246,110 @@
             this.directorySearcher1.ServerPageTimeLimit = System.TimeSpan.Parse("-00:00:01");
             this.directorySearcher1.ServerTimeLimit = System.TimeSpan.Parse("-00:00:01");
             // 
-            // checkBox1
+            // restorePanel
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(74, 105);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(93, 20);
-            this.checkBox1.TabIndex = 35;
-            this.checkBox1.Text = "checkBox1";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.Visible = false;
+            this.restorePanel.Controls.Add(this.button2);
+            this.restorePanel.Controls.Add(this.TransferToThisComputerButton);
+            this.restorePanel.Location = new System.Drawing.Point(176, 84);
+            this.restorePanel.Name = "restorePanel";
+            this.restorePanel.Size = new System.Drawing.Size(145, 162);
+            this.restorePanel.TabIndex = 39;
+            this.restorePanel.Visible = false;
+            // 
+            // backupPanel
+            // 
+            this.backupPanel.Controls.Add(this.transferProgressBar);
+            this.backupPanel.Controls.Add(this.transferProgressLabel);
+            this.backupPanel.Controls.Add(this.cancelButton);
+            this.backupPanel.Controls.Add(this.button1);
+            this.backupPanel.Controls.Add(this.destinationLabel);
+            this.backupPanel.Controls.Add(this.destinationText);
+            this.backupPanel.Controls.Add(this.chooseAvailableDriveLabel);
+            this.backupPanel.Controls.Add(this.refreshButton);
+            this.backupPanel.Controls.Add(this.BrowseForDestinationButton);
+            this.backupPanel.Controls.Add(this.transferToQuickPickComboBox);
+            this.backupPanel.Controls.Add(this.BackupEssentialFilesButton);
+            this.backupPanel.Location = new System.Drawing.Point(13, 152);
+            this.backupPanel.Name = "backupPanel";
+            this.backupPanel.Size = new System.Drawing.Size(296, 206);
+            this.backupPanel.TabIndex = 40;
+            this.backupPanel.Visible = false;
+            // 
+            // destinationLabel
+            // 
+            this.destinationLabel.AutoSize = true;
+            this.destinationLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.destinationLabel.Location = new System.Drawing.Point(8, 0);
+            this.destinationLabel.Name = "destinationLabel";
+            this.destinationLabel.Size = new System.Drawing.Size(78, 16);
+            this.destinationLabel.TabIndex = 13;
+            this.destinationLabel.Text = "Destination:";
+            // 
+            // chooseUserPanel
+            // 
+            this.chooseUserPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.chooseUserPanel.Controls.Add(this.currentUsersDropdown);
+            this.chooseUserPanel.Controls.Add(this.chooseUserLabel);
+            this.chooseUserPanel.Location = new System.Drawing.Point(13, 84);
+            this.chooseUserPanel.Name = "chooseUserPanel";
+            this.chooseUserPanel.Size = new System.Drawing.Size(154, 62);
+            this.chooseUserPanel.TabIndex = 41;
+            this.chooseUserPanel.Visible = false;
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(125, 144);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(105, 58);
+            this.button1.TabIndex = 33;
+            this.button1.Text = "Backup ALL Files";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(10, 85);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(126, 68);
+            this.button2.TabIndex = 34;
+            this.button2.Text = "Restore ALL Files";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.Location = new System.Drawing.Point(229, 163);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(64, 39);
+            this.cancelButton.TabIndex = 34;
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Visible = false;
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            // 
+            // transferProgressBar
+            // 
+            this.transferProgressBar.Location = new System.Drawing.Point(145, 59);
+            this.transferProgressBar.Name = "transferProgressBar";
+            this.transferProgressBar.Size = new System.Drawing.Size(148, 26);
+            this.transferProgressBar.TabIndex = 35;
+            // 
+            // transferProgressLabel
+            // 
+            this.transferProgressLabel.AutoSize = true;
+            this.transferProgressLabel.Location = new System.Drawing.Point(203, 40);
+            this.transferProgressLabel.Name = "transferProgressLabel";
+            this.transferProgressLabel.Size = new System.Drawing.Size(27, 16);
+            this.transferProgressLabel.TabIndex = 35;
+            this.transferProgressLabel.Text = "0%";
+            this.transferProgressLabel.Visible = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(458, 393);
+            this.ClientSize = new System.Drawing.Size(319, 393);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.currentSelectedFileLabel);
             this.Controls.Add(this.ExitButton);
@@ -377,11 +362,10 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.restorePanel.ResumeLayout(false);
-            this.restorePanel.PerformLayout();
-            this.chooseUserPanel.ResumeLayout(false);
-            this.chooseUserPanel.PerformLayout();
             this.backupPanel.ResumeLayout(false);
             this.backupPanel.PerformLayout();
+            this.chooseUserPanel.ResumeLayout(false);
+            this.chooseUserPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -419,7 +403,6 @@
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.ProgressBar transferProgressBar;
         private System.Windows.Forms.Label transferProgressLabel;
-        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 
