@@ -280,10 +280,9 @@ namespace WindowsFormsApplication1
             foreach (string dirPath in Directory.GetDirectories(copyFolder))
             {
                 //creates all directories
-                
+                Directory.CreateDirectory(Path.Combine(destination, dirPath));
                 foreach (string file in Directory.GetFiles(Path.Combine(destination, dirPath), "*", SearchOption.TopDirectoryOnly))
                 {
-                    
                     Console.WriteLine("2nd wave - Attempting to copy: "+Path.GetFileName(file)+" / "+ Path.GetDirectoryName(file)+" / "+Path.Combine(destination, iniObject.INI_JOB_FOLDER));
                     copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, iniObject.INI_JOB_FOLDER));
                     transferProgressBar.PerformStep();
@@ -292,15 +291,12 @@ namespace WindowsFormsApplication1
             //Now lets do the top level of the backup folder
             foreach (string subdirPath in Directory.GetDirectories(Path.Combine(copyFolder, iniObject.INI_JOB_FOLDER)))
             {
-                Console.WriteLine("sub dir in job folder detected: " + subdirPath);
-                DirectoryInfo dinfo = new DirectoryInfo(subdirPath);
-                string SubfolderName = dinfo.Name;
-                string destinationSubFolderPath = Path.Combine(destination, iniObject.INI_JOB_FOLDER, SubfolderName);
-                Directory.CreateDirectory(destinationSubFolderPath);
+                
+                Directory.CreateDirectory(subdirPath);
                 foreach (string file in Directory.GetFiles(subdirPath))
                 {
-                    Console.WriteLine("3rd wave - Attempting to copy: " + Path.GetFileName(file) + " / " + Path.GetDirectoryName(file) + " / " + destinationSubFolderPath);
-                    copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), destinationSubFolderPath);
+                    Console.WriteLine("3rd wave - Attempting to copy: " + Path.GetFileName(file) + " / " + Path.GetDirectoryName(file) + " / " + blockDestination);
+                    copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), subdirPath);
                     transferProgressBar.PerformStep();
                 }
 

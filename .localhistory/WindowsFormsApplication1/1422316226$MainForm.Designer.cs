@@ -47,6 +47,7 @@
             this.currentUsersDropdown = new System.Windows.Forms.ComboBox();
             this.chooseUserLabel = new System.Windows.Forms.Label();
             this.backupPanel = new System.Windows.Forms.Panel();
+            this.transferProgressBar = new System.Windows.Forms.ProgressBar();
             this.transferProgressLabel = new System.Windows.Forms.Label();
             this.cancelButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
@@ -60,7 +61,6 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.availableJobsCheckedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.transferProgressBar = new System.Windows.Forms.ProgressBar();
             this.panel2.SuspendLayout();
             this.restorePanel.SuspendLayout();
             this.chooseUserPanel.SuspendLayout();
@@ -158,7 +158,6 @@
             // panel2
             // 
             this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel2.Controls.Add(this.transferProgressBar);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.availableJobsCheckedListBox1);
             this.panel2.Controls.Add(this.chooseUserPanel);
@@ -194,7 +193,7 @@
             this.button2.TabIndex = 34;
             this.button2.Text = "Restore ALL Files";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Visible = false;
             // 
             // TransferToThisComputerButton
             // 
@@ -238,6 +237,7 @@
             // 
             // backupPanel
             // 
+            this.backupPanel.Controls.Add(this.transferProgressBar);
             this.backupPanel.Controls.Add(this.transferProgressLabel);
             this.backupPanel.Controls.Add(this.cancelButton);
             this.backupPanel.Controls.Add(this.button1);
@@ -253,6 +253,13 @@
             this.backupPanel.Size = new System.Drawing.Size(296, 206);
             this.backupPanel.TabIndex = 40;
             this.backupPanel.Visible = false;
+            // 
+            // transferProgressBar
+            // 
+            this.transferProgressBar.Location = new System.Drawing.Point(145, 59);
+            this.transferProgressBar.Name = "transferProgressBar";
+            this.transferProgressBar.Size = new System.Drawing.Size(148, 26);
+            this.transferProgressBar.TabIndex = 35;
             // 
             // transferProgressLabel
             // 
@@ -361,13 +368,6 @@
             this.label1.TabIndex = 42;
             this.label1.Text = "Available Jobs:";
             // 
-            // transferProgressBar
-            // 
-            this.transferProgressBar.Location = new System.Drawing.Point(309, 51);
-            this.transferProgressBar.Name = "transferProgressBar";
-            this.transferProgressBar.Size = new System.Drawing.Size(148, 26);
-            this.transferProgressBar.TabIndex = 36;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -424,10 +424,10 @@
         private System.Windows.Forms.Button button1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.ProgressBar transferProgressBar;
         private System.Windows.Forms.Label transferProgressLabel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckedListBox availableJobsCheckedListBox1;
-        private System.Windows.Forms.ProgressBar transferProgressBar;
     }
 }
 

@@ -294,13 +294,12 @@ namespace WindowsFormsApplication1
             {
                 Console.WriteLine("sub dir in job folder detected: " + subdirPath);
                 DirectoryInfo dinfo = new DirectoryInfo(subdirPath);
-                string SubfolderName = dinfo.Name;
-                string destinationSubFolderPath = Path.Combine(destination, iniObject.INI_JOB_FOLDER, SubfolderName);
-                Directory.CreateDirectory(destinationSubFolderPath);
+                string SubfolderName = dinfo.Parent.Name;
+                Directory.CreateDirectory(Path.Combine(destination, iniObject.INI_JOB_FOLDER, SubfolderName);
                 foreach (string file in Directory.GetFiles(subdirPath))
                 {
-                    Console.WriteLine("3rd wave - Attempting to copy: " + Path.GetFileName(file) + " / " + Path.GetDirectoryName(file) + " / " + destinationSubFolderPath);
-                    copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), destinationSubFolderPath);
+                    Console.WriteLine("3rd wave - Attempting to copy: " + Path.GetFileName(file) + " / " + Path.GetDirectoryName(file) + " / " + subdirPath);
+                    copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(subdirPath, new FileInfo(file).Directory.Name));
                     transferProgressBar.PerformStep();
                 }
 

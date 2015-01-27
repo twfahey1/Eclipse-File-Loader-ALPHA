@@ -299,7 +299,7 @@ namespace WindowsFormsApplication1
                 Directory.CreateDirectory(destinationSubFolderPath);
                 foreach (string file in Directory.GetFiles(subdirPath))
                 {
-                    Console.WriteLine("3rd wave - Attempting to copy: " + Path.GetFileName(file) + " / " + Path.GetDirectoryName(file) + " / " + destinationSubFolderPath);
+                    Console.WriteLine("3rd wave - Attempting to copy: " + Path.GetFileName(file) + " / " + Path.GetDirectoryName(file) + " / " + subdirPath);
                     copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), destinationSubFolderPath);
                     transferProgressBar.PerformStep();
                 }

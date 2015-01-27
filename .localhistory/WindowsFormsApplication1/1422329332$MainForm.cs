@@ -249,65 +249,41 @@ namespace WindowsFormsApplication1
         //info we get from eclipse.ini, MainDirectory5= line
         public bool RestoreEclipseFilesToLocalPC(EclipseObject iniObject)
         {
-            transferProgressBar.Value = Directory.GetFiles(Path.GetDirectoryName(iniObject.FILE_PATH), "*", SearchOption.AllDirectories).Length;
+            transferProgressBar.Value = Directory.GetFiles(iniObject.INI_JOB_PATH, "*", SearchOption.AllDirectories).Length;
             //First use our writeINIBackup to get an ini and a set file created right on the main dir 5 from the eclipse.ini
-            writeINIbackup(Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME), iniObject.INI_INFO_ARRAY);
+            writeINIbackup(CURRENT_MAINDIRECTORY5 + "\\" + iniObject.FILE_NAME, iniObject.INI_INFO_ARRAY);
             transferProgressBar.PerformStep();
-            Console.WriteLine("Ini written to: "+Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME));
             ///Next we perform a quick assessment of the folder we want to actually copy, so this will be looking at the files
             ///current path for reference, then taking the ini part off the path, and replacing with referencing the job folder name. 
             ///Could maybe be done a better way
-            string copyFolder = Path.GetDirectoryName(iniObject.FILE_PATH);
-            Console.WriteLine("copyFolder set as " +  Path.GetDirectoryName(iniObject.FILE_PATH));
+            string copyFolder = Path.GetDirectoryName(iniObject.FILE_PATH) + "\\" + iniObject.INI_JOB_FOLDER;
             //Destination uses the current mainDir5, parsed previously from Eclipse.ini, and of course user folder name
-            string destination = CURRENT_MAINDIRECTORY5;
-            Console.WriteLine("Destinaton set as " +  destination);
+            string destination = CURRENT_MAINDIRECTORY5 + "\\" + iniObject.INI_JOB_FOLDER;
             //Now, we launch the copy procedure.
+            foreach (string dirPath in Directory.GetDirectories(copyFolder))
+            {
+                Directory.CreateDirectory(Path.Combine(destination, dirPath));
+                foreach (string file in Directory.GetFiles(dirPath))
+                {
+                    copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, iniObject.INI_JOB_FOLDER, iniObject.INI_BLOCK_FOLDER));
+                    transferProgressBar.PerformStep();
+                }
+            }
+
             foreach (string i in Directory.GetFiles(copyFolder, "*", SearchOption.TopDirectoryOnly))
                 try
                 {
-                    copyFile(Path.GetFileName(i), Path.GetDirectoryName(i), destination);
-                    Console.WriteLine("1st Wave - TRY COPY: "+Path.GetFileName(i)+" \\ "+Path.GetDirectoryName(i)+" \\ "+destination);
+                    copyFile(Path.GetFileName(i), Path.GetDirectoryName(i) ,destination + "\\" + iniObject.INI_JOB_FOLDER);
                     //copyFile(i, userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
                     transferProgressBar.PerformStep();
                 }
                 catch (IOException)
                 {
-                    Console.WriteLine("File not found: " + i);
-                    return false;
+                    MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
                 }
-            //This will get all sub folders of main dir, blocks and anything else user has
-            foreach (string dirPath in Directory.GetDirectories(copyFolder))
-            {
-                //creates all directories
-                
-                foreach (string file in Directory.GetFiles(Path.Combine(destination, dirPath), "*", SearchOption.TopDirectoryOnly))
-                {
-                    
-                    Console.WriteLine("2nd wave - Attempting to copy: "+Path.GetFileName(file)+" / "+ Path.GetDirectoryName(file)+" / "+Path.Combine(destination, iniObject.INI_JOB_FOLDER));
-                    copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, iniObject.INI_JOB_FOLDER));
-                    transferProgressBar.PerformStep();
-                }
-            }
-            //Now lets do the top level of the backup folder
-            foreach (string subdirPath in Directory.GetDirectories(Path.Combine(copyFolder, iniObject.INI_JOB_FOLDER)))
-            {
-                Console.WriteLine("sub dir in job folder detected: " + subdirPath);
-                DirectoryInfo dinfo = new DirectoryInfo(subdirPath);
-                string SubfolderName = dinfo.Name;
-                string destinationSubFolderPath = Path.Combine(destination, iniObject.INI_JOB_FOLDER, SubfolderName);
-                Directory.CreateDirectory(destinationSubFolderPath);
-                foreach (string file in Directory.GetFiles(subdirPath))
-                {
-                    Console.WriteLine("3rd wave - Attempting to copy: " + Path.GetFileName(file) + " / " + Path.GetDirectoryName(file) + " / " + destinationSubFolderPath);
-                    copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), destinationSubFolderPath);
-                    transferProgressBar.PerformStep();
-                }
-
-            }
             //DirectoryCopy(userIniObject.INI_JOB_PATH, destination, true);
-            //MessageBox.Show("Full Backup complete", "Full Backup Complete", MessageBoxButtons.OK);
-            Console.WriteLine("Restoration Completed Succesfully");
+            MessageBox.Show("Full Backup complete", "Full Backup Complete", MessageBoxButtons.OK);
+        
             //DirectoryCopy(copyFolder, destination, true);
             //DirectoryCopy(CurrentINILocation+iniObject.INI_BLOCK_FOLDER, destination + "\\" + iniObject.INI_BLOCK_FOLDER + "\\", true);
             //EclipseObject newIniObject = new EclipseObject("recreated" + iniObject.FILE_NAME, ".INI", iniObject.INI_JOB_PATH);
@@ -375,17 +351,17 @@ namespace WindowsFormsApplication1
                     parts = f.Split('\\');
                     if (f.Contains(".esp"))
                     {
-                        EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESP", f);
+                        EclipseObject obj = new EclipseObject(parts.Last(), ".ESP", f);
                         FILE_MAP.Add(obj);
                     }
                     if (f.Contains(".esd"))
                     {
-                        EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESD", f);
+                        EclipseObject obj = new EclipseObject(parts.Last(), ".ESD", f);
                         FILE_MAP.Add(obj);
                     }
                     else if (f.Contains(".ini"))
                     {
-                        EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".INI", f);
+                        EclipseObject obj = new EclipseObject(parts.Last(), ".INI", f);
                         //ECL_OBJ_MAP.Add(f.Substring(path.Length + 1), obj);
                         
                         INI_LIST.Add(obj);
@@ -1051,6 +1027,7 @@ namespace WindowsFormsApplication1
         {
             //ReWriteMainEclipseINI(currentUsersDropdown.Text);
             string findString = currentUsersDropdown.Text.ToString();
+
             foreach (EclipseObject obj in INI_LIST)
             {
                 if (obj.FILE_NAME.Equals(findString))
@@ -1058,7 +1035,6 @@ namespace WindowsFormsApplication1
                     RestoreEclipseFilesToLocalPC(obj);
                     MessageBox.Show("Files Restored");
                 }
-
                 else
                 {
                     MessageBox.Show("User not found. Restoration not successful", "User Not Found", MessageBoxButtons.OK);

@@ -253,7 +253,7 @@ namespace WindowsFormsApplication1
             //First use our writeINIBackup to get an ini and a set file created right on the main dir 5 from the eclipse.ini
             writeINIbackup(Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME), iniObject.INI_INFO_ARRAY);
             transferProgressBar.PerformStep();
-            Console.WriteLine("Ini written to: "+Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME));
+            Console.WriteLine("BackupIni written to: "+Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME));
             ///Next we perform a quick assessment of the folder we want to actually copy, so this will be looking at the files
             ///current path for reference, then taking the ini part off the path, and replacing with referencing the job folder name. 
             ///Could maybe be done a better way
@@ -263,11 +263,23 @@ namespace WindowsFormsApplication1
             string destination = CURRENT_MAINDIRECTORY5;
             Console.WriteLine("Destinaton set as " +  destination);
             //Now, we launch the copy procedure.
+
+            //This will get all sub folders of main dir, blocks and anything else user has
+            foreach (string dirPath in Directory.GetDirectories(copyFolder))
+            {
+                Directory.CreateDirectory(Path.Combine(destination, dirPath));
+                foreach (string file in Directory.GetFiles(Path.Combine(copyFolder, dirPath)));
+                {
+                    Console.WriteLine("Attempting to copy: "+Path.GetFileName(file)+" / "+ Path.GetDirectoryName(file)+" / "+Path.Combine(destination, iniObject.INI_JOB_FOLDER, iniObject.INI_BLOCK_FOLDER));
+                    copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, iniObject.INI_JOB_FOLDER, iniObject.INI_BLOCK_FOLDER));
+                    transferProgressBar.PerformStep();
+                }
+            }
+            //Now lets do the top level of the backup folder
             foreach (string i in Directory.GetFiles(copyFolder, "*", SearchOption.TopDirectoryOnly))
                 try
                 {
-                    copyFile(Path.GetFileName(i), Path.GetDirectoryName(i), destination);
-                    Console.WriteLine("1st Wave - TRY COPY: "+Path.GetFileName(i)+" \\ "+Path.GetDirectoryName(i)+" \\ "+destination);
+                    copyFile(Path.GetFileName(i), Path.GetDirectoryName(i) ,destination);
                     //copyFile(i, userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
                     transferProgressBar.PerformStep();
                 }
@@ -276,35 +288,6 @@ namespace WindowsFormsApplication1
                     Console.WriteLine("File not found: " + i);
                     return false;
                 }
-            //This will get all sub folders of main dir, blocks and anything else user has
-            foreach (string dirPath in Directory.GetDirectories(copyFolder))
-            {
-                //creates all directories
-                
-                foreach (string file in Directory.GetFiles(Path.Combine(destination, dirPath), "*", SearchOption.TopDirectoryOnly))
-                {
-                    
-                    Console.WriteLine("2nd wave - Attempting to copy: "+Path.GetFileName(file)+" / "+ Path.GetDirectoryName(file)+" / "+Path.Combine(destination, iniObject.INI_JOB_FOLDER));
-                    copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, iniObject.INI_JOB_FOLDER));
-                    transferProgressBar.PerformStep();
-                }
-            }
-            //Now lets do the top level of the backup folder
-            foreach (string subdirPath in Directory.GetDirectories(Path.Combine(copyFolder, iniObject.INI_JOB_FOLDER)))
-            {
-                Console.WriteLine("sub dir in job folder detected: " + subdirPath);
-                DirectoryInfo dinfo = new DirectoryInfo(subdirPath);
-                string SubfolderName = dinfo.Name;
-                string destinationSubFolderPath = Path.Combine(destination, iniObject.INI_JOB_FOLDER, SubfolderName);
-                Directory.CreateDirectory(destinationSubFolderPath);
-                foreach (string file in Directory.GetFiles(subdirPath))
-                {
-                    Console.WriteLine("3rd wave - Attempting to copy: " + Path.GetFileName(file) + " / " + Path.GetDirectoryName(file) + " / " + destinationSubFolderPath);
-                    copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), destinationSubFolderPath);
-                    transferProgressBar.PerformStep();
-                }
-
-            }
             //DirectoryCopy(userIniObject.INI_JOB_PATH, destination, true);
             //MessageBox.Show("Full Backup complete", "Full Backup Complete", MessageBoxButtons.OK);
             Console.WriteLine("Restoration Completed Succesfully");
