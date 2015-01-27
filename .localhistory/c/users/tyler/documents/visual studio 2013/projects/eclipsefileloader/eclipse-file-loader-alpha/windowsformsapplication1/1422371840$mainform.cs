@@ -1234,7 +1234,7 @@ namespace WindowsFormsApplication1
             }
         }
 
-        public bool restoreJustEssentialEclipseFiles(EclipseObject iniObject)
+        public void restoreJustEssentialEclipseFiles(EclipseObject iniObject)
         {
             transferProgressBar.Value = 0;
             string copyFolder = Path.GetDirectoryName(iniObject.FILE_PATH);
@@ -1242,7 +1242,7 @@ namespace WindowsFormsApplication1
             //Destination uses the current mainDir5, parsed previously from Eclipse.ini, and of course user folder name
             string destination = CURRENT_MAINDIRECTORY5;
             Console.WriteLine("Destinaton set as " +  destination);
-            string[] essentialFilePaths = new string[] {Path.Combine(copyFolder, iniObject.INI_JOB_FOLDER, iniObject.INI_MAIN_DICTIONARY), Path.Combine(copyFolder, iniObject.INI_JOB_FOLDER, iniObject.INI_SPELL_DIX)};
+            string[] essentialFilePaths = new string[] {Path.Combine(copyFolder, iniObject.INI_MAIN_DICTIONARY), Path.Combine(copyFolder, iniObject.INI_SPELL_DIX)};
             foreach (string i in essentialFilePaths)
             {
                 Console.WriteLine(i + " added as essential file");
@@ -1276,20 +1276,9 @@ namespace WindowsFormsApplication1
                 copyFile(Path.GetFileName(i), Path.GetDirectoryName(i), Path.Combine(destination, iniObject.INI_JOB_FOLDER));
                 Console.WriteLine(i + " written to " + Path.Combine(destination, iniObject.INI_JOB_FOLDER));
             }
-            return true;
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            foreach (EclipseObject obj in INI_LIST)
-            {
-                if (Path.GetFileName(obj.FILE_PATH) == currentUsersDropdown.Text)
-                {
-                    if (restoreJustEssentialEclipseFiles(obj))
-                    {
-                        MessageBox.Show("Essential Files Restored", "Essential Files Restored", MessageBoxButtons.OK);
-                    }
-                }
-            }
             
             /*if (RestoreAllEclipseFilesToLocalPC(INI_LIST.Find(s(currentUsersDropdown.Text])){
                 MessageBox.Show("Backup Complete", "Backup Complete", MessageBoxButtons.OK);

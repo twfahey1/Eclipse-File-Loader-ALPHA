@@ -249,8 +249,7 @@ namespace WindowsFormsApplication1
         //info we get from eclipse.ini, MainDirectory5= line
         public bool RestoreEclipseFilesToLocalPC(EclipseObject iniObject)
         {
-            transferProgressBar.Value = 0;
-            transferProgressBar.Maximum = Directory.GetFiles(Path.GetDirectoryName(iniObject.FILE_PATH), "*", SearchOption.AllDirectories).Length;
+            transferProgressBar.Value = Directory.GetFiles(Path.GetDirectoryName(iniObject.FILE_PATH), "*", SearchOption.AllDirectories).Length;
             //First use our writeINIBackup to get an ini and a set file created right on the main dir 5 from the eclipse.ini
             writeINIbackup(Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME), iniObject.INI_INFO_ARRAY);
             transferProgressBar.PerformStep();
@@ -1234,62 +1233,8 @@ namespace WindowsFormsApplication1
             }
         }
 
-        public bool restoreJustEssentialEclipseFiles(EclipseObject iniObject)
-        {
-            transferProgressBar.Value = 0;
-            string copyFolder = Path.GetDirectoryName(iniObject.FILE_PATH);
-            Console.WriteLine("copyFolder set as " +  Path.GetDirectoryName(iniObject.FILE_PATH));
-            //Destination uses the current mainDir5, parsed previously from Eclipse.ini, and of course user folder name
-            string destination = CURRENT_MAINDIRECTORY5;
-            Console.WriteLine("Destinaton set as " +  destination);
-            string[] essentialFilePaths = new string[] {Path.Combine(copyFolder, iniObject.INI_JOB_FOLDER, iniObject.INI_MAIN_DICTIONARY), Path.Combine(copyFolder, iniObject.INI_JOB_FOLDER, iniObject.INI_SPELL_DIX)};
-            foreach (string i in essentialFilePaths)
-            {
-                Console.WriteLine(i + " added as essential file");
-            }
-            
-            //transferProgressBar.Maximum = Directory.GetFiles(Path.GetDirectoryName(iniObject.FILE_PATH), , SearchOption.AllDirectories).Length;
-            //First use our writeINIBackup to get an ini and a set file created right on the main dir 5 from the eclipse.ini
-            writeINIbackup(Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME), iniObject.INI_INFO_ARRAY);
-            transferProgressBar.PerformStep();
-            Console.WriteLine("Ini written to: "+Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME));
-            ///Next we perform a quick assessment of the folder we want to actually copy, so this will be looking at the files
-            ///current path for reference, then taking the ini part off the path, and replacing with referencing the job folder name. 
-            ///Could maybe be done a better way
-            
-            //Now, we launch the copy procedure.
-            //Get the blocks folder
-            foreach (string subdirPath in Directory.GetDirectories(Path.Combine(copyFolder, iniObject.INI_JOB_FOLDER)))
-            {
-                if (subdirPath == Path.Combine(copyFolder, iniObject.INI_JOB_FOLDER, iniObject.INI_BLOCK_FOLDER))
-                {
-                    string blockDest = Path.Combine(destination, iniObject.INI_JOB_FOLDER, iniObject.INI_BLOCK_FOLDER);
-                    Directory.CreateDirectory(blockDest);
-                    foreach (string file in Directory.GetFiles(subdirPath))
-                    {
-                        copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), blockDest);
-                    }
-                }
-            }
-            foreach (string i in essentialFilePaths)
-            {
-                copyFile(Path.GetFileName(i), Path.GetDirectoryName(i), Path.Combine(destination, iniObject.INI_JOB_FOLDER));
-                Console.WriteLine(i + " written to " + Path.Combine(destination, iniObject.INI_JOB_FOLDER));
-            }
-            return true;
-        }
         private void button2_Click(object sender, EventArgs e)
         {
-            foreach (EclipseObject obj in INI_LIST)
-            {
-                if (Path.GetFileName(obj.FILE_PATH) == currentUsersDropdown.Text)
-                {
-                    if (restoreJustEssentialEclipseFiles(obj))
-                    {
-                        MessageBox.Show("Essential Files Restored", "Essential Files Restored", MessageBoxButtons.OK);
-                    }
-                }
-            }
             
             /*if (RestoreAllEclipseFilesToLocalPC(INI_LIST.Find(s(currentUsersDropdown.Text])){
                 MessageBox.Show("Backup Complete", "Backup Complete", MessageBoxButtons.OK);
