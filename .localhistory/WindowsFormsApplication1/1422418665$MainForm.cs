@@ -627,23 +627,25 @@ namespace WindowsFormsApplication1
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
                             copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
-                            }
                         }
+                    }
                         foreach(EclipseObject obj in NOT_LIST){
                         if (obj.FILE_NAME.Contains(i)){
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
                             copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
-                            }
                         }
-                        foreach (EclipseObject obj in DIX_LIST){
-                            if (obj.FILE_NAME.Contains(i)){
+                        }
+                        foreach (EclipseObject obj in DIX_LIST)
+                        {
+                            if (obj.FILE_NAME.Contains(i))
+                            {
                                 Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
                                 copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
                                 transferProgressBar.PerformStep();
                             }
                         }
-                        foreach(EclipseObject obj in WAV_LIST){
+                                foreach(EclipseObject obj in WAV_LIST){
                         if (obj.FILE_NAME.Contains(i)){
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
                             copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);

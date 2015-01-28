@@ -36,7 +36,6 @@ namespace WindowsFormsApplication1
         public List<EclipseObject> ECL_LIST = new List<EclipseObject>();
         public List<EclipseObject> NOT_LIST = new List<EclipseObject>();
         public List<EclipseObject> DIX_LIST = new List<EclipseObject>();
-        public List<EclipseObject> WAV_LIST = new List<EclipseObject>();
 
         //Need to straighten out whether or not these collections FILE_LOCATION_MAP and 
         //ECL_OBJ_MAP are actually needed right now.
@@ -328,7 +327,6 @@ namespace WindowsFormsApplication1
             DIX_LIST.Clear();
             ECL_LIST.Clear();
             NOT_LIST.Clear();
-            WAV_LIST.Clear();
             string[] parts = path.Split('\\');
             //First this will get the root level of drive n grab any files available
             try
@@ -362,12 +360,6 @@ namespace WindowsFormsApplication1
                     {
                         EclipseObject obj = new EclipseObject(parts.Last(), ".ECL", f);
                         FILE_MAP.Add(obj);
-                    }
-                    else if (f.EndsWith(".wav"))
-                    {
-                        EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ECL", f);
-                        FILE_MAP.Add(obj);
-                        Console.WriteLine("File added: " + Path.GetFileName(f));
                     }
                 }
             }
@@ -409,12 +401,6 @@ namespace WindowsFormsApplication1
                             FILE_MAP.Add(obj);
                             Console.WriteLine("File added: " + f.Substring(d.Length + 1));
                         }
-                        else if (f.EndsWith(".wav"))
-                        {
-                            EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
-                            FILE_MAP.Add(obj);
-                            Console.WriteLine("File added: " + Path.GetFileName(f));
-                        }
                     }
                 }
             }
@@ -433,24 +419,18 @@ namespace WindowsFormsApplication1
                     ECL_OBJ_MAP.Add(obj.FILE_NAME, obj);
 
                 }
-                else if (obj.FILE_TYPE == ".ECL")
+                if (obj.FILE_TYPE == ".ECL")
                 {
                     ECL_LIST.Add(obj);
                 }
-                else if (obj.FILE_TYPE == ".DIX")
+                if (obj.FILE_TYPE == ".DIX")
                 {
                     DIX_LIST.Add(obj);
                 }
-                else if (obj.FILE_TYPE == ".NOT")
+                if (obj.FILE_TYPE == ".NOT")
                 {
                     NOT_LIST.Add(obj);
                 }
-                else if (obj.FILE_TYPE == ".WAV")
-                {
-                    WAV_LIST.Add(obj);
-                }
-
-
             }
             return true;
         }
@@ -465,7 +445,6 @@ namespace WindowsFormsApplication1
             DIX_LIST.Clear();
             ECL_LIST.Clear();
             NOT_LIST.Clear();
-            WAV_LIST.Clear();
 
             try
             {
@@ -498,12 +477,6 @@ namespace WindowsFormsApplication1
                         {
                             EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".ECL", f);
                             FILE_MAP.Add(obj);
-                        }
-                        else if (f.EndsWith(".wav"))
-                        {
-                            EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
-                            FILE_MAP.Add(obj);
-                            Console.WriteLine("File added: " + Path.GetFileName(f));
                         }
                     }
                 }
@@ -542,12 +515,6 @@ namespace WindowsFormsApplication1
                     {
                         EclipseObject obj = new EclipseObject(f.Substring(USER_ECLIPSE_FOLDER.Length), ".ECL", f);
                         FILE_MAP.Add(obj);
-                    }
-                    else if (f.EndsWith(".wav"))
-                    {
-                        EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
-                        FILE_MAP.Add(obj);
-                        Console.WriteLine("File added: " + Path.GetFileName(f));
                     }
                 }
             }
@@ -622,37 +589,16 @@ namespace WindowsFormsApplication1
             foreach (string i in checkedFilesToCopy)               
                 try
                 {
-                    foreach(EclipseObject obj in ECL_LIST){
-                        if (obj.FILE_NAME.Contains(i)){
-                            Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
-                            transferProgressBar.PerformStep();
-                            }
-                        }
-                        foreach(EclipseObject obj in NOT_LIST){
-                        if (obj.FILE_NAME.Contains(i)){
-                            Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
-                            transferProgressBar.PerformStep();
-                            }
-                        }
-                        foreach (EclipseObject obj in DIX_LIST){
-                            if (obj.FILE_NAME.Contains(i)){
-                                Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                                copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
-                                transferProgressBar.PerformStep();
-                            }
-                        }
-                        foreach(EclipseObject obj in WAV_LIST){
-                        if (obj.FILE_NAME.Contains(i)){
-                            Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
-                            transferProgressBar.PerformStep();
-                        }
-                                
-
-                    }
                     Console.WriteLine("Trying to copy checked files..");
+                    foreach (string jobfile in Directory.GetFiles(userIniObject.FILE_PATH, i, SearchOption.AllDirectories))
+                    {
+                        Console.WriteLine("jobFile in Copystring: " + jobfile + " \\ + checked file=" + i);
+                        copyFile(i+".ecl", userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                        copyFile(i + ".not", userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                        copyFile(i + ".wav", userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
+
+                        transferProgressBar.PerformStep();
+                    }
                     
                 }
         

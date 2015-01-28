@@ -58,7 +58,6 @@
             this.directorySearcher1 = new System.DirectoryServices.DirectorySearcher();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.button3 = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.chooseUserPanel.SuspendLayout();
             this.restorePanel.SuspendLayout();
@@ -68,9 +67,9 @@
             // findEclipseFilesOnThisPCButton
             // 
             this.findEclipseFilesOnThisPCButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.findEclipseFilesOnThisPCButton.Location = new System.Drawing.Point(183, 3);
+            this.findEclipseFilesOnThisPCButton.Location = new System.Drawing.Point(187, 0);
             this.findEclipseFilesOnThisPCButton.Name = "findEclipseFilesOnThisPCButton";
-            this.findEclipseFilesOnThisPCButton.Size = new System.Drawing.Size(149, 59);
+            this.findEclipseFilesOnThisPCButton.Size = new System.Drawing.Size(145, 59);
             this.findEclipseFilesOnThisPCButton.TabIndex = 1;
             this.findEclipseFilesOnThisPCButton.Text = "Backup Eclipse User";
             this.findEclipseFilesOnThisPCButton.UseVisualStyleBackColor = true;
@@ -158,7 +157,6 @@
             // 
             this.panel2.AutoSize = true;
             this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel2.Controls.Add(this.button3);
             this.panel2.Controls.Add(this.transferProgressLabel);
             this.panel2.Controls.Add(this.transferProgressBar);
             this.panel2.Controls.Add(this.availableJobsCheckedListBox1);
@@ -316,7 +314,7 @@
             this.loadEclipseFilesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.loadEclipseFilesButton.Location = new System.Drawing.Point(4, 3);
             this.loadEclipseFilesButton.Name = "loadEclipseFilesButton";
-            this.loadEclipseFilesButton.Size = new System.Drawing.Size(153, 55);
+            this.loadEclipseFilesButton.Size = new System.Drawing.Size(145, 55);
             this.loadEclipseFilesButton.TabIndex = 34;
             this.loadEclipseFilesButton.Text = "Restore Eclipse User";
             this.loadEclipseFilesButton.UseVisualStyleBackColor = true;
@@ -335,16 +333,6 @@
             this.directorySearcher1.ClientTimeout = System.TimeSpan.Parse("-00:00:01");
             this.directorySearcher1.ServerPageTimeLimit = System.TimeSpan.Parse("-00:00:01");
             this.directorySearcher1.ServerTimeLimit = System.TimeSpan.Parse("-00:00:01");
-            // 
-            // button3
-            // 
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(183, 60);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(149, 20);
-            this.button3.TabIndex = 42;
-            this.button3.Text = "Browse For Eclipse Folder...";
-            this.button3.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -403,7 +391,6 @@
         private System.Windows.Forms.Label transferProgressLabel;
         private System.Windows.Forms.CheckedListBox availableJobsCheckedListBox1;
         private System.Windows.Forms.ProgressBar transferProgressBar;
-        private System.Windows.Forms.Button button3;
     }
 }
 
