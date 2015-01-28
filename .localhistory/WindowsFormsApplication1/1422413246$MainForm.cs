@@ -586,8 +586,7 @@ namespace WindowsFormsApplication1
                 {
                     MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
                 }
-            foreach (string i in checkedFilesToCopy)
-                Console.WriteLine(i);
+            foreach (string i in checkedFilesToCopy)                
                 try
                 {
                     foreach (string jobfile in Directory.EnumerateFiles(userIniObject.FILE_USER_FOLDER, "*.*", SearchOption.AllDirectories).Where((string s) => s.StartsWith(i)))

@@ -557,10 +557,6 @@ namespace WindowsFormsApplication1
             ///Here we use the checkmarkedJobsToCopy method to produce a list of whatever
             ///is currently checked in the file list
             List<string> checkedFilesToCopy = checkmarkedJobsToCopy();
-            foreach (string i in checkedFilesToCopy)
-            {
-                Console.WriteLine("checkedFilesToCopy: " + i);
-            }            
             ///We add size to progress bar so later on as we copy these files we will increment
             ///the progressbar
             transferProgressBar.Maximum += checkedFilesToCopy.Count;
@@ -587,24 +583,21 @@ namespace WindowsFormsApplication1
                     MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
                 }
             foreach (string i in checkedFilesToCopy)
-                Console.WriteLine(i);
                 try
                 {
-                    foreach (string jobfile in Directory.EnumerateFiles(userIniObject.FILE_USER_FOLDER, "*.*", SearchOption.AllDirectories).Where((string s) => s.StartsWith(i)))
+                    string[] copyString = Directory.GetFiles(userIniObject.INI_JOB_PATH, i, SearchOption.AllDirectories);
+                    foreach (string jobfile in copyString)
                     {
-                        Console.WriteLine("jobFile in Copystring: " + jobfile + " \\ + checked file=" + i);
-                        copyFile(Path.GetFileName(jobfile), Path.GetDirectoryName(jobfile), destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                        copyFile(Path.GetFileName(jobfile), Path.GetDirectoryName(jobfile), Path.Combine(destination,userIniObject.INI_JOB_FOLDER));
                         transferProgressBar.PerformStep();
                     }
                     
                 }
-        
 
                 catch (IOException)
                 {
                     MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
                 }
-
             if (userIniObject.INI_BLOCK_PATH != userIniObject.INI_JOB_PATH)
             {
                 foreach (string dirPath in Directory.GetDirectories(userIniObject.INI_JOB_PATH))

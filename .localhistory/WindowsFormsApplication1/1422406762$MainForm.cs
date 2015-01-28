@@ -587,24 +587,24 @@ namespace WindowsFormsApplication1
                     MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
                 }
             foreach (string i in checkedFilesToCopy)
-                Console.WriteLine(i);
+                
                 try
                 {
-                    foreach (string jobfile in Directory.EnumerateFiles(userIniObject.FILE_USER_FOLDER, "*.*", SearchOption.AllDirectories).Where((string s) => s.StartsWith(i)))
+                    Console.WriteLine("i in checkedFile to copy: " + i);
+                    string[] copyString = Directory.GetFiles(userIniObject.INI_JOB_PATH, i+"*", SearchOption.AllDirectories);
+                    foreach (string jobfile in copyString)
                     {
-                        Console.WriteLine("jobFile in Copystring: " + jobfile + " \\ + checked file=" + i);
-                        copyFile(Path.GetFileName(jobfile), Path.GetDirectoryName(jobfile), destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                        Console.WriteLine("jobile in Copystring: " + jobfile + " \\ " + copyString);
+                        copyFile(Path.GetFileName(jobfile), Path.GetDirectoryName(jobfile), Path.Combine(destination,userIniObject.INI_JOB_FOLDER));
                         transferProgressBar.PerformStep();
                     }
                     
                 }
-        
 
                 catch (IOException)
                 {
                     MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
                 }
-
             if (userIniObject.INI_BLOCK_PATH != userIniObject.INI_JOB_PATH)
             {
                 foreach (string dirPath in Directory.GetDirectories(userIniObject.INI_JOB_PATH))

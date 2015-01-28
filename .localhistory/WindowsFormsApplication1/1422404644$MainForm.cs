@@ -1,7 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
@@ -554,17 +559,6 @@ namespace WindowsFormsApplication1
         public void backupEssentialUserFiles(EclipseObject userIniObject, string destination)
         {
             transferProgressBar.Value = 0;
-            ///Here we use the checkmarkedJobsToCopy method to produce a list of whatever
-            ///is currently checked in the file list
-            List<string> checkedFilesToCopy = checkmarkedJobsToCopy();
-            foreach (string i in checkedFilesToCopy)
-            {
-                Console.WriteLine("checkedFilesToCopy: " + i);
-            }            
-            ///We add size to progress bar so later on as we copy these files we will increment
-            ///the progressbar
-            transferProgressBar.Maximum += checkedFilesToCopy.Count;
-            ///Here we give the idea of the essential files main dix and spell dix paths to copy and add to progress bar
             string[] filePathArray = new string[] { userIniObject.INI_MAIN_DICTIONARY, userIniObject.INI_SPELL_DIX };
             transferProgressBar.Maximum += filePathArray.Length;
             //transferProgressBar.Maximum += 1; //for the ini write procedure
@@ -581,24 +575,6 @@ namespace WindowsFormsApplication1
                     copyFile(i, userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
                     transferProgressBar.PerformStep();
                 }
-
-                catch (IOException)
-                {
-                    MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
-                }
-            foreach (string i in checkedFilesToCopy)
-                Console.WriteLine(i);
-                try
-                {
-                    foreach (string jobfile in Directory.EnumerateFiles(userIniObject.FILE_USER_FOLDER, "*.*", SearchOption.AllDirectories).Where((string s) => s.StartsWith(i)))
-                    {
-                        Console.WriteLine("jobFile in Copystring: " + jobfile + " \\ + checked file=" + i);
-                        copyFile(Path.GetFileName(jobfile), Path.GetDirectoryName(jobfile), destination + "\\" + userIniObject.INI_JOB_FOLDER);
-                        transferProgressBar.PerformStep();
-                    }
-                    
-                }
-        
 
                 catch (IOException)
                 {
@@ -836,19 +812,6 @@ namespace WindowsFormsApplication1
             destinationText.Text = "";
             destinationText.Text = (transferToQuickPickComboBox.Text);
 
-        }
-
-        ///This method will get whatever is selected, and return a list with the items as strings
-        ///which of course we can use to say Foreach file, copy those files, increment the progress
-        ///bar, of course the list.length can be used for the progress bar max
-        public List<String> checkmarkedJobsToCopy()
-        {
-            List<string> fileList = new List<string>();
-            foreach (string i in availableJobsCheckedListBox1.CheckedItems)
-            {
-                fileList.Add(i);
-            }
-            return fileList;
         }
 
         //Here's a dictionary method that returns a dictionary from a string[], so we

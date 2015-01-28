@@ -116,7 +116,7 @@
             // 
             this.ExitButton.AutoSize = true;
             this.ExitButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ExitButton.Location = new System.Drawing.Point(-1, 366);
+            this.ExitButton.Location = new System.Drawing.Point(-1, 344);
             this.ExitButton.Name = "ExitButton";
             this.ExitButton.Size = new System.Drawing.Size(336, 30);
             this.ExitButton.TabIndex = 16;
@@ -170,13 +170,13 @@
             this.panel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panel2.Location = new System.Drawing.Point(-1, 2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(336, 364);
+            this.panel2.Size = new System.Drawing.Size(336, 342);
             this.panel2.TabIndex = 32;
             // 
             // transferProgressLabel
             // 
             this.transferProgressLabel.AutoSize = true;
-            this.transferProgressLabel.Location = new System.Drawing.Point(305, 345);
+            this.transferProgressLabel.Location = new System.Drawing.Point(305, 323);
             this.transferProgressLabel.Name = "transferProgressLabel";
             this.transferProgressLabel.Size = new System.Drawing.Size(27, 16);
             this.transferProgressLabel.TabIndex = 35;
@@ -185,7 +185,7 @@
             // 
             // transferProgressBar
             // 
-            this.transferProgressBar.Location = new System.Drawing.Point(4, 335);
+            this.transferProgressBar.Location = new System.Drawing.Point(4, 313);
             this.transferProgressBar.Name = "transferProgressBar";
             this.transferProgressBar.Size = new System.Drawing.Size(295, 26);
             this.transferProgressBar.TabIndex = 36;
@@ -194,7 +194,7 @@
             // availableJobsCheckedListBox1
             // 
             this.availableJobsCheckedListBox1.FormattingEnabled = true;
-            this.availableJobsCheckedListBox1.Location = new System.Drawing.Point(157, 102);
+            this.availableJobsCheckedListBox1.Location = new System.Drawing.Point(157, 80);
             this.availableJobsCheckedListBox1.Name = "availableJobsCheckedListBox1";
             this.availableJobsCheckedListBox1.Size = new System.Drawing.Size(175, 89);
             this.availableJobsCheckedListBox1.TabIndex = 33;
@@ -204,7 +204,7 @@
             this.chooseUserPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.chooseUserPanel.Controls.Add(this.currentUsersDropdown);
             this.chooseUserPanel.Controls.Add(this.chooseUserLabel);
-            this.chooseUserPanel.Location = new System.Drawing.Point(4, 115);
+            this.chooseUserPanel.Location = new System.Drawing.Point(4, 93);
             this.chooseUserPanel.Name = "chooseUserPanel";
             this.chooseUserPanel.Size = new System.Drawing.Size(153, 62);
             this.chooseUserPanel.TabIndex = 41;
@@ -233,7 +233,7 @@
             // 
             this.restorePanel.Controls.Add(this.button2);
             this.restorePanel.Controls.Add(this.TransferToThisComputerButton);
-            this.restorePanel.Location = new System.Drawing.Point(173, 180);
+            this.restorePanel.Location = new System.Drawing.Point(173, 158);
             this.restorePanel.Name = "restorePanel";
             this.restorePanel.Size = new System.Drawing.Size(145, 162);
             this.restorePanel.TabIndex = 39;
@@ -271,7 +271,7 @@
             this.backupPanel.Controls.Add(this.BrowseForDestinationButton);
             this.backupPanel.Controls.Add(this.transferToQuickPickComboBox);
             this.backupPanel.Controls.Add(this.BackupEssentialFilesButton);
-            this.backupPanel.Location = new System.Drawing.Point(3, 192);
+            this.backupPanel.Location = new System.Drawing.Point(3, 170);
             this.backupPanel.Name = "backupPanel";
             this.backupPanel.Size = new System.Drawing.Size(296, 139);
             this.backupPanel.TabIndex = 40;
@@ -338,7 +338,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(334, 393);
+            this.ClientSize = new System.Drawing.Size(334, 375);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.currentSelectedFileLabel);
             this.Controls.Add(this.ExitButton);
