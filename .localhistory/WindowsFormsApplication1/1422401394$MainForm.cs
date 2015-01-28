@@ -84,6 +84,7 @@ namespace WindowsFormsApplication1
             string mainDir5 = ECLIPSE_MAIN_INI_ARRAY["MainDirectory5"];
             string userFile5 = ECLIPSE_MAIN_INI_ARRAY["UserFile5"];
             USERFILE5_LINE = userFile5;
+            eclipseiniInfoListBox.Items.Add(USERFILE5_LINE);
             string USER_ECLIPSE_FOLDER_COMPARE = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\Eclipse";
             USER_ECLIPSE_FOLDER = mainDir5.Replace("{DOC}", Path.Combine(Environment.ExpandEnvironmentVariables("%userprofile%"), "Documents\\"));
             CURRENT_MAINDIRECTORY5 = USER_ECLIPSE_FOLDER;
@@ -317,7 +318,6 @@ namespace WindowsFormsApplication1
                 copyFile(Path.GetFileName(i), Path.GetDirectoryName(i), Path.Combine(destination, iniObject.INI_JOB_FOLDER));
                 Console.WriteLine(i + " written to " + Path.Combine(destination, iniObject.INI_JOB_FOLDER));
             }
-            transferProgressBar.Value = transferProgressBar.Maximum;
             return true;
         }
 
@@ -561,11 +561,11 @@ namespace WindowsFormsApplication1
             transferProgressBar.Value = 0;
             string[] filePathArray = new string[] { userIniObject.INI_MAIN_DICTIONARY, userIniObject.INI_SPELL_DIX };
             transferProgressBar.Maximum += filePathArray.Length;
-            //transferProgressBar.Maximum += 1; //for the ini write procedure
-            /*if (userIniObject.INI_BLOCK_PATH != userIniObject.INI_JOB_PATH)
+            transferProgressBar.Maximum += 1; //for the ini write procedure
+            if (userIniObject.INI_BLOCK_PATH != userIniObject.INI_JOB_PATH)
             {
                 transferProgressBar.Maximum += (Directory.GetFiles(userIniObject.INI_BLOCK_PATH, "*.*", SearchOption.AllDirectories)).Length;
-            }*/
+            }
             string[] essentialFileExtensionArray = new string[] { ".esp", ".esd", userIniObject.INI_MAIN_DICTIONARY };
             writeINIbackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
             transferProgressBar.PerformStep();
@@ -595,13 +595,15 @@ namespace WindowsFormsApplication1
                         }
                     }
                 }
+
                 //DirectoryCopy(userIniObject.INI_BLOCK_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER + "\\" + userIniObject.INI_BLOCK_FOLDER, true);
+
             }
             else
             {
                 MessageBox.Show("Note: Blocks folder was not detected", "Note", MessageBoxButtons.OK);
             }
-            transferProgressBar.Value = transferProgressBar.Maximum;
+
             MessageBox.Show("Essential Backup complete", "Essential Backup Complete", MessageBoxButtons.OK);
 
 
@@ -612,11 +614,10 @@ namespace WindowsFormsApplication1
         {
             try
             {
-                transferProgressBar.Value = 0;
-                transferProgressBar.Maximum =
+                transferProgressBar.Value =
                     Directory.GetFiles(userIniObject.INI_JOB_PATH, "*", SearchOption.AllDirectories).Length;
                 writeINIbackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
-                //writeINIbackup(Path.Combine(destination, userIniObject.INI_JOB_FOLDER), userIniObject.INI_INFO_ARRAY);
+                writeINIbackup(Path.Combine(destination, userIniObject.FILE_NAME), userIniObject.INI_INFO_ARRAY);
                 transferProgressBar.PerformStep();
                 /*string[] filePathArray = new string[] { userIniObject.INI_MAIN_DICTIONARY, userIniObject.INI_JOB_PATH, userIniObject.INI_SPELL_DIX, userIniObject.INI_BLOCK_PATH };
                 foreach (string i in filePathArray)
@@ -946,7 +947,8 @@ namespace WindowsFormsApplication1
 
         private void button7_Click(object sender, EventArgs e)
         {
-            transferProgressBar.Visible = true;           
+            transferProgressBar.Visible = true;
+            fileInfoView.Nodes.Clear();
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 //treeView1.Nodes.Add(folderBrowserDialog1.SelectedPath);

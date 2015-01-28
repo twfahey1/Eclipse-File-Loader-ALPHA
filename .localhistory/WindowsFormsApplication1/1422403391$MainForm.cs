@@ -612,8 +612,7 @@ namespace WindowsFormsApplication1
         {
             try
             {
-                transferProgressBar.Value = 0;
-                transferProgressBar.Maximum =
+                transferProgressBar.Value =
                     Directory.GetFiles(userIniObject.INI_JOB_PATH, "*", SearchOption.AllDirectories).Length;
                 writeINIbackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
                 //writeINIbackup(Path.Combine(destination, userIniObject.INI_JOB_FOLDER), userIniObject.INI_INFO_ARRAY);
@@ -946,7 +945,8 @@ namespace WindowsFormsApplication1
 
         private void button7_Click(object sender, EventArgs e)
         {
-            transferProgressBar.Visible = true;           
+            transferProgressBar.Visible = true;
+            fileInfoView.Nodes.Clear();
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 //treeView1.Nodes.Add(folderBrowserDialog1.SelectedPath);
