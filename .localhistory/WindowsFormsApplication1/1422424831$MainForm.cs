@@ -37,9 +37,6 @@ namespace WindowsFormsApplication1
         public List<EclipseObject> NOT_LIST = new List<EclipseObject>();
         public List<EclipseObject> DIX_LIST = new List<EclipseObject>();
         public List<EclipseObject> WAV_LIST = new List<EclipseObject>();
-        public List<EclipseObject> ESP_LIST = new List<EclipseObject>();
-        public List<EclipseObject> ESD_LIST = new List<EclipseObject>();
-
 
         //Need to straighten out whether or not these collections FILE_LOCATION_MAP and 
         //ECL_OBJ_MAP are actually needed right now.
@@ -477,7 +474,38 @@ namespace WindowsFormsApplication1
                 {
                     foreach (string f in Directory.EnumerateFiles(d))
                     {
-                        WritePathDataToEclipseCollections(f);
+                        if (f.Contains(".esp"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".ESP", f);
+                            FILE_MAP.Add(obj);
+                        }
+                        if (f.Contains(".esd"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".ESD", f);
+                            FILE_MAP.Add(obj);
+                        }
+                        else if (f.Contains(".ini"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".INI", f);
+                            FILE_MAP.Add(obj);
+
+                        }
+                        else if (f.Contains(".dix"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".DIX", f);
+                            FILE_MAP.Add(obj);
+                        }
+                        else if (f.Contains(".ecl"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".ECL", f);
+                            FILE_MAP.Add(obj);
+                        }
+                        else if (f.EndsWith(".wav"))
+                        {
+                            EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
+                            FILE_MAP.Add(obj);
+                            Console.WriteLine("File added: " + Path.GetFileName(f));
+                        }
                     }
                 }
             }
@@ -490,14 +518,65 @@ namespace WindowsFormsApplication1
             {
                 foreach (string f in Directory.EnumerateFiles(USER_ECLIPSE_FOLDER))
                 {
-                    WritePathDataToEclipseCollections(f);
+                    if (f.Contains(".esp"))
+                    {
+                        EclipseObject obj = new EclipseObject(f.Substring(USER_ECLIPSE_FOLDER.Length), ".ESP", f);
+                        FILE_MAP.Add(obj);
+                    }
+                    if (f.Contains(".esd"))
+                    {
+                        EclipseObject obj = new EclipseObject(f.Substring(USER_ECLIPSE_FOLDER.Length), ".ESD", f);
+                        FILE_MAP.Add(obj);
+                    }
+                    else if (f.Contains(".ini"))
+                    {
+                        EclipseObject obj = new EclipseObject(f.Substring(USER_ECLIPSE_FOLDER.Length + 1), ".INI", f);
+                        FILE_MAP.Add(obj);
+
+                    }
+                    else if (f.Contains(".dix"))
+                    {
+                        EclipseObject obj = new EclipseObject(f.Substring(USER_ECLIPSE_FOLDER.Length), ".DIX", f);
+                        FILE_MAP.Add(obj);
+                    }
+                    else if (f.Contains(".ecl"))
+                    {
+                        EclipseObject obj = new EclipseObject(f.Substring(USER_ECLIPSE_FOLDER.Length), ".ECL", f);
+                        FILE_MAP.Add(obj);
+                    }
+                    else if (f.EndsWith(".wav"))
+                    {
+                        EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
+                        FILE_MAP.Add(obj);
+                        Console.WriteLine("File added: " + Path.GetFileName(f));
+                    }
                 }
             }
             catch (System.Exception excpt)
             {
                 Console.Write(excpt);
-            }            
-            
+            }
+
+            foreach (EclipseObject obj in FILE_MAP)
+            {
+                if (obj.FILE_TYPE == ".INI")
+                {
+                    INI_LIST.Add(obj);
+                    //ECL_OBJ_MAP.Add(obj.FILE_NAME, obj);
+                }
+                if (obj.FILE_TYPE == ".ECL")
+                {
+                    ECL_LIST.Add(obj);
+                }
+                if (obj.FILE_TYPE == ".DIX")
+                {
+                    DIX_LIST.Add(obj);
+                }
+                if (obj.FILE_TYPE == ".NOT")
+                {
+                    NOT_LIST.Add(obj);
+                }
+            }
             return true;
         }
 
@@ -613,47 +692,6 @@ namespace WindowsFormsApplication1
                 }
                 transferProgressBar.Value = transferProgressBar.Maximum;
                 MessageBox.Show("Essential Backup complete", "Essential Backup Complete", MessageBoxButtons.OK);
-            }
-        }
-
-        public void WritePathDataToEclipseCollections(string f)
-        {
-            if (f.Contains(".esp"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESP", f);
-                ESP_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".esd"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESD", f);
-                ESD_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".ini"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".INI", f);
-                INI_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-
-            }
-            else if (f.Contains(".dix"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".DIX", f);
-                DIX_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".ecl"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ECL", f);
-                ECL_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.EndsWith(".wav"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
-                WAV_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
             }
         }
         //This method takes ALL user files and dumps to destination. Looking to add progress bar

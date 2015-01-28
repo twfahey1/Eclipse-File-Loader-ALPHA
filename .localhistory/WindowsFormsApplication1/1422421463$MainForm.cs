@@ -37,9 +37,6 @@ namespace WindowsFormsApplication1
         public List<EclipseObject> NOT_LIST = new List<EclipseObject>();
         public List<EclipseObject> DIX_LIST = new List<EclipseObject>();
         public List<EclipseObject> WAV_LIST = new List<EclipseObject>();
-        public List<EclipseObject> ESP_LIST = new List<EclipseObject>();
-        public List<EclipseObject> ESD_LIST = new List<EclipseObject>();
-
 
         //Need to straighten out whether or not these collections FILE_LOCATION_MAP and 
         //ECL_OBJ_MAP are actually needed right now.
@@ -477,7 +474,38 @@ namespace WindowsFormsApplication1
                 {
                     foreach (string f in Directory.EnumerateFiles(d))
                     {
-                        WritePathDataToEclipseCollections(f);
+                        if (f.Contains(".esp"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".ESP", f);
+                            FILE_MAP.Add(obj);
+                        }
+                        if (f.Contains(".esd"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".ESD", f);
+                            FILE_MAP.Add(obj);
+                        }
+                        else if (f.Contains(".ini"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".INI", f);
+                            FILE_MAP.Add(obj);
+
+                        }
+                        else if (f.Contains(".dix"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".DIX", f);
+                            FILE_MAP.Add(obj);
+                        }
+                        else if (f.Contains(".ecl"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".ECL", f);
+                            FILE_MAP.Add(obj);
+                        }
+                        else if (f.EndsWith(".wav"))
+                        {
+                            EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
+                            FILE_MAP.Add(obj);
+                            Console.WriteLine("File added: " + Path.GetFileName(f));
+                        }
                     }
                 }
             }
@@ -490,14 +518,65 @@ namespace WindowsFormsApplication1
             {
                 foreach (string f in Directory.EnumerateFiles(USER_ECLIPSE_FOLDER))
                 {
-                    WritePathDataToEclipseCollections(f);
+                    if (f.Contains(".esp"))
+                    {
+                        EclipseObject obj = new EclipseObject(f.Substring(USER_ECLIPSE_FOLDER.Length), ".ESP", f);
+                        FILE_MAP.Add(obj);
+                    }
+                    if (f.Contains(".esd"))
+                    {
+                        EclipseObject obj = new EclipseObject(f.Substring(USER_ECLIPSE_FOLDER.Length), ".ESD", f);
+                        FILE_MAP.Add(obj);
+                    }
+                    else if (f.Contains(".ini"))
+                    {
+                        EclipseObject obj = new EclipseObject(f.Substring(USER_ECLIPSE_FOLDER.Length + 1), ".INI", f);
+                        FILE_MAP.Add(obj);
+
+                    }
+                    else if (f.Contains(".dix"))
+                    {
+                        EclipseObject obj = new EclipseObject(f.Substring(USER_ECLIPSE_FOLDER.Length), ".DIX", f);
+                        FILE_MAP.Add(obj);
+                    }
+                    else if (f.Contains(".ecl"))
+                    {
+                        EclipseObject obj = new EclipseObject(f.Substring(USER_ECLIPSE_FOLDER.Length), ".ECL", f);
+                        FILE_MAP.Add(obj);
+                    }
+                    else if (f.EndsWith(".wav"))
+                    {
+                        EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
+                        FILE_MAP.Add(obj);
+                        Console.WriteLine("File added: " + Path.GetFileName(f));
+                    }
                 }
             }
             catch (System.Exception excpt)
             {
                 Console.Write(excpt);
-            }            
-            
+            }
+
+            foreach (EclipseObject obj in FILE_MAP)
+            {
+                if (obj.FILE_TYPE == ".INI")
+                {
+                    INI_LIST.Add(obj);
+                    //ECL_OBJ_MAP.Add(obj.FILE_NAME, obj);
+                }
+                if (obj.FILE_TYPE == ".ECL")
+                {
+                    ECL_LIST.Add(obj);
+                }
+                if (obj.FILE_TYPE == ".DIX")
+                {
+                    DIX_LIST.Add(obj);
+                }
+                if (obj.FILE_TYPE == ".NOT")
+                {
+                    NOT_LIST.Add(obj);
+                }
+            }
             return true;
         }
 
@@ -515,7 +594,7 @@ namespace WindowsFormsApplication1
             foreach (string i in checkedFilesToCopy)
             {
                 Console.WriteLine("checkedFilesToCopy: " + i);
-            }
+            }            
             ///We add size to progress bar so later on as we copy these files we will increment
             ///the progressbar
             transferProgressBar.Maximum += checkedFilesToCopy.Count;
@@ -541,120 +620,74 @@ namespace WindowsFormsApplication1
                 {
                     MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
                 }
-            foreach (string i in checkedFilesToCopy)
-            {
+            foreach (string i in checkedFilesToCopy)               
                 try
                 {
-                    foreach (EclipseObject obj in WAV_LIST)
-                    {
-                        if (obj.FILE_NAME.Contains(i))
-                        {
+                    foreach(EclipseObject obj in ECL_LIST){
+                        if (obj.FILE_NAME.Contains(i)){
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
                             copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
+                            }
                         }
-                    }
 
-                    foreach (EclipseObject obj in ECL_LIST)
-                    {
-                        if (obj.FILE_NAME.Contains(i))
-                        {
+                        foreach(EclipseObject obj in NOT_LIST){
+                        if (obj.FILE_NAME.Contains(i)){
+                            Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
+                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                            transferProgressBar.PerformStep();
+                            }
+                        }
+                        foreach (EclipseObject obj in DIX_LIST){
+                            if (obj.FILE_NAME.Contains(i)){
+                                Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
+                                copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                                transferProgressBar.PerformStep();
+                            }
+                        }
+                        foreach(EclipseObject obj in WAV_LIST){
+                        if (obj.FILE_NAME.Contains(i)){
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
                             copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
                         }
-                    }
+                                
 
-                    foreach (EclipseObject obj in NOT_LIST)
-                    {
-                        if (obj.FILE_NAME.Contains(i))
-                        {
-                            Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
-                            transferProgressBar.PerformStep();
-                        }
-                    }
-                    foreach (EclipseObject obj in DIX_LIST)
-                    {
-                        if (obj.FILE_NAME.Contains(i))
-                        {
-                            Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
-                            transferProgressBar.PerformStep();
-                        }
                     }
                     Console.WriteLine("Trying to copy checked files..");
+                    
                 }
+        
 
                 catch (IOException)
                 {
                     MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
                 }
 
-                if (userIniObject.INI_BLOCK_PATH != userIniObject.INI_JOB_PATH)
+            if (userIniObject.INI_BLOCK_PATH != userIniObject.INI_JOB_PATH)
+            {
+                foreach (string dirPath in Directory.GetDirectories(userIniObject.INI_JOB_PATH))
                 {
-                    foreach (string dirPath in Directory.GetDirectories(userIniObject.INI_JOB_PATH))
+                    if (dirPath == userIniObject.INI_BLOCK_PATH)
                     {
-                        if (dirPath == userIniObject.INI_BLOCK_PATH)
+                        Directory.CreateDirectory(Path.Combine(destination, dirPath));
+                        foreach (string file in Directory.GetFiles(dirPath))
                         {
-                            Directory.CreateDirectory(Path.Combine(destination, dirPath));
-                            foreach (string file in Directory.GetFiles(dirPath))
-                            {
-                                copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, userIniObject.INI_JOB_FOLDER, userIniObject.INI_BLOCK_FOLDER));
-                                transferProgressBar.PerformStep();
-                            }
+                            copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, userIniObject.INI_JOB_FOLDER, userIniObject.INI_BLOCK_FOLDER));
+                            transferProgressBar.PerformStep();
                         }
                     }
                 }
+                //DirectoryCopy(userIniObject.INI_BLOCK_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER + "\\" + userIniObject.INI_BLOCK_FOLDER, true);
+            }
+            else
+            {
+                MessageBox.Show("Note: Blocks folder was not detected", "Note", MessageBoxButtons.OK);
+            }
+            transferProgressBar.Value = transferProgressBar.Maximum;
+            MessageBox.Show("Essential Backup complete", "Essential Backup Complete", MessageBoxButtons.OK);
 
-                else
-                {
-                    MessageBox.Show("Note: Blocks folder was not detected", "Note", MessageBoxButtons.OK);
-                }
-                transferProgressBar.Value = transferProgressBar.Maximum;
-                MessageBox.Show("Essential Backup complete", "Essential Backup Complete", MessageBoxButtons.OK);
-            }
-        }
 
-        public void WritePathDataToEclipseCollections(string f)
-        {
-            if (f.Contains(".esp"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESP", f);
-                ESP_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".esd"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESD", f);
-                ESD_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".ini"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".INI", f);
-                INI_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-
-            }
-            else if (f.Contains(".dix"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".DIX", f);
-                DIX_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".ecl"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ECL", f);
-                ECL_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.EndsWith(".wav"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
-                WAV_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
         }
         //This method takes ALL user files and dumps to destination. Looking to add progress bar
         //to this in NumeratedDirectoryCopy method to replace this.
