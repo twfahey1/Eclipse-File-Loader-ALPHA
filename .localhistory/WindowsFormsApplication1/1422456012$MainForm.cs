@@ -201,20 +201,7 @@ namespace WindowsFormsApplication1
                     //this.INI_JOB_PATH = parseJobFolderFromIni(path) ;
                 }
             }
-        
-        }
-
-        public void ClearAllCollections()
-        {
-            currentUsersDropdown.Text = "";
-            currentUsersDropdown.DataSource = null;
-            //ECL_OBJ_MAP.Clear();
-            INI_LIST.Clear();
-            DIX_LIST.Clear();
-            ECL_LIST.Clear();
-            NOT_LIST.Clear();
-            WAV_LIST.Clear();
-        }
+        }                
 
         //Here's method to restore files back to local pc, which is based on the
         //info we get from eclipse.ini, MainDirectory5= line
@@ -339,13 +326,52 @@ namespace WindowsFormsApplication1
         public bool loadEclipseFilesFromPath(string path)
         {
 
-            ClearAllCollections();
+            ECL_OBJ_MAP.Clear();
+            INI_LIST.Clear();
+            DIX_LIST.Clear();
+            ECL_LIST.Clear();
+            NOT_LIST.Clear();
+            WAV_LIST.Clear();
+            string[] parts = path.Split('\\');
             //First this will get the root level of drive n grab any files available
             try
             {
                 foreach (string f in Directory.GetFiles(path))
                 {
-                    WritePathDataToEclipseCollections(f);
+                    parts = f.Split('\\');
+                    if (f.Contains(".esp"))
+                    {
+                        EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESP", f);
+                        FILE_MAP.Add(obj);
+                    }
+                    if (f.Contains(".esd"))
+                    {
+                        EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESD", f);
+                        FILE_MAP.Add(obj);
+                    }
+                    else if (f.Contains(".ini"))
+                    {
+                        EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".INI", f);
+                        //ECL_OBJ_MAP.Add(f.Substring(path.Length + 1), obj);
+                        
+                        INI_LIST.Add(obj);
+                    }
+                    else if (f.Contains(".dix"))
+                    {
+                        EclipseObject obj = new EclipseObject(parts.Last(), ".DIX", f);
+                        FILE_MAP.Add(obj);
+                    }
+                    else if (f.Contains(".ecl"))
+                    {
+                        EclipseObject obj = new EclipseObject(parts.Last(), ".ECL", f);
+                        FILE_MAP.Add(obj);
+                    }
+                    else if (f.EndsWith(".wav"))
+                    {
+                        EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
+                        FILE_MAP.Add(obj);
+                        Console.WriteLine("File added: " + Path.GetFileName(f));
+                    }
                 }
             }
             catch (System.Exception excpt)
@@ -359,7 +385,40 @@ namespace WindowsFormsApplication1
                 {
                     foreach (string f in Directory.EnumerateFiles(d))
                     {
-                        WritePathDataToEclipseCollections(f);
+                        if (f.Contains(".esp") || f.Contains(".esd"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".ESP", f);
+                            FILE_MAP.Add(obj);
+                            Console.WriteLine("File added: " + f.Substring(d.Length + 1));
+                        }
+
+                        else if (f.Contains(".ini"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".INI", f);
+                            //FILE_COUNTER += 1;
+                            INI_LIST.Add(obj);
+                            Console.WriteLine("File added: " + f.Substring(d.Length + 1));
+                        }
+
+                        else if (f.Contains(".dix"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".DIX", f);
+                            DIX_LIST.Add(obj);
+                            Console.WriteLine("File added: " + f.Substring(d.Length + 1));
+                        }
+                        else if (f.Contains(".ecl"))
+                        {
+                            EclipseObject obj = new EclipseObject(f.Substring(d.Length + 1), ".ECL", f);
+                            ECL_LIST.Add(obj);
+                            Console.WriteLine("File added: " + f.Substring(d.Length + 1));
+                        }
+                        else if (f.EndsWith(".wav"))
+                        {
+                            EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
+                            WAV_LIST.Add(obj);
+                            //FILE_MAP.Add(obj);
+                            Console.WriteLine("File added: " + Path.GetFileName(f));
+                        }
                     }
                 }
             }
@@ -367,7 +426,36 @@ namespace WindowsFormsApplication1
             {
                 Console.Write(excpt);
                 return false;
-            }            
+            }
+
+
+            /*foreach (EclipseObject obj in FILE_MAP)
+            {
+                if (obj.FILE_TYPE == ".INI")
+                {
+                    INI_LIST.Add(obj);
+                    ECL_OBJ_MAP.Add(obj.FILE_NAME, obj);
+
+                }
+                else if (obj.FILE_TYPE == ".ECL")
+                {
+                    ECL_LIST.Add(obj);
+                }
+                else if (obj.FILE_TYPE == ".DIX")
+                {
+                    DIX_LIST.Add(obj);
+                }
+                else if (obj.FILE_TYPE == ".NOT")
+                {
+                    NOT_LIST.Add(obj);
+                }
+                else if (obj.FILE_TYPE == ".WAV")
+                {
+                    WAV_LIST.Add(obj);
+                }*/
+
+
+            
             return true;
         }
 
@@ -376,7 +464,12 @@ namespace WindowsFormsApplication1
         //reference.
         public bool loadEclipseFilesFromLocalDisk()
         {
-            ClearAllCollections();
+            ECL_OBJ_MAP.Clear();
+            INI_LIST.Clear();
+            DIX_LIST.Clear();
+            ECL_LIST.Clear();
+            NOT_LIST.Clear();
+            WAV_LIST.Clear();
 
             try
             {

@@ -206,8 +206,7 @@ namespace WindowsFormsApplication1
 
         public void ClearAllCollections()
         {
-            currentUsersDropdown.Text = "";
-            currentUsersDropdown.DataSource = null;
+            currentUsersDropdown.Items.Clear();
             //ECL_OBJ_MAP.Clear();
             INI_LIST.Clear();
             DIX_LIST.Clear();

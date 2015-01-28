@@ -206,8 +206,6 @@ namespace WindowsFormsApplication1
 
         public void ClearAllCollections()
         {
-            currentUsersDropdown.Text = "";
-            currentUsersDropdown.DataSource = null;
             //ECL_OBJ_MAP.Clear();
             INI_LIST.Clear();
             DIX_LIST.Clear();
@@ -370,6 +368,8 @@ namespace WindowsFormsApplication1
             }            
             return true;
         }
+
+
 
         //This method will use Eclipse.ini info for eclipse folder and scan for files, creating
         //the objects in the INI_LIST, ECL_LIST, DIX_LIST, NOT_LIST for later
