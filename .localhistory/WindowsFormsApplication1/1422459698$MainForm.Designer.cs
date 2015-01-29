@@ -59,7 +59,6 @@
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.button3 = new System.Windows.Forms.Button();
-            this.loadingText = new System.Windows.Forms.Label();
             this.panel2.SuspendLayout();
             this.chooseUserPanel.SuspendLayout();
             this.restorePanel.SuspendLayout();
@@ -159,7 +158,6 @@
             // 
             this.panel2.AutoSize = true;
             this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel2.Controls.Add(this.loadingText);
             this.panel2.Controls.Add(this.button3);
             this.panel2.Controls.Add(this.transferProgressLabel);
             this.panel2.Controls.Add(this.transferProgressBar);
@@ -237,16 +235,16 @@
             // 
             this.restorePanel.Controls.Add(this.button2);
             this.restorePanel.Controls.Add(this.TransferToThisComputerButton);
-            this.restorePanel.Location = new System.Drawing.Point(183, 158);
+            this.restorePanel.Location = new System.Drawing.Point(173, 158);
             this.restorePanel.Name = "restorePanel";
-            this.restorePanel.Size = new System.Drawing.Size(135, 162);
+            this.restorePanel.Size = new System.Drawing.Size(145, 162);
             this.restorePanel.TabIndex = 39;
             this.restorePanel.Visible = false;
             // 
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(3, 79);
+            this.button2.Location = new System.Drawing.Point(10, 85);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(126, 68);
             this.button2.TabIndex = 34;
@@ -257,11 +255,11 @@
             // TransferToThisComputerButton
             // 
             this.TransferToThisComputerButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TransferToThisComputerButton.Location = new System.Drawing.Point(3, 9);
+            this.TransferToThisComputerButton.Location = new System.Drawing.Point(10, 15);
             this.TransferToThisComputerButton.Name = "TransferToThisComputerButton";
             this.TransferToThisComputerButton.Size = new System.Drawing.Size(126, 68);
             this.TransferToThisComputerButton.TabIndex = 33;
-            this.TransferToThisComputerButton.Text = "Click To Restore ALL files found To Selected User";
+            this.TransferToThisComputerButton.Text = "Click To Restore ALL files found";
             this.TransferToThisComputerButton.UseVisualStyleBackColor = true;
             this.TransferToThisComputerButton.Click += new System.EventHandler(this.button4_Click_1);
             // 
@@ -347,17 +345,6 @@
             this.button3.TabIndex = 42;
             this.button3.Text = "Browse For Eclipse Folder...";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click_1);
-            // 
-            // loadingText
-            // 
-            this.loadingText.AutoSize = true;
-            this.loadingText.Location = new System.Drawing.Point(13, 64);
-            this.loadingText.Name = "loadingText";
-            this.loadingText.Size = new System.Drawing.Size(233, 16);
-            this.loadingText.TabIndex = 43;
-            this.loadingText.Text = "Loading Eclipse Files.... Please wait....";
-            this.loadingText.Visible = false;
             // 
             // Form1
             // 
@@ -417,7 +404,6 @@
         private System.Windows.Forms.CheckedListBox availableJobsCheckedListBox1;
         private System.Windows.Forms.ProgressBar transferProgressBar;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Label loadingText;
     }
 }
 

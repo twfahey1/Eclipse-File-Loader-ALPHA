@@ -219,7 +219,8 @@ namespace WindowsFormsApplication1
                     this.INI_SPELL_DIX = INI_INFO["SpellDictionary"];
                     //this.INI_JOB_PATH = parseJobFolderFromIni(path) ;
                 }
-            }        
+            }
+        
         }
 
         public void ClearAllCollections()
@@ -306,7 +307,7 @@ namespace WindowsFormsApplication1
 
             return true;
         }
-        public bool RestoreJustEssentialEclipseFiles(EclipseObject iniObject)
+        public bool restoreJustEssentialEclipseFiles(EclipseObject iniObject)
         {
             transferProgressBar.Value = 0;
             string copyFolder = Path.GetDirectoryName(iniObject.FILE_PATH);
@@ -464,46 +465,16 @@ namespace WindowsFormsApplication1
             writeINIbackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
             transferProgressBar.PerformStep();
             foreach (string i in filePathArray)
-            {
                 try
                 {
                     copyFile(i, userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
                     transferProgressBar.PerformStep();
                 }
+
                 catch (IOException)
                 {
                     MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
                 }
-            }
-
-            if (userIniObject.INI_BLOCK_PATH != userIniObject.INI_JOB_PATH)
-            {
-                try
-                {
-                    foreach (string dirPath in Directory.GetDirectories(userIniObject.INI_JOB_PATH))
-                    {
-                        if (dirPath == userIniObject.INI_BLOCK_PATH)
-                        {
-                            string dirPathFolderName = dirPath.Replace(Path.GetDirectoryName(dirPath) + Path.DirectorySeparatorChar, "");
-                            //Directory.CreateDirectory(Path.Combine(destination, dirPathFolderName));
-                            foreach (string file in Directory.GetFiles(dirPath))
-                            {
-                                copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, userIniObject.INI_JOB_FOLDER, dirPathFolderName));
-                                transferProgressBar.PerformStep();
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Note: Blocks folder was not detected", "Note", MessageBoxButtons.OK);
-                        }
-                    }
-                }
-                catch (IOException e)
-                {
-                    Console.WriteLine("Error writing block - " + e);
-                }
-            }
-
             foreach (string i in checkedFilesToCopy)
             {
                 try
@@ -517,6 +488,7 @@ namespace WindowsFormsApplication1
                             transferProgressBar.PerformStep();
                         }
                     }
+
                     foreach (EclipseObject obj in ECL_LIST)
                     {
                         if (obj.FILE_NAME.Contains(i))
@@ -526,6 +498,7 @@ namespace WindowsFormsApplication1
                             transferProgressBar.PerformStep();
                         }
                     }
+
                     foreach (EclipseObject obj in NOT_LIST)
                     {
                         if (obj.FILE_NAME.Contains(i))
@@ -546,13 +519,35 @@ namespace WindowsFormsApplication1
                     }
                     Console.WriteLine("Trying to copy checked files..");
                 }
+
                 catch (IOException)
                 {
                     MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
                 }
-            }
+
+                if (userIniObject.INI_BLOCK_PATH != userIniObject.INI_JOB_PATH)
+                {
+                    foreach (string dirPath in Directory.GetDirectories(userIniObject.INI_JOB_PATH))
+                    {
+                        if (dirPath == userIniObject.INI_BLOCK_PATH)
+                        {
+                            Directory.CreateDirectory(Path.Combine(destination, dirPath));
+                            foreach (string file in Directory.GetFiles(dirPath))
+                            {
+                                copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, userIniObject.INI_JOB_FOLDER, userIniObject.INI_BLOCK_FOLDER));
+                                transferProgressBar.PerformStep();
+                            }
+                        }
+                    }
+                }
+
+                else
+                {
+                    MessageBox.Show("Note: Blocks folder was not detected", "Note", MessageBoxButtons.OK);
+                }
                 transferProgressBar.Value = transferProgressBar.Maximum;
                 MessageBox.Show("Essential Backup complete", "Essential Backup Complete", MessageBoxButtons.OK);
+            }
         }
 
         public void WritePathDataToEclipseCollections(string f)
@@ -1060,7 +1055,7 @@ namespace WindowsFormsApplication1
             {
                 if (Path.GetFileName(obj.FILE_PATH) == currentUsersDropdown.Text)
                 {
-                    if (RestoreJustEssentialEclipseFiles(obj))
+                    if (restoreJustEssentialEclipseFiles(obj))
                     {
                         MessageBox.Show("Essential Files Restored", "Essential Files Restored", MessageBoxButtons.OK);
                     }
@@ -1121,29 +1116,6 @@ namespace WindowsFormsApplication1
             catch (System.IO.IOException)
             {
                 Console.Write("Issue with write ECLIPSE.INI");
-            }
-        }
-
-        private void button3_Click_1(object sender, EventArgs e)
-        {
-            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
-            {
-                loadingText.Visible = true;
-
-                //treeView1.Nodes.Add(folderBrowserDialog1.SelectedPath);
-                if (loadEclipseFilesFromPath(folderBrowserDialog1.SelectedPath))
-                {
-                    LoadRemoteDataSource(INI_LIST);
-                    //setupJobCheckListBox();
-                    backupPanel.Visible = true;
-                    restorePanel.Visible = false;
-                    chooseUserPanel.Visible = true;
-                    loadingText.Visible = false;
-                }
-                else
-                {
-                    loadingText.Text = "Load failed";
-                }
             }
         }
     }

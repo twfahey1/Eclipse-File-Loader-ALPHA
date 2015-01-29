@@ -306,7 +306,7 @@ namespace WindowsFormsApplication1
 
             return true;
         }
-        public bool RestoreJustEssentialEclipseFiles(EclipseObject iniObject)
+        public bool restoreJustEssentialEclipseFiles(EclipseObject iniObject)
         {
             transferProgressBar.Value = 0;
             string copyFolder = Path.GetDirectoryName(iniObject.FILE_PATH);
@@ -502,7 +502,7 @@ namespace WindowsFormsApplication1
                 {
                     Console.WriteLine("Error writing block - " + e);
                 }
-            }
+            }           
 
             foreach (string i in checkedFilesToCopy)
             {
@@ -517,6 +517,7 @@ namespace WindowsFormsApplication1
                             transferProgressBar.PerformStep();
                         }
                     }
+
                     foreach (EclipseObject obj in ECL_LIST)
                     {
                         if (obj.FILE_NAME.Contains(i))
@@ -526,6 +527,7 @@ namespace WindowsFormsApplication1
                             transferProgressBar.PerformStep();
                         }
                     }
+
                     foreach (EclipseObject obj in NOT_LIST)
                     {
                         if (obj.FILE_NAME.Contains(i))
@@ -546,13 +548,20 @@ namespace WindowsFormsApplication1
                     }
                     Console.WriteLine("Trying to copy checked files..");
                 }
+            
+
                 catch (IOException)
                 {
                     MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
-                }
-            }
+                }    
+        
+            
+            
+
+                
                 transferProgressBar.Value = transferProgressBar.Maximum;
                 MessageBox.Show("Essential Backup complete", "Essential Backup Complete", MessageBoxButtons.OK);
+            }
         }
 
         public void WritePathDataToEclipseCollections(string f)
@@ -1060,7 +1069,7 @@ namespace WindowsFormsApplication1
             {
                 if (Path.GetFileName(obj.FILE_PATH) == currentUsersDropdown.Text)
                 {
-                    if (RestoreJustEssentialEclipseFiles(obj))
+                    if (restoreJustEssentialEclipseFiles(obj))
                     {
                         MessageBox.Show("Essential Files Restored", "Essential Files Restored", MessageBoxButtons.OK);
                     }
@@ -1121,29 +1130,6 @@ namespace WindowsFormsApplication1
             catch (System.IO.IOException)
             {
                 Console.Write("Issue with write ECLIPSE.INI");
-            }
-        }
-
-        private void button3_Click_1(object sender, EventArgs e)
-        {
-            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
-            {
-                loadingText.Visible = true;
-
-                //treeView1.Nodes.Add(folderBrowserDialog1.SelectedPath);
-                if (loadEclipseFilesFromPath(folderBrowserDialog1.SelectedPath))
-                {
-                    LoadRemoteDataSource(INI_LIST);
-                    //setupJobCheckListBox();
-                    backupPanel.Visible = true;
-                    restorePanel.Visible = false;
-                    chooseUserPanel.Visible = true;
-                    loadingText.Visible = false;
-                }
-                else
-                {
-                    loadingText.Text = "Load failed";
-                }
             }
         }
     }
