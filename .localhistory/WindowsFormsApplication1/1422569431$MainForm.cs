@@ -602,6 +602,106 @@ namespace WindowsFormsApplication1
                 MessageBox.Show("Essential Backup complete", "Essential Backup Complete", MessageBoxButtons.OK);
         }
 
+        public List<String> checkmarkedJobsToCopy()
+        {
+            List<string> fileList = new List<string>();
+            foreach (string i in availableJobsCheckedListBox1.CheckedItems)
+            {
+                fileList.Add(i);
+            }
+            return fileList;
+        }
+
+        public void WritePathDataToEclipseCollections(string f)
+        {
+            if (f.Contains(".esp"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESP", f);
+                ESP_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+            }
+            else if (f.Contains(".esd"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESD", f);
+                ESD_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+            }
+            else if (f.Contains(".not"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".NOT", f);
+                NOT_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+            }
+            else if (f.Contains(".ini"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".INI", f);
+                INI_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+
+            }
+            else if (f.Contains(".dix"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".DIX", f);
+                DIX_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+            }
+            else if (f.Contains(".ecl"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ECL", f);
+                ECL_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+            }
+            else if (f.EndsWith(".wav"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
+                WAV_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+            }
+        }
+        public void ClearAllCollections()
+        {
+            currentUsersDropdown.Text = "";
+            currentUsersDropdown.DataSource = null;
+            availableJobsCheckedListBox1.Items.Clear();
+            //ECL_OBJ_MAP.Clear();
+            INI_LIST.Clear();
+            DIX_LIST.Clear();
+            ECL_LIST.Clear();
+            NOT_LIST.Clear();
+            WAV_LIST.Clear();
+        }
+
+
+        //Calls loadEclipseFilesFromLocalDisk, shows us options for backup
+        private void BackupEclipseUserButton_Click(object sender, EventArgs e)
+        {
+            loadingText.Visible = true;
+
+            if (LoadEclipseFilesFromPath(CURRENT_MAINDIRECTORY5))
+            {
+                LoadDataSource(INI_LIST);
+                setupJobCheckListBox();
+                backupPanel.Visible = true;
+                restorePanel.Visible = false;
+                chooseUserPanel.Visible = true;
+                loadingText.Visible = false;
+            }
+
+        }
+
+        public void setupJobCheckListBox()
+        {
+            foreach (EclipseObject obj in ECL_LIST)
+            {
+                //if (Path.GetDirectoryName(obj.FILE_PATH) == )
+                availableJobsCheckedListBox1.Items.Add(obj.FILE_NAME.TrimEnd(".ecl".ToCharArray()));
+
+            }
+        }
+
+        //Here's the method we give a source file, the location, and the destination.
+        //Yes it's an ugly method, and could definitely be more efficient, but this
+        //is getting the job done in one area of the project for now.
         public void CopyFile(string sFile, string sLocation, string sDestLocation)
         {
             string fileName = sFile;
@@ -711,109 +811,6 @@ namespace WindowsFormsApplication1
             }
         }
         
-        public List<String> checkmarkedJobsToCopy()
-        {
-            List<string> fileList = new List<string>();
-            foreach (string i in availableJobsCheckedListBox1.CheckedItems)
-            {
-                fileList.Add(i);
-            }
-            return fileList;
-        }
-        public void setupJobCheckListBox()
-        {
-            foreach (EclipseObject obj in ECL_LIST)
-            {
-                //if (Path.GetDirectoryName(obj.FILE_PATH) == )
-                availableJobsCheckedListBox1.Items.Add(obj.FILE_NAME.TrimEnd(".ecl".ToCharArray()));
-
-            }
-        }
-
-
-        public void WritePathDataToEclipseCollections(string f)
-        {
-            if (f.Contains(".esp"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESP", f);
-                ESP_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".esd"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESD", f);
-                ESD_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".not"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".NOT", f);
-                NOT_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".ini"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".INI", f);
-                INI_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-
-            }
-            else if (f.Contains(".dix"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".DIX", f);
-                DIX_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".ecl"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ECL", f);
-                ECL_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.EndsWith(".wav"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
-                WAV_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-        }
-        public void ClearAllCollections()
-        {
-            currentUsersDropdown.Text = "";
-            currentUsersDropdown.DataSource = null;
-            availableJobsCheckedListBox1.Items.Clear();
-            //ECL_OBJ_MAP.Clear();
-            INI_LIST.Clear();
-            DIX_LIST.Clear();
-            ECL_LIST.Clear();
-            NOT_LIST.Clear();
-            WAV_LIST.Clear();
-        }
-
-
-        //Calls loadEclipseFilesFromLocalDisk, shows us options for backup
-        private void BackupEclipseUserButton_Click(object sender, EventArgs e)
-        {
-            loadingText.Visible = true;
-
-            if (LoadEclipseFilesFromPath(CURRENT_MAINDIRECTORY5))
-            {
-                LoadDataSource(INI_LIST);
-                setupJobCheckListBox();
-                backupPanel.Visible = true;
-                restorePanel.Visible = false;
-                chooseUserPanel.Visible = true;
-                loadingText.Visible = false;
-            }
-
-        }
-
-        
-
-        //Here's the method we give a source file, the location, and the destination.
-        //Yes it's an ugly method, and could definitely be more efficient, but this
-        //is getting the job done in one area of the project for now.
-       
         private void SetDestinationButton_Click_1(object sender, EventArgs e)
         {
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)

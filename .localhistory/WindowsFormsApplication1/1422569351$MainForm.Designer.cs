@@ -75,7 +75,7 @@
             this.findEclipseFilesOnThisPCButton.TabIndex = 1;
             this.findEclipseFilesOnThisPCButton.Text = "Backup Eclipse User";
             this.findEclipseFilesOnThisPCButton.UseVisualStyleBackColor = true;
-            this.findEclipseFilesOnThisPCButton.Click += new System.EventHandler(this.BackupEclipseUserButton_Click);
+            this.findEclipseFilesOnThisPCButton.Click += new System.EventHandler(this.loadButton_Click);
             // 
             // currentSelectedFileLabel
             // 

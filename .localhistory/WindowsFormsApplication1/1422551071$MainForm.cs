@@ -40,7 +40,6 @@ namespace WindowsFormsApplication1
         public List<EclipseObject> ESP_LIST = new List<EclipseObject>();
         public List<EclipseObject> ESD_LIST = new List<EclipseObject>();
 
-        public List<string> RECENT_FILE_PATH_LIST = new List<string>();
 
         //Need to straighten out whether or not these collections FILE_LOCATION_MAP and 
         //ECL_OBJ_MAP are actually needed right now.
@@ -64,7 +63,37 @@ namespace WindowsFormsApplication1
             backgroundWorker1.WorkerSupportsCancellation = true;
         }
 
-       
+        public void LoadLocalDataSource(List<EclipseObject> list)
+        {
+            List<string> stringList = new List<string>();
+            foreach (EclipseObject obj in list)
+            {
+                if (obj.FILE_TYPE == ".INI")
+                {
+                    if (Path.GetDirectoryName(obj.FILE_PATH) == CURRENT_MAINDIRECTORY5)
+                    {
+                        stringList.Add(obj.FILE_NAME);
+                    }
+                }
+            }
+            currentUsersDropdown.DataSource = stringList;
+        }
+
+        public void LoadRemoteDataSource(List<EclipseObject> list)
+        {
+            List<string> stringList = new List<string>();
+            foreach (EclipseObject obj in list)
+            {
+                if (obj.FILE_TYPE == ".INI")
+                {
+                    
+                        stringList.Add(obj.FILE_NAME);
+                                    
+                }
+            }
+            currentUsersDropdown.DataSource = stringList;
+            setupJobCheckListBox();
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -73,7 +102,7 @@ namespace WindowsFormsApplication1
             {                
                 MessageBox.Show("Eclipse MainDir5 has been found as: "+CURRENT_MAINDIRECTORY5);
             } else {
-                MessageBox.Show("Warning: Eclipse.ini looking under: "+ CURRENT_SYSTEM_MAIN_DRIVE + "\\Windows\\eclipse.ini, not successfully read. May need to reinstall");
+                MessageBox.Show("Warning: Eclipse.ini not successfully read. May need to reinstall");
             }
             /// to-do: use the recent file list to populate the recent jobs
             /// list, the keys should contain paths
@@ -94,26 +123,34 @@ namespace WindowsFormsApplication1
         
         public bool ReadMainEclipseINI()
         {
-            string currentWindowsFolderEclipseIniLocation = CURRENT_SYSTEM_MAIN_DRIVE + "\\Windows\\eclipse.ini";
+            string currentWindowsFolderEclipseIniLocation = Path.Combine(Environment.SystemDirectory, "eclipse.ini");
             string[] result = File.ReadAllLines(currentWindowsFolderEclipseIniLocation);
+
             foreach (String iniLine in result)
             {
-                ///This grabs the MainDir5 line, then splits to array delimited
-                ///by =, then we get the second chunk of resulting array which is path,
-                ///we replace {DOC} with current users personal folder
+                try
+                {
                     if (iniLine.Contains("MainDirectory5"))
                     {
                         var parts = iniLine.Split('=');
-                        CURRENT_MAINDIRECTORY5 = parts[1].Replace("{DOC}", Environment.GetFolderPath(Environment.SpecialFolder.Personal)+"\\");
+                        //dictionary.Add(parts[0], parts[1]);
+                        CURRENT_MAINDIRECTORY5 = parts[1].Replace("{DOC}", Path.Combine(Environment.ExpandEnvironmentVariables("%userprofile%"), "Documents\\"));
                     }
-                ///This should populate recent files list, each line starts
-                ///with "File3=C:\Whatever"
-                    if (iniLine.StartsWith("File"))
+                    if (iniLine.Contains("UserDirectory5"))
                     {
                         var parts = iniLine.Split('=');
-                        RECENT_FILE_PATH_LIST.Add(parts[1]);
+                        //dictionary.Add(parts[0], parts[1]);
+                        USER_ECLIPSE_FOLDER = parts[1].Replace("{DOC}", Path.Combine(Environment.ExpandEnvironmentVariables("%userprofile%"), "Documents\\"));
                     }
-                
+                }
+                catch (IndexOutOfRangeException)
+                {
+
+                }
+                catch (System.ArgumentException)
+                {
+
+                }
             }
             if (CURRENT_MAINDIRECTORY5 != null)
             {
@@ -136,19 +173,17 @@ namespace WindowsFormsApplication1
             public string FILE_USER_FOLDER;
             public string FILE_SIZE;
             //If the object is an INI it will have these characteristics
-            //These are full path references for the object
-            public string INI_MAIN_PATH;
             public string INI_JOB_PATH;
-            public string INI_BLOCK_PATH;
-            public string INI_MAIN_DICTIONARY_PATH;
-
-            /// These are the folder names, just "Blocks" or "TylerJobs"
             public string INI_JOB_FOLDER;
+            public string INI_MAIN_DICTIONARY;
+            public string INI_BLOCK_PATH;
             public string INI_BLOCK_FOLDER;
-            public string INI_MAIN_DICTIONARY_NAME;
-
+            public string[] INI_BLOCK_ARRAY;
             public string INI_SPELL_DIX;
             public string[] INI_INFO_ARRAY;
+            public Dictionary<string, string> INI_INFO = new Dictionary<string, string>();
+            public char[] splitArray = new char[] { '\\' };
+            public string SELECTED_USER;
 
             public EclipseObject(string name, string type, string path)
             {
@@ -159,120 +194,59 @@ namespace WindowsFormsApplication1
                 if (type == ".INI")//if the file is an INI when we create we give it all these characteristics:
                 {
                     this.INI_INFO_ARRAY = File.ReadAllLines(this.FILE_PATH);
+                    this.INI_INFO = ParseUserIni(this.INI_INFO_ARRAY);
 
-                    foreach (String iniLine in INI_INFO_ARRAY)
+                    if (INI_INFO.ContainsKey("JobPath"))
                     {
-                        if (iniLine.StartsWith("Path") && iniLine.Contains("=MAIN="))
-                        {
-                            var parts = iniLine.Split('=');
-                            this.INI_MAIN_PATH = parts[1].Replace("{DOC}", Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\");
-                        }
-                        if (iniLine.StartsWith("Path") && iniLine.Contains("=JOB="))
-                        {
-                            string[] JOB_PATH_ARRAY = iniLine.Split('=');
-                            this.INI_JOB_PATH = JOB_PATH_ARRAY.Last().Replace("{DOC}", Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\");
-                            JOB_PATH_ARRAY = this.INI_JOB_PATH.Split('\\');
-                            this.INI_JOB_FOLDER = JOB_PATH_ARRAY.Last();
-
-                            MessageBox.Show(INI_JOB_FOLDER);
-                            if (this.INI_MAIN_DICTIONARY_NAME != null)
-                            {
-                                this.INI_MAIN_DICTIONARY_PATH = Path.Combine(this.INI_JOB_PATH + "\\" + this.INI_MAIN_DICTIONARY_NAME);
-                            }
-                        }
-                        if (iniLine.StartsWith("MainDictionary="))
-                        {
-                            var parts = iniLine.Split('=');
-                            this.INI_MAIN_DICTIONARY_NAME = parts[1];                            
-                        }
-                        if (iniLine.StartsWith("SpellUser="))
-                        {
-                            var parts = iniLine.Split('=');
-                            this.INI_SPELL_DIX = parts[1];
-                        }
-
-                        if (iniLine.StartsWith("Path") && iniLine.Contains("=BLOCK="))
-                        {
-                            var parts = iniLine.Split('=');
-                            this.INI_BLOCK_PATH = parts.Last().Replace("{JOB}", this.INI_JOB_PATH + "\\");
-                            string[] INI_BLOCK_ARRAY = this.INI_BLOCK_PATH.Split('\\');
-                            this.INI_BLOCK_FOLDER = INI_BLOCK_ARRAY.Last();
-                        }
+                        this.INI_JOB_PATH = INI_INFO["JobPath"];
                     }
+                    else
+                    {
+                        this.INI_JOB_PATH = "No job path found";
+                    }
+
+                    string[] JOB_PATH_ARRAY = INI_JOB_PATH.Split('\\');
+                    this.INI_JOB_FOLDER = JOB_PATH_ARRAY.Last();
+                    this.INI_MAIN_DICTIONARY = INI_INFO["MainDictionary"];
+
+                    if (INI_INFO.ContainsKey("BlockPath"))
+                    {
+                        this.INI_BLOCK_PATH = INI_INFO["BlockPath"];
+                        this.INI_BLOCK_ARRAY = this.INI_BLOCK_PATH.Split(splitArray);
+                        this.INI_BLOCK_FOLDER = INI_BLOCK_ARRAY.Last();
+                    }
+                    else
+                    {
+                        this.INI_BLOCK_PATH = this.INI_JOB_PATH;
+                    }
+
+                    this.INI_SPELL_DIX = INI_INFO["SpellDictionary"];
+                    //this.INI_JOB_PATH = parseJobFolderFromIni(path) ;
                 }
-            }
+            }        
         }
 
-        public bool LoadEclipseFilesFromPath(string path)
+        public void ClearAllCollections()
         {
-            ClearAllCollections();
-            try
-            {
-                foreach (string d in Directory.GetDirectories(path))
-                {
-                    foreach (string f in Directory.EnumerateFiles(d))
-                    {
-                        WritePathDataToEclipseCollections(f);
-                    }
-                }
-            }
-            catch (System.Exception excpt)
-            {
-                Console.Write(excpt);
-            }
-
-            try
-            {
-                foreach (string f in Directory.EnumerateFiles(path))
-                {
-                    WritePathDataToEclipseCollections(f);
-                }
-            }
-            catch (System.Exception excpt)
-            {
-                Console.Write(excpt);
-            }
-            return true;
-        }
-        /*public void LoadLocalDataSource(List<EclipseObject> list)
-        {
-            List<string> stringList = new List<string>();
-            foreach (EclipseObject obj in list)
-            {
-                if (obj.FILE_TYPE == ".INI")
-                {
-                    if (Path.GetDirectoryName(obj.FILE_PATH) == CURRENT_MAINDIRECTORY5)
-                    {
-                        stringList.Add(obj.FILE_NAME);
-                    }
-                }
-            }
-            currentUsersDropdown.DataSource = stringList;
-        }*/
-        public void LoadDataSource(List<EclipseObject> list)
-        {
-            List<string> stringList = new List<string>();
-            foreach (EclipseObject obj in list)
-            {
-                if (obj.FILE_TYPE == ".INI")
-                {
-
-                    stringList.Add(obj.FILE_NAME);
-
-                }
-            }
-            currentUsersDropdown.DataSource = stringList;
-            setupJobCheckListBox();
+            currentUsersDropdown.Text = "";
+            currentUsersDropdown.DataSource = null;
+            availableJobsCheckedListBox1.Items.Clear();
+            //ECL_OBJ_MAP.Clear();
+            INI_LIST.Clear();
+            DIX_LIST.Clear();
+            ECL_LIST.Clear();
+            NOT_LIST.Clear();
+            WAV_LIST.Clear();
         }
 
         //Here's method to restore files back to local pc, which is based on the
         //info we get from eclipse.ini, MainDirectory5= line
-        public bool RestoreAllEclipseFiles(EclipseObject iniObject)
+        public bool RestoreEclipseFilesToLocalPC(EclipseObject iniObject)
         {
             transferProgressBar.Value = 0;
             transferProgressBar.Maximum = Directory.GetFiles(Path.GetDirectoryName(iniObject.FILE_PATH), "*", SearchOption.AllDirectories).Length;
             //First use our writeINIBackup to get an ini and a set file created right on the main dir 5 from the eclipse.ini
-            WriteINIBackup(Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME), iniObject.INI_INFO_ARRAY);
+            writeINIbackup(Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME), iniObject.INI_INFO_ARRAY);
             transferProgressBar.PerformStep();
             Console.WriteLine("Ini written to: "+Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME));
             ///Next we perform a quick assessment of the folder we want to actually copy, so this will be looking at the files
@@ -287,7 +261,7 @@ namespace WindowsFormsApplication1
             foreach (string i in Directory.GetFiles(copyFolder, "*", SearchOption.TopDirectoryOnly))
                 try
                 {
-                    CopyFile(Path.GetFileName(i), Path.GetDirectoryName(i), destination);
+                    copyFile(Path.GetFileName(i), Path.GetDirectoryName(i), destination);
                     Console.WriteLine("1st Wave - TRY COPY: "+Path.GetFileName(i)+" \\ "+Path.GetDirectoryName(i)+" \\ "+destination);
                     //copyFile(i, userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
                     transferProgressBar.PerformStep();
@@ -306,7 +280,7 @@ namespace WindowsFormsApplication1
                 {
                     
                     Console.WriteLine("2nd wave - Attempting to copy: "+Path.GetFileName(file)+" / "+ Path.GetDirectoryName(file)+" / "+Path.Combine(destination, iniObject.INI_JOB_FOLDER));
-                    CopyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, iniObject.INI_JOB_FOLDER));
+                    copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, iniObject.INI_JOB_FOLDER));
                     transferProgressBar.PerformStep();
                 }
             }
@@ -321,7 +295,7 @@ namespace WindowsFormsApplication1
                 foreach (string file in Directory.GetFiles(subdirPath))
                 {
                     Console.WriteLine("3rd wave - Attempting to copy: " + Path.GetFileName(file) + " / " + Path.GetDirectoryName(file) + " / " + destinationSubFolderPath);
-                    CopyFile(Path.GetFileName(file), Path.GetDirectoryName(file), destinationSubFolderPath);
+                    copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), destinationSubFolderPath);
                     transferProgressBar.PerformStep();
                 }
 
@@ -336,7 +310,7 @@ namespace WindowsFormsApplication1
 
             return true;
         }
-        public bool RestoreEssentialEclipseFiles(EclipseObject iniObject)
+        public bool RestoreJustEssentialEclipseFiles(EclipseObject iniObject)
         {
             List<string> checkedFilesToCopy = checkmarkedJobsToCopy();
             transferProgressBar.Value = 0;
@@ -345,7 +319,7 @@ namespace WindowsFormsApplication1
             //Destination uses the current mainDir5, parsed previously from Eclipse.ini, and of course user folder name
             string destination = CURRENT_MAINDIRECTORY5;
             Console.WriteLine("Destinaton set as " + destination);
-            string[] essentialFilePaths = new string[] { Path.Combine(copyFolder, iniObject.INI_JOB_FOLDER, iniObject.INI_MAIN_DICTIONARY_NAME), Path.Combine(copyFolder, iniObject.INI_JOB_FOLDER, iniObject.INI_SPELL_DIX) };
+            string[] essentialFilePaths = new string[] { Path.Combine(copyFolder, iniObject.INI_JOB_FOLDER, iniObject.INI_MAIN_DICTIONARY), Path.Combine(copyFolder, iniObject.INI_JOB_FOLDER, iniObject.INI_SPELL_DIX) };
             foreach (string i in essentialFilePaths)
             {
                 Console.WriteLine(i + " added as essential file");
@@ -353,7 +327,7 @@ namespace WindowsFormsApplication1
 
             //transferProgressBar.Maximum = Directory.GetFiles(Path.GetDirectoryName(iniObject.FILE_PATH), , SearchOption.AllDirectories).Length;
             //First use our writeINIBackup to get an ini and a set file created right on the main dir 5 from the eclipse.ini
-            WriteINIBackup(Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME), iniObject.INI_INFO_ARRAY);
+            writeINIbackup(Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME), iniObject.INI_INFO_ARRAY);
             transferProgressBar.PerformStep();
             Console.WriteLine("Ini written to: " + Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME));
             ///Next we perform a quick assessment of the folder we want to actually copy, so this will be looking at the files
@@ -372,7 +346,7 @@ namespace WindowsFormsApplication1
                         Directory.CreateDirectory(blockDest);
                         foreach (string file in Directory.GetFiles(subdirPath))
                         {
-                            CopyFile(Path.GetFileName(file), Path.GetDirectoryName(file), blockDest);
+                            copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), blockDest);
                         }
                     }
                 }
@@ -383,7 +357,7 @@ namespace WindowsFormsApplication1
             }
             foreach (string i in essentialFilePaths)
             {
-                CopyFile(Path.GetFileName(i), Path.GetDirectoryName(i), Path.Combine(destination, iniObject.INI_JOB_FOLDER));
+                copyFile(Path.GetFileName(i), Path.GetDirectoryName(i), Path.Combine(destination, iniObject.INI_JOB_FOLDER));
                 Console.WriteLine(i + " written to " + Path.Combine(destination, iniObject.INI_JOB_FOLDER));
             }
             foreach (string i in checkedFilesToCopy)
@@ -395,7 +369,7 @@ namespace WindowsFormsApplication1
                         if (obj.FILE_NAME.Contains(i))
                         {
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                            CopyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + iniObject.INI_JOB_FOLDER);
+                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + iniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
                         }
                     }
@@ -404,7 +378,7 @@ namespace WindowsFormsApplication1
                         if (obj.FILE_NAME.Contains(i))
                         {
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                            CopyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + iniObject.INI_JOB_FOLDER);
+                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + iniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
                         }
                     }
@@ -413,7 +387,7 @@ namespace WindowsFormsApplication1
                         if (obj.FILE_NAME.Contains(i))
                         {
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                            CopyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + iniObject.INI_JOB_FOLDER);
+                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + iniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
                         }
                     }
@@ -422,7 +396,7 @@ namespace WindowsFormsApplication1
                         if (obj.FILE_NAME.Contains(i))
                         {
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                            CopyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + iniObject.INI_JOB_FOLDER);
+                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + iniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
                         }
                     }
@@ -436,65 +410,90 @@ namespace WindowsFormsApplication1
             transferProgressBar.Value = transferProgressBar.Maximum;
             return true;
         }
-        
+
+        //This method will take w/e path we give it and scan for files, creating
+        //the objects in the INI_LIST, ECL_LIST, DIX_LIST, NOT_LIST for later
+        //reference.
+        public bool loadEclipseFilesFromPath(string path)
+        {
+
+            ClearAllCollections();
+            //First this will get the root level of drive n grab any files available
+            try
+            {
+                foreach (string f in Directory.GetFiles(path))
+                {
+                    WritePathDataToEclipseCollections(f);
+                }
+            }
+            catch (System.Exception excpt)
+            {
+                Console.Write(excpt);
+            }
+            //Next it's supposed to enumerate the directory and get w/e is in there
+            try
+            {
+                foreach (string d in Directory.GetDirectories(path))
+                {
+                    foreach (string f in Directory.EnumerateFiles(d))
+                    {
+                        WritePathDataToEclipseCollections(f);
+                    }
+                }
+            }
+            catch (System.Exception excpt)
+            {
+                Console.Write(excpt);
+                return false;
+            }            
+            return true;
+        }
+
+        //This method will use Eclipse.ini info for eclipse folder and scan for files, creating
+        //the objects in the INI_LIST, ECL_LIST, DIX_LIST, NOT_LIST for later
+        //reference.
+        public bool loadEclipseFilesFromLocalDisk()
+        {
+            ClearAllCollections();
+
+            try
+            {
+                foreach (string d in Directory.GetDirectories(USER_ECLIPSE_FOLDER))
+                {
+                    foreach (string f in Directory.EnumerateFiles(d))
+                    {
+                        WritePathDataToEclipseCollections(f);
+                    }
+                }
+            }
+            catch (System.Exception excpt)
+            {
+                Console.Write(excpt);
+            }
+
+            try
+            {
+                foreach (string f in Directory.EnumerateFiles(USER_ECLIPSE_FOLDER))
+                {
+                    WritePathDataToEclipseCollections(f);
+                }
+            }
+            catch (System.Exception excpt)
+            {
+                Console.Write(excpt);
+            }            
+            
+            return true;
+        }
+
         //Here's the method that will take w/e user we give it, in the form of an EclipseObject,
         //and will then proceed to rewrite the ini data to new ini, create a set file from same data,
         //then use the reference for the main dictionary and copy that file over, and then it will
         //get the esp, esd, then it will take whatever blocks folder is available and copy that as
         //well.
-        //This method takes ALL user files and dumps to destination. Looking to add progress bar
-        //to this in NumeratedDirectoryCopy method to replace this.
-        public void BackupAllEclipseFiles(EclipseObject userIniObject, string destination)
-        {
-            try
-            {
-                transferProgressBar.Value = 0;
-                var JobPathFileDirectory = Directory.GetFiles(userIniObject.INI_JOB_PATH, "*", SearchOption.AllDirectories);
-                var JobPathFileDirectoryTopLevel = Directory.GetFiles(userIniObject.INI_JOB_PATH, "*", SearchOption.TopDirectoryOnly);
-                var JobPathFolders = Directory.GetDirectories(userIniObject.INI_JOB_PATH);
-                WriteINIBackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
-                //writeINIbackup(Path.Combine(destination, userIniObject.INI_JOB_FOLDER), userIniObject.INI_INFO_ARRAY);
-                transferProgressBar.PerformStep();
-                /*string[] filePathArray = new string[] { userIniObject.INI_MAIN_DICTIONARY, userIniObject.INI_JOB_PATH, userIniObject.INI_SPELL_DIX, userIniObject.INI_BLOCK_PATH };
-                foreach (string i in filePathArray)
-                {
-                    copyFile(i, userIniObject.INI_JOB_PATH, destination);
-                }*/
-                foreach (string dirPath in JobPathFolders)
-                {
-                    Directory.CreateDirectory(Path.Combine(destination, dirPath));
-                    foreach (string file in Directory.GetFiles(dirPath))
-                    {
-                        //this copies the file as the file name, the path, and then uses a snippet to get just the folder name of the original file and use tha as the destination folder..
-                        CopyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, userIniObject.INI_JOB_FOLDER, (dirPath.Replace(Path.GetDirectoryName(dirPath) + Path.DirectorySeparatorChar, ""))));
-                        transferProgressBar.PerformStep();
-                    }
-                }
-
-                foreach (string i in JobPathFileDirectoryTopLevel)
-                    try
-                    {
-                        CopyFile(Path.GetFileName(i), Path.GetDirectoryName(i), destination + "\\" + userIniObject.INI_JOB_FOLDER);
-                        //copyFile(i, userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
-                        transferProgressBar.PerformStep();
-                    }
-                    catch (IOException)
-                    {
-                        MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
-                    }
-                //DirectoryCopy(userIniObject.INI_JOB_PATH, destination, true);
-                MessageBox.Show("Full Backup complete", "Full Backup Complete", MessageBoxButtons.OK);
-            }
-            catch (System.IO.IOException e)
-            {
-                Console.WriteLine(e);
-                MessageBox.Show("Error: Files were not found / IO Error - Files may have been removed", "File Not Found Error", MessageBoxButtons.OK);
-            }
-        }
-        public void BackupEssentialEclipseFiles(EclipseObject userIniObject, string destination)
+        public void backupEssentialUserFiles(EclipseObject userIniObject, string destination)
         {
             transferProgressBar.Value = 0;
-            transferProgressBar.Maximum = 0;
             ///Here we use the checkmarkedJobsToCopy method to produce a list of whatever
             ///is currently checked in the file list
             List<string> checkedFilesToCopy = checkmarkedJobsToCopy();
@@ -506,15 +505,21 @@ namespace WindowsFormsApplication1
             ///the progressbar
             transferProgressBar.Maximum += checkedFilesToCopy.Count;
             ///Here we give the idea of the essential files main dix and spell dix paths to copy and add to progress bar
-            string[] filePathArray = new string[] { userIniObject.INI_MAIN_DICTIONARY_PATH};
-            WriteINIBackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
+            string[] filePathArray = new string[] { userIniObject.INI_MAIN_DICTIONARY, userIniObject.INI_SPELL_DIX };
+            transferProgressBar.Maximum += filePathArray.Length;
+            //transferProgressBar.Maximum += 1; //for the ini write procedure
+            /*if (userIniObject.INI_BLOCK_PATH != userIniObject.INI_JOB_PATH)
+            {
+                transferProgressBar.Maximum += (Directory.GetFiles(userIniObject.INI_BLOCK_PATH, "*.*", SearchOption.AllDirectories)).Length;
+            }*/
+            string[] essentialFileExtensionArray = new string[] { ".esp", ".esd", userIniObject.INI_MAIN_DICTIONARY };
+            writeINIbackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
             transferProgressBar.PerformStep();
-            Directory.CreateDirectory(Path.Combine(destination, userIniObject.INI_JOB_FOLDER)); 
             foreach (string i in filePathArray)
             {
                 try
                 {
-                    CopyFile(Path.GetFileName(i), Path.GetDirectoryName(i), Path.Combine(destination, userIniObject.INI_JOB_FOLDER));
+                    copyFile(i, userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
                     transferProgressBar.PerformStep();
                 }
                 catch (IOException)
@@ -523,8 +528,8 @@ namespace WindowsFormsApplication1
                 }
             }
 
-            if (userIniObject.INI_BLOCK_PATH != null)
-            { 
+            if (userIniObject.INI_BLOCK_PATH != userIniObject.INI_JOB_PATH)
+            {
                 try
                 {
                     foreach (string dirPath in Directory.GetDirectories(userIniObject.INI_JOB_PATH))
@@ -535,7 +540,7 @@ namespace WindowsFormsApplication1
                             //Directory.CreateDirectory(Path.Combine(destination, dirPathFolderName));
                             foreach (string file in Directory.GetFiles(dirPath))
                             {
-                                CopyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, userIniObject.INI_JOB_FOLDER, dirPathFolderName));
+                                copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, userIniObject.INI_JOB_FOLDER, dirPathFolderName));
                                 transferProgressBar.PerformStep();
                             }
                         }
@@ -560,7 +565,7 @@ namespace WindowsFormsApplication1
                         if (obj.FILE_NAME.Contains(i))
                         {
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                            CopyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
                         }
                     }
@@ -569,7 +574,7 @@ namespace WindowsFormsApplication1
                         if (obj.FILE_NAME.Contains(i))
                         {
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                            CopyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
                         }
                     }
@@ -578,7 +583,7 @@ namespace WindowsFormsApplication1
                         if (obj.FILE_NAME.Contains(i))
                         {
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                            CopyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
                         }
                     }
@@ -587,7 +592,7 @@ namespace WindowsFormsApplication1
                         if (obj.FILE_NAME.Contains(i))
                         {
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
-                            CopyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                            copyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
                         }
                     }
@@ -602,7 +607,133 @@ namespace WindowsFormsApplication1
                 MessageBox.Show("Essential Backup complete", "Essential Backup Complete", MessageBoxButtons.OK);
         }
 
-        public void CopyFile(string sFile, string sLocation, string sDestLocation)
+        public void WritePathDataToEclipseCollections(string f)
+        {
+            if (f.Contains(".esp"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESP", f);
+                ESP_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+            }
+            else if (f.Contains(".esd"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESD", f);
+                ESD_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+            }
+            else if (f.Contains(".not"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".NOT", f);
+                NOT_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+            }
+            else if (f.Contains(".ini"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".INI", f);
+                INI_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+
+            }
+            else if (f.Contains(".dix"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".DIX", f);
+                DIX_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+            }
+            else if (f.Contains(".ecl"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ECL", f);
+                ECL_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+            }
+            else if (f.EndsWith(".wav"))
+            {
+                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
+                WAV_LIST.Add(obj);
+                Console.WriteLine("File added: " + Path.GetFileName(f));
+            }
+        }
+        //This method takes ALL user files and dumps to destination. Looking to add progress bar
+        //to this in NumeratedDirectoryCopy method to replace this.
+        public void backupAllUserFiles(EclipseObject userIniObject, string destination)
+        {
+            try
+            {
+                transferProgressBar.Value = 0;
+                var JobPathFileDirectory = Directory.GetFiles(userIniObject.INI_JOB_PATH, "*", SearchOption.AllDirectories);
+                var JobPathFileDirectoryTopLevel = Directory.GetFiles(userIniObject.INI_JOB_PATH, "*", SearchOption.TopDirectoryOnly);
+                var JobPathFolders = Directory.GetDirectories(userIniObject.INI_JOB_PATH);
+                writeINIbackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
+                //writeINIbackup(Path.Combine(destination, userIniObject.INI_JOB_FOLDER), userIniObject.INI_INFO_ARRAY);
+                transferProgressBar.PerformStep();
+                /*string[] filePathArray = new string[] { userIniObject.INI_MAIN_DICTIONARY, userIniObject.INI_JOB_PATH, userIniObject.INI_SPELL_DIX, userIniObject.INI_BLOCK_PATH };
+                foreach (string i in filePathArray)
+                {
+                    copyFile(i, userIniObject.INI_JOB_PATH, destination);
+                }*/
+                foreach (string dirPath in JobPathFolders)
+                {
+                    Directory.CreateDirectory(Path.Combine(destination, dirPath));
+                    foreach (string file in Directory.GetFiles(dirPath))
+                    {
+                        //this copies the file as the file name, the path, and then uses a snippet to get just the folder name of the original file and use tha as the destination folder..
+                        copyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, userIniObject.INI_JOB_FOLDER, (dirPath.Replace(Path.GetDirectoryName(dirPath) + Path.DirectorySeparatorChar, ""))));
+                        transferProgressBar.PerformStep();
+                    }
+                }
+
+                foreach (string i in JobPathFileDirectoryTopLevel)
+                    try
+                    {
+                        copyFile(Path.GetFileName(i), Path.GetDirectoryName(i), destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                        //copyFile(i, userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                        transferProgressBar.PerformStep();
+                    }
+                    catch (IOException)
+                    {
+                        MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
+                    }
+                //DirectoryCopy(userIniObject.INI_JOB_PATH, destination, true);
+                MessageBox.Show("Full Backup complete", "Full Backup Complete", MessageBoxButtons.OK);
+            }
+            catch (System.IO.IOException e)
+            {
+                Console.WriteLine(e);
+                MessageBox.Show("Error: Files were not found / IO Error - Files may have been removed", "File Not Found Error", MessageBoxButtons.OK);
+            }
+        }
+
+        //Calls loadEclipseFilesFromLocalDisk, shows us options for backup
+        private void loadButton_Click(object sender, EventArgs e)
+        {
+            loadingText.Visible = true;
+
+            if (loadEclipseFilesFromLocalDisk())
+            {
+                LoadLocalDataSource(INI_LIST);
+                setupJobCheckListBox();
+                backupPanel.Visible = true;
+                restorePanel.Visible = false;
+                chooseUserPanel.Visible = true;
+                loadingText.Visible = false;
+            }
+
+        }
+
+        public void setupJobCheckListBox()
+        {
+            foreach (EclipseObject obj in ECL_LIST)
+            {
+                //if (Path.GetDirectoryName(obj.FILE_PATH) == )
+                availableJobsCheckedListBox1.Items.Add(obj.FILE_NAME.TrimEnd(".ecl".ToCharArray()));
+
+            }
+        }
+
+        //Here's the method we give a source file, the location, and the destination.
+        //Yes it's an ugly method, and could definitely be more efficient, but this
+        //is getting the job done in one area of the project for now.
+        public void copyFile(string sFile, string sLocation, string sDestLocation)
         {
             string fileName = sFile;
             string sourcePath = sLocation;
@@ -694,7 +825,7 @@ namespace WindowsFormsApplication1
         //Here's the method that takes a destination, and a string[] that is assuming it is a
         //text file that we did a ReadAllLines or something like that on so that we have a 
         //string[]. Then it will create the .ini and the .set on the destination
-        public void WriteINIBackup(string destination, string[] iniLinesArray)
+        public void writeINIbackup(string destination, string[] iniLinesArray)
         {
             try
             {
@@ -711,110 +842,7 @@ namespace WindowsFormsApplication1
             }
         }
         
-        public List<String> checkmarkedJobsToCopy()
-        {
-            List<string> fileList = new List<string>();
-            foreach (string i in availableJobsCheckedListBox1.CheckedItems)
-            {
-                fileList.Add(i);
-            }
-            return fileList;
-        }
-        public void setupJobCheckListBox()
-        {
-            foreach (EclipseObject obj in ECL_LIST)
-            {
-                //if (Path.GetDirectoryName(obj.FILE_PATH) == )
-                availableJobsCheckedListBox1.Items.Add(obj.FILE_NAME.TrimEnd(".ecl".ToCharArray()));
-
-            }
-        }
-
-
-        public void WritePathDataToEclipseCollections(string f)
-        {
-            if (f.Contains(".esp"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESP", f);
-                ESP_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".esd"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ESD", f);
-                ESD_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".not"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".NOT", f);
-                NOT_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".ini"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".INI", f);
-                INI_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-
-            }
-            else if (f.Contains(".dix"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".DIX", f);
-                DIX_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.Contains(".ecl"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".ECL", f);
-                ECL_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-            else if (f.EndsWith(".wav"))
-            {
-                EclipseObject obj = new EclipseObject(Path.GetFileName(f), ".WAV", f);
-                WAV_LIST.Add(obj);
-                Console.WriteLine("File added: " + Path.GetFileName(f));
-            }
-        }
-        public void ClearAllCollections()
-        {
-            currentUsersDropdown.Text = "";
-            currentUsersDropdown.DataSource = null;
-            availableJobsCheckedListBox1.Items.Clear();
-            //ECL_OBJ_MAP.Clear();
-            INI_LIST.Clear();
-            DIX_LIST.Clear();
-            ECL_LIST.Clear();
-            NOT_LIST.Clear();
-            WAV_LIST.Clear();
-        }
-
-
-        //Calls loadEclipseFilesFromLocalDisk, shows us options for backup
-        private void BackupEclipseUserButton_Click(object sender, EventArgs e)
-        {
-            loadingText.Visible = true;
-
-            if (LoadEclipseFilesFromPath(CURRENT_MAINDIRECTORY5))
-            {
-                LoadDataSource(INI_LIST);
-                setupJobCheckListBox();
-                backupPanel.Visible = true;
-                restorePanel.Visible = false;
-                chooseUserPanel.Visible = true;
-                loadingText.Visible = false;
-            }
-
-        }
-
-        
-
-        //Here's the method we give a source file, the location, and the destination.
-        //Yes it's an ugly method, and could definitely be more efficient, but this
-        //is getting the job done in one area of the project for now.
-       
-        private void SetDestinationButton_Click_1(object sender, EventArgs e)
+        private void button1_Click_1(object sender, EventArgs e)
         {
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -833,7 +861,97 @@ namespace WindowsFormsApplication1
         ///This method will get whatever is selected, and return a list with the items as strings
         ///which of course we can use to say Foreach file, copy those files, increment the progress
         ///bar, of course the list.length can be used for the progress bar max
-        
+        public List<String> checkmarkedJobsToCopy()
+        {
+            List<string> fileList = new List<string>();
+            foreach (string i in availableJobsCheckedListBox1.CheckedItems)
+            {
+                fileList.Add(i);
+            }
+            return fileList;
+        }
+
+        //Here's a dictionary method that returns a dictionary from a string[], so we
+        //are assuming you have an ini or text file that we do for example a ReadAllLines
+        //and we have a string[], so now from that string[] we delimit using '=' to generate
+        //key + value for easier reference. Probably a way to improve on this.
+        public static Dictionary<string, string> ParseUserIni(string[] iniInfo)
+        {
+            string[] data = iniInfo;
+            //StreamReader reader = ReadAllLines(data);
+            //StreamReader reader = File.OpenText(path);
+            //string line;
+            string result = "";
+            string jobPathInterpret = "";
+            Dictionary<string, string> results = new Dictionary<string, string>();
+            foreach (string line in data)
+            {
+                string[] items = line.Split('\t');
+                string[] removedChars = new string[] { "Path", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "=", "MAIN" };
+                char[] delimiter = new char[] { '=' };
+                //char[] MainDictionarydelimiter = "=".ToCharArray();
+                //int myInteger = int.Parse(items[1]); // here's integer
+                //Now here's path:
+                foreach (string item in items)
+                {
+                    if (item.StartsWith("Path") && item.Contains("JOB="))
+                    {
+                        if (item.Contains("{MAIN}"))
+                        {
+                            result = line.Replace("{MAIN}", USER_ECLIPSE_FOLDER + "\\");
+                            string[] resultArray = result.Split(delimiter);
+                            result = resultArray.Last();
+                            results.Add("JobPath", result);
+                        }
+                        else if (item.Contains("DOC"))
+                        {
+                            result = line.Replace("{DOC}", (Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\"));
+                            string[] resultArray = result.Split(delimiter);
+                            result = resultArray[2];
+                            jobPathInterpret = result;
+                            results.Add("JobPath", result);
+                        }
+
+                    }
+                    if (item.StartsWith("MainDictionary="))
+                    {
+                        result = line.Replace("{DOC}", (Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\"));
+                        string[] resultArray = result.Split(delimiter);
+                        result = resultArray[1];
+
+                        results.Add("MainDictionary", result);
+                    }
+                    if (item.StartsWith("SpellUser="))
+                    {
+                        result = line.Replace("{DOC}", (Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\"));
+                        string[] resultArray = result.Split(delimiter);
+                        result = resultArray[1];
+                        results.Add("SpellDictionary", result);
+                    }
+                    if (item.StartsWith("Path") && item.Contains("BLOCK="))
+                    {
+                        if (item.Contains("{JOB}"))
+                        {
+                            result = line.Replace("{JOB}", jobPathInterpret + "\\");
+                            string[] resultArray = result.Split(delimiter);
+                            result = resultArray.Last();
+                            results.Add("BlockPath", result);
+                        }
+                        else if (item.Contains("{MAIN}"))
+                        {
+                            result = line.Replace("{MAIN}", USER_ECLIPSE_FOLDER + "\\");
+                            string[] resultArray = result.Split(delimiter);
+                            result = resultArray.Last();
+                            results.Add("BlockPath", result);
+                        }
+
+                    }
+
+                }
+
+            }
+            return results;
+        }
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -871,8 +989,9 @@ namespace WindowsFormsApplication1
                 {
                     if (obj.FILE_NAME.Equals(findString) && done == false)
                     {
-                        BackupEssentialEclipseFiles(obj, destinationText.Text);
+                        backupEssentialUserFiles(obj, destinationText.Text);
                         done = true;
+
                     }
                     else
                     {
@@ -890,9 +1009,9 @@ namespace WindowsFormsApplication1
                 loadingText.Visible = true;
 
                 //treeView1.Nodes.Add(folderBrowserDialog1.SelectedPath);
-                if (LoadEclipseFilesFromPath(folderBrowserDialog1.SelectedPath))
+                if (loadEclipseFilesFromPath(folderBrowserDialog1.SelectedPath))
                 {
-                    LoadDataSource(INI_LIST);
+                    LoadRemoteDataSource(INI_LIST);
                     restorePanel.Visible = true;
                     backupPanel.Visible = false;
                     chooseUserPanel.Visible = true;
@@ -913,7 +1032,7 @@ namespace WindowsFormsApplication1
             {
                 if (obj.FILE_NAME.Equals(findString))
                 {
-                    RestoreAllEclipseFiles(obj);
+                    RestoreEclipseFilesToLocalPC(obj);
                     MessageBox.Show("Files Restored");
                 }
 
@@ -968,7 +1087,7 @@ namespace WindowsFormsApplication1
                 }
                 if (transferObject.FILE_NAME != "null")
                 {
-                    BackupAllEclipseFiles(transferObject, destinationText.Text);
+                    backupAllUserFiles(transferObject, destinationText.Text);
 
                 }
                 else
@@ -993,7 +1112,7 @@ namespace WindowsFormsApplication1
             {
                 if (Path.GetFileName(obj.FILE_PATH) == currentUsersDropdown.Text)
                 {
-                    if (RestoreEssentialEclipseFiles(obj))
+                    if (RestoreJustEssentialEclipseFiles(obj))
                     {
                         MessageBox.Show("Essential Files Restored", "Essential Files Restored", MessageBoxButtons.OK);
                     }
@@ -1064,9 +1183,9 @@ namespace WindowsFormsApplication1
                 loadingText.Visible = true;
 
                 //treeView1.Nodes.Add(folderBrowserDialog1.SelectedPath);
-                if (LoadEclipseFilesFromPath(folderBrowserDialog1.SelectedPath))
+                if (loadEclipseFilesFromPath(folderBrowserDialog1.SelectedPath))
                 {
-                    LoadDataSource(INI_LIST);
+                    LoadRemoteDataSource(INI_LIST);
                     //setupJobCheckListBox();
                     backupPanel.Visible = true;
                     restorePanel.Visible = false;

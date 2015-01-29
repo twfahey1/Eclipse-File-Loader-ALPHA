@@ -34,14 +34,12 @@
             this.transferToQuickPickComboBox = new System.Windows.Forms.ComboBox();
             this.chooseAvailableDriveLabel = new System.Windows.Forms.Label();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.SetDestinationButton = new System.Windows.Forms.Button();
+            this.BrowseForDestinationButton = new System.Windows.Forms.Button();
             this.ExitButton = new System.Windows.Forms.Button();
             this.destinationText = new System.Windows.Forms.TextBox();
             this.thisPCEclipseINIinfoLabel = new System.Windows.Forms.Label();
             this.refreshButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.loadingText = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
             this.transferProgressLabel = new System.Windows.Forms.Label();
             this.transferProgressBar = new System.Windows.Forms.ProgressBar();
             this.availableJobsCheckedListBox1 = new System.Windows.Forms.CheckedListBox();
@@ -60,6 +58,8 @@
             this.directorySearcher1 = new System.DirectoryServices.DirectorySearcher();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.button3 = new System.Windows.Forms.Button();
+            this.loadingText = new System.Windows.Forms.Label();
             this.panel2.SuspendLayout();
             this.chooseUserPanel.SuspendLayout();
             this.restorePanel.SuspendLayout();
@@ -75,7 +75,7 @@
             this.findEclipseFilesOnThisPCButton.TabIndex = 1;
             this.findEclipseFilesOnThisPCButton.Text = "Backup Eclipse User";
             this.findEclipseFilesOnThisPCButton.UseVisualStyleBackColor = true;
-            this.findEclipseFilesOnThisPCButton.Click += new System.EventHandler(this.BackupEclipseUserButton_Click);
+            this.findEclipseFilesOnThisPCButton.Click += new System.EventHandler(this.loadButton_Click);
             // 
             // currentSelectedFileLabel
             // 
@@ -103,16 +103,16 @@
             this.chooseAvailableDriveLabel.TabIndex = 8;
             this.chooseAvailableDriveLabel.Text = "External Drives:";
             // 
-            // SetDestinationButton
+            // BrowseForDestinationButton
             // 
-            this.SetDestinationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SetDestinationButton.Location = new System.Drawing.Point(13, 49);
-            this.SetDestinationButton.Name = "SetDestinationButton";
-            this.SetDestinationButton.Size = new System.Drawing.Size(97, 24);
-            this.SetDestinationButton.TabIndex = 11;
-            this.SetDestinationButton.Text = "Browse...";
-            this.SetDestinationButton.UseVisualStyleBackColor = true;
-            this.SetDestinationButton.Click += new System.EventHandler(this.SetDestinationButton_Click_1);
+            this.BrowseForDestinationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BrowseForDestinationButton.Location = new System.Drawing.Point(13, 49);
+            this.BrowseForDestinationButton.Name = "BrowseForDestinationButton";
+            this.BrowseForDestinationButton.Size = new System.Drawing.Size(97, 24);
+            this.BrowseForDestinationButton.TabIndex = 11;
+            this.BrowseForDestinationButton.Text = "Browse...";
+            this.BrowseForDestinationButton.UseVisualStyleBackColor = true;
+            this.BrowseForDestinationButton.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // ExitButton
             // 
@@ -176,27 +176,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(336, 342);
             this.panel2.TabIndex = 32;
-            // 
-            // loadingText
-            // 
-            this.loadingText.AutoSize = true;
-            this.loadingText.Location = new System.Drawing.Point(13, 64);
-            this.loadingText.Name = "loadingText";
-            this.loadingText.Size = new System.Drawing.Size(233, 16);
-            this.loadingText.TabIndex = 43;
-            this.loadingText.Text = "Loading Eclipse Files.... Please wait....";
-            this.loadingText.Visible = false;
-            // 
-            // button3
-            // 
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(183, 60);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(149, 20);
-            this.button3.TabIndex = 42;
-            this.button3.Text = "Browse For Eclipse Folder...";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click_1);
             // 
             // transferProgressLabel
             // 
@@ -293,7 +272,7 @@
             this.backupPanel.Controls.Add(this.destinationText);
             this.backupPanel.Controls.Add(this.chooseAvailableDriveLabel);
             this.backupPanel.Controls.Add(this.refreshButton);
-            this.backupPanel.Controls.Add(this.SetDestinationButton);
+            this.backupPanel.Controls.Add(this.BrowseForDestinationButton);
             this.backupPanel.Controls.Add(this.transferToQuickPickComboBox);
             this.backupPanel.Controls.Add(this.BackupEssentialFilesButton);
             this.backupPanel.Location = new System.Drawing.Point(3, 170);
@@ -359,6 +338,27 @@
             this.directorySearcher1.ServerPageTimeLimit = System.TimeSpan.Parse("-00:00:01");
             this.directorySearcher1.ServerTimeLimit = System.TimeSpan.Parse("-00:00:01");
             // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(183, 60);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(149, 20);
+            this.button3.TabIndex = 42;
+            this.button3.Text = "Browse For Eclipse Folder...";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click_1);
+            // 
+            // loadingText
+            // 
+            this.loadingText.AutoSize = true;
+            this.loadingText.Location = new System.Drawing.Point(13, 64);
+            this.loadingText.Name = "loadingText";
+            this.loadingText.Size = new System.Drawing.Size(233, 16);
+            this.loadingText.TabIndex = 43;
+            this.loadingText.Text = "Loading Eclipse Files.... Please wait....";
+            this.loadingText.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -392,7 +392,7 @@
         private System.Windows.Forms.ComboBox transferToQuickPickComboBox;
         private System.Windows.Forms.Label chooseAvailableDriveLabel;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
-        private System.Windows.Forms.Button SetDestinationButton;
+        private System.Windows.Forms.Button BrowseForDestinationButton;
         private System.Windows.Forms.Button ExitButton;
         private System.Windows.Forms.TextBox destinationText;
         private System.Windows.Forms.Label thisPCEclipseINIinfoLabel;
