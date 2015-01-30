@@ -7,86 +7,6 @@ using System.Windows.Forms;
 
 namespace EclipseFileManagerPlus
 {
-    //Here's the allmighty EclipseObject, which we are using to organize all objects
-    //found when scanning folders for objects. As we find objects we are creating simple
-    //string based entities, which if they are INI file type will get a few extra
-    //characteristics for use later on, otherwise we pretty much just have the file path and 
-    //the name is parsed out based on splitting the path to a string array, delimited by
-    // '\\ and then grabbing the last chunk of that array for the actual file name reference
-    public class EclipseObject
-    {
-        public string FILE_NAME;
-        public string FILE_TYPE;
-        public string FILE_PATH;
-        public string FILE_USER_FOLDER;
-        public string FILE_SIZE;
-        //If the object is an INI it will have these characteristics
-        //These are full path references for the object
-        public string INI_MAIN_PATH;
-        public string INI_JOB_PATH;
-        public string INI_BLOCK_PATH;
-        public string INI_MAIN_DICTIONARY_PATH;
-
-        /// These are the folder names, just "Blocks" or "TylerJobs"
-        public string INI_JOB_FOLDER;
-        public string INI_BLOCK_FOLDER;
-        public string INI_MAIN_DICTIONARY_NAME;
-
-        public string INI_SPELL_DIX;
-        public string[] INI_INFO_ARRAY;
-
-        public EclipseObject(string name, string type, string path)
-        {
-            this.FILE_NAME = name; //this is going to be a string ref. to the file, may be the same as path ultimately since that would force it to be unique
-            this.FILE_TYPE = type; //is going to be ".INI", ".ECL", ".NOT", ".DIX", ".ESP", ".ESD" this is passed in as a literal string
-            this.FILE_PATH = path; //should be the objects path i.e.: C:\Users\Docs\Eclipse\Tyler\job1.ecl
-            this.FILE_USER_FOLDER = Path.GetDirectoryName(FILE_PATH);//trims off the actual file name to reveal the folder
-            if (type == ".INI")//if the file is an INI when we create we give it all these characteristics:
-            {
-                this.INI_INFO_ARRAY = File.ReadAllLines(this.FILE_PATH);
-
-                foreach (String iniLine in INI_INFO_ARRAY)
-                {
-                    if (iniLine.StartsWith("Path") && iniLine.Contains("=MAIN="))
-                    {
-                        var parts = iniLine.Split('=');
-                        this.INI_MAIN_PATH = parts[1].Replace("{DOC}", Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\");
-                    }
-                    if (iniLine.StartsWith("Path") && iniLine.Contains("=JOB="))
-                    {
-                        string[] JOB_PATH_ARRAY = iniLine.Split('=');
-                        this.INI_JOB_PATH = JOB_PATH_ARRAY.Last().Replace("{DOC}", Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\");
-                        JOB_PATH_ARRAY = this.INI_JOB_PATH.Split('\\');
-                        this.INI_JOB_FOLDER = JOB_PATH_ARRAY.Last();
-
-                        MessageBox.Show(INI_JOB_FOLDER);
-                        if (this.INI_MAIN_DICTIONARY_NAME != null)
-                        {
-                            this.INI_MAIN_DICTIONARY_PATH = Path.Combine(this.INI_JOB_PATH + "\\" + this.INI_MAIN_DICTIONARY_NAME);
-                        }
-                    }
-                    if (iniLine.StartsWith("MainDictionary="))
-                    {
-                        var parts = iniLine.Split('=');
-                        this.INI_MAIN_DICTIONARY_NAME = parts[1];
-                    }
-                    if (iniLine.StartsWith("SpellUser="))
-                    {
-                        var parts = iniLine.Split('=');
-                        this.INI_SPELL_DIX = parts[1];
-                    }
-
-                    if (iniLine.StartsWith("Path") && iniLine.Contains("=BLOCK="))
-                    {
-                        var parts = iniLine.Split('=');
-                        this.INI_BLOCK_PATH = parts.Last().Replace("{JOB}", this.INI_JOB_PATH + "\\");
-                        string[] INI_BLOCK_ARRAY = this.INI_BLOCK_PATH.Split('\\');
-                        this.INI_BLOCK_FOLDER = INI_BLOCK_ARRAY.Last();
-                    }
-                }
-            }
-        }
-    }
     public partial class MainForm : Form
     {
         //The variables here are used for referencing the system, the various ini parsings that take
@@ -117,7 +37,87 @@ namespace EclipseFileManagerPlus
         public List<string> RECENT_FILE_PATH_LIST = new List<string>();
 
         public Dictionary<string, string> ECLIPSE_MAIN_INI_ARRAY = new Dictionary<string, string>();
-       
+        
+        //Here's the allmighty EclipseObject, which we are using to organize all objects
+        //found when scanning folders for objects. As we find objects we are creating simple
+        //string based entities, which if they are INI file type will get a few extra
+        //characteristics for use later on, otherwise we pretty much just have the file path and 
+        //the name is parsed out based on splitting the path to a string array, delimited by
+        // '\\ and then grabbing the last chunk of that array for the actual file name reference
+        public class EclipseObject
+        {
+            public string FILE_NAME;
+            public string FILE_TYPE;
+            public string FILE_PATH;
+            public string FILE_USER_FOLDER;
+            public string FILE_SIZE;
+            //If the object is an INI it will have these characteristics
+            //These are full path references for the object
+            public string INI_MAIN_PATH;
+            public string INI_JOB_PATH;
+            public string INI_BLOCK_PATH;
+            public string INI_MAIN_DICTIONARY_PATH;
+
+            /// These are the folder names, just "Blocks" or "TylerJobs"
+            public string INI_JOB_FOLDER;
+            public string INI_BLOCK_FOLDER;
+            public string INI_MAIN_DICTIONARY_NAME;
+
+            public string INI_SPELL_DIX;
+            public string[] INI_INFO_ARRAY;
+
+            public EclipseObject(string name, string type, string path)
+            {
+                this.FILE_NAME = name; //this is going to be a string ref. to the file, may be the same as path ultimately since that would force it to be unique
+                this.FILE_TYPE = type; //is going to be ".INI", ".ECL", ".NOT", ".DIX", ".ESP", ".ESD" this is passed in as a literal string
+                this.FILE_PATH = path; //should be the objects path i.e.: C:\Users\Docs\Eclipse\Tyler\job1.ecl
+                this.FILE_USER_FOLDER = Path.GetDirectoryName(FILE_PATH);//trims off the actual file name to reveal the folder
+                if (type == ".INI")//if the file is an INI when we create we give it all these characteristics:
+                {
+                    this.INI_INFO_ARRAY = File.ReadAllLines(this.FILE_PATH);
+
+                    foreach (String iniLine in INI_INFO_ARRAY)
+                    {
+                        if (iniLine.StartsWith("Path") && iniLine.Contains("=MAIN="))
+                        {
+                            var parts = iniLine.Split('=');
+                            this.INI_MAIN_PATH = parts[1].Replace("{DOC}", Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\");
+                        }
+                        if (iniLine.StartsWith("Path") && iniLine.Contains("=JOB="))
+                        {
+                            string[] JOB_PATH_ARRAY = iniLine.Split('=');
+                            this.INI_JOB_PATH = JOB_PATH_ARRAY.Last().Replace("{DOC}", Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\");
+                            JOB_PATH_ARRAY = this.INI_JOB_PATH.Split('\\');
+                            this.INI_JOB_FOLDER = JOB_PATH_ARRAY.Last();
+
+                            MessageBox.Show(INI_JOB_FOLDER);
+                            if (this.INI_MAIN_DICTIONARY_NAME != null)
+                            {
+                                this.INI_MAIN_DICTIONARY_PATH = Path.Combine(this.INI_JOB_PATH + "\\" + this.INI_MAIN_DICTIONARY_NAME);
+                            }
+                        }
+                        if (iniLine.StartsWith("MainDictionary="))
+                        {
+                            var parts = iniLine.Split('=');
+                            this.INI_MAIN_DICTIONARY_NAME = parts[1];
+                        }
+                        if (iniLine.StartsWith("SpellUser="))
+                        {
+                            var parts = iniLine.Split('=');
+                            this.INI_SPELL_DIX = parts[1];
+                        }
+
+                        if (iniLine.StartsWith("Path") && iniLine.Contains("=BLOCK="))
+                        {
+                            var parts = iniLine.Split('=');
+                            this.INI_BLOCK_PATH = parts.Last().Replace("{JOB}", this.INI_JOB_PATH + "\\");
+                            string[] INI_BLOCK_ARRAY = this.INI_BLOCK_PATH.Split('\\');
+                            this.INI_BLOCK_FOLDER = INI_BLOCK_ARRAY.Last();
+                        }
+                    }
+                }
+            }
+        }
 
         //Here's the method that parses out the eclipse.ini to a dictionary
         //for reference. 
@@ -790,7 +790,7 @@ namespace EclipseFileManagerPlus
         //Yes it's an ugly method, and could definitely be more efficient, but this
         //is getting the job done in one area of the project for now.
        
-        private void BrowseButton_Click(object sender, EventArgs e)
+        private void SetDestinationButton_Click_1(object sender, EventArgs e)
         {
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -815,7 +815,7 @@ namespace EclipseFileManagerPlus
             Application.Exit();
         }
 
-        private void RefreshButton_Click(object sender, EventArgs e)
+        private void button4_Click(object sender, EventArgs e)
         {
             transferToQuickPickComboBox.Items.Clear();
             DriveInfo[] files = DriveInfo.GetDrives();
@@ -857,7 +857,7 @@ namespace EclipseFileManagerPlus
             }
         }
 
-        private void RestoreEclipseUserButton_Click(object sender, EventArgs e)
+        private void button7_Click(object sender, EventArgs e)
         {
             transferProgressBar.Visible = true;           
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
@@ -903,7 +903,7 @@ namespace EclipseFileManagerPlus
 
         }
 
-        private void BackupAllFilesButton_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
             if (currentUsersDropdown.Text == "")
             {
@@ -995,15 +995,54 @@ namespace EclipseFileManagerPlus
             SELECTED_USER_INI = currentUsersDropdown.Text;
         }
 
-        private void BrowseForEclipseUserFolderButton_Click(object sender, EventArgs e)
+        //The ReWriteMainEclipseINI method was intended to change the
+        //"UserFile5=" line automatically in the Eclipse.ini.
+        //This was pretty much abandoned, as I realized that it makes more sense
+        //to have Eclipse load once, setup ini, possibly make changes to job 
+        //paths, etc., then we can use utility to restore, and theoretically
+        //we are in good shape at that point... but this was cool and possibly
+        // useful method to parse and rewrite the Eclipse.ini
+        public void ReWriteMainEclipseINI(string newUserFile5Value, Dictionary<string, string> ini_parsed_dictionary)
+        {   //This method takes a new string to use as a new UserFile5 Value, and a dictionary object that
+            //is presumably the eclipse.ini.ReadAllLines and then using a delimiting filter with the delimiter
+            //an '=', you can split the resulting string array from the ReadAllLines and get Key/Value pairs
+            //for a dictionary. This method ReWriteMainEclipseINI is meant to parse that info back into the 
+            //ini file and actually wind up writing the Eclipse.ini
+            //WARNING: Backup your Eclipse.ini.... :)
+
+            ECLIPSE_MAIN_INI_ARRAY["UserFile5"] = newUserFile5Value;
+            List<string> newEclipseINI = new List<string>();
+
+            //at this point we assume the eclipse_main_ini or w/e ini file has been parsed to a 
+            //dictionary that we can recombine back into a List, and then write
+            //that list out line by line back into eclipse.ini, theoretically
+            foreach (KeyValuePair<string, string> val1 in ini_parsed_dictionary)
+            {
+                string rewrittenLine = val1.Key + "=" + val1.Value;
+                newEclipseINI.Add(rewrittenLine);
+
+            }
+            try
+            {
+                System.IO.File.WriteAllLines(Path.GetPathRoot(Environment.SystemDirectory) + "\\Windows\\eclipse.ini", newEclipseINI);
+            }
+            catch (System.IO.IOException)
+            {
+                Console.Write("Issue with write ECLIPSE.INI");
+            }
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
         {
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 loadingText.Visible = true;
 
+                //treeView1.Nodes.Add(folderBrowserDialog1.SelectedPath);
                 if (LoadEclipseFilesFromPath(folderBrowserDialog1.SelectedPath))
                 {
                     LoadDataSource(INI_LIST);
+                    //setupJobCheckListBox();
                     backupPanel.Visible = true;
                     restorePanel.Visible = false;
                     chooseUserPanel.Visible = true;

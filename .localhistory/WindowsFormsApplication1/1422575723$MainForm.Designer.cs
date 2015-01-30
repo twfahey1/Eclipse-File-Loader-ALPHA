@@ -34,14 +34,14 @@
             this.transferToQuickPickComboBox = new System.Windows.Forms.ComboBox();
             this.chooseAvailableDriveLabel = new System.Windows.Forms.Label();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.BrowseButton = new System.Windows.Forms.Button();
+            this.SetDestinationButton = new System.Windows.Forms.Button();
             this.ExitButton = new System.Windows.Forms.Button();
             this.destinationText = new System.Windows.Forms.TextBox();
             this.thisPCEclipseINIinfoLabel = new System.Windows.Forms.Label();
-            this.RefreshButton = new System.Windows.Forms.Button();
+            this.refreshButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.loadingText = new System.Windows.Forms.Label();
-            this.BrowseForEclipseUserFolderButton = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.transferProgressLabel = new System.Windows.Forms.Label();
             this.transferProgressBar = new System.Windows.Forms.ProgressBar();
             this.availableJobsCheckedListBox1 = new System.Windows.Forms.CheckedListBox();
@@ -52,10 +52,10 @@
             this.RestoreEssentialFilesOnlyButton = new System.Windows.Forms.Button();
             this.RestoreAllFilesButton = new System.Windows.Forms.Button();
             this.backupPanel = new System.Windows.Forms.Panel();
-            this.BackupAllFilesButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.destinationLabel = new System.Windows.Forms.Label();
             this.BackupEssentialFilesOnlyButton = new System.Windows.Forms.Button();
-            this.RestoreEclipseUserButton = new System.Windows.Forms.Button();
+            this.loadEclipseFilesButton = new System.Windows.Forms.Button();
             this.fileInfoView = new System.Windows.Forms.TreeView();
             this.directorySearcher1 = new System.DirectoryServices.DirectorySearcher();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
@@ -103,16 +103,16 @@
             this.chooseAvailableDriveLabel.TabIndex = 8;
             this.chooseAvailableDriveLabel.Text = "External Drives:";
             // 
-            // BrowseButton
+            // SetDestinationButton
             // 
-            this.BrowseButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BrowseButton.Location = new System.Drawing.Point(13, 49);
-            this.BrowseButton.Name = "BrowseButton";
-            this.BrowseButton.Size = new System.Drawing.Size(97, 24);
-            this.BrowseButton.TabIndex = 11;
-            this.BrowseButton.Text = "Browse...";
-            this.BrowseButton.UseVisualStyleBackColor = true;
-            this.BrowseButton.Click += new System.EventHandler(this.BrowseButton_Click);
+            this.SetDestinationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SetDestinationButton.Location = new System.Drawing.Point(13, 49);
+            this.SetDestinationButton.Name = "SetDestinationButton";
+            this.SetDestinationButton.Size = new System.Drawing.Size(97, 24);
+            this.SetDestinationButton.TabIndex = 11;
+            this.SetDestinationButton.Text = "Browse...";
+            this.SetDestinationButton.UseVisualStyleBackColor = true;
+            this.SetDestinationButton.Click += new System.EventHandler(this.SetDestinationButton_Click_1);
             // 
             // ExitButton
             // 
@@ -144,30 +144,30 @@
             this.thisPCEclipseINIinfoLabel.Text = "This PC\'s Eclipse.ini";
             this.thisPCEclipseINIinfoLabel.Visible = false;
             // 
-            // RefreshButton
+            // refreshButton
             // 
-            this.RefreshButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RefreshButton.Location = new System.Drawing.Point(59, 97);
-            this.RefreshButton.Name = "RefreshButton";
-            this.RefreshButton.Size = new System.Drawing.Size(63, 38);
-            this.RefreshButton.TabIndex = 24;
-            this.RefreshButton.Text = "Refresh";
-            this.RefreshButton.UseVisualStyleBackColor = true;
-            this.RefreshButton.Click += new System.EventHandler(this.RefreshButton_Click);
+            this.refreshButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.refreshButton.Location = new System.Drawing.Point(59, 97);
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.Size = new System.Drawing.Size(63, 38);
+            this.refreshButton.TabIndex = 24;
+            this.refreshButton.Text = "Refresh";
+            this.refreshButton.UseVisualStyleBackColor = true;
+            this.refreshButton.Click += new System.EventHandler(this.button4_Click);
             // 
             // panel2
             // 
             this.panel2.AutoSize = true;
             this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panel2.Controls.Add(this.loadingText);
-            this.panel2.Controls.Add(this.BrowseForEclipseUserFolderButton);
+            this.panel2.Controls.Add(this.button3);
             this.panel2.Controls.Add(this.transferProgressLabel);
             this.panel2.Controls.Add(this.transferProgressBar);
             this.panel2.Controls.Add(this.availableJobsCheckedListBox1);
             this.panel2.Controls.Add(this.chooseUserPanel);
             this.panel2.Controls.Add(this.restorePanel);
             this.panel2.Controls.Add(this.backupPanel);
-            this.panel2.Controls.Add(this.RestoreEclipseUserButton);
+            this.panel2.Controls.Add(this.loadEclipseFilesButton);
             this.panel2.Controls.Add(this.thisPCEclipseINIinfoLabel);
             this.panel2.Controls.Add(this.fileInfoView);
             this.panel2.Controls.Add(this.findEclipseFilesOnThisPCButton);
@@ -187,16 +187,16 @@
             this.loadingText.Text = "Loading Eclipse Files.... Please wait....";
             this.loadingText.Visible = false;
             // 
-            // BrowseForEclipseUserFolderButton
+            // button3
             // 
-            this.BrowseForEclipseUserFolderButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BrowseForEclipseUserFolderButton.Location = new System.Drawing.Point(183, 60);
-            this.BrowseForEclipseUserFolderButton.Name = "BrowseForEclipseUserFolderButton";
-            this.BrowseForEclipseUserFolderButton.Size = new System.Drawing.Size(149, 20);
-            this.BrowseForEclipseUserFolderButton.TabIndex = 42;
-            this.BrowseForEclipseUserFolderButton.Text = "Browse For Eclipse Folder...";
-            this.BrowseForEclipseUserFolderButton.UseVisualStyleBackColor = true;
-            this.BrowseForEclipseUserFolderButton.Click += new System.EventHandler(this.BrowseForEclipseUserFolderButton_Click);
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(183, 60);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(149, 20);
+            this.button3.TabIndex = 42;
+            this.button3.Text = "Browse For Eclipse Folder...";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click_1);
             // 
             // transferProgressLabel
             // 
@@ -288,12 +288,12 @@
             // 
             // backupPanel
             // 
-            this.backupPanel.Controls.Add(this.BackupAllFilesButton);
+            this.backupPanel.Controls.Add(this.button1);
             this.backupPanel.Controls.Add(this.destinationLabel);
             this.backupPanel.Controls.Add(this.destinationText);
             this.backupPanel.Controls.Add(this.chooseAvailableDriveLabel);
-            this.backupPanel.Controls.Add(this.RefreshButton);
-            this.backupPanel.Controls.Add(this.BrowseButton);
+            this.backupPanel.Controls.Add(this.refreshButton);
+            this.backupPanel.Controls.Add(this.SetDestinationButton);
             this.backupPanel.Controls.Add(this.transferToQuickPickComboBox);
             this.backupPanel.Controls.Add(this.BackupEssentialFilesOnlyButton);
             this.backupPanel.Location = new System.Drawing.Point(3, 170);
@@ -302,16 +302,16 @@
             this.backupPanel.TabIndex = 40;
             this.backupPanel.Visible = false;
             // 
-            // BackupAllFilesButton
+            // button1
             // 
-            this.BackupAllFilesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BackupAllFilesButton.Location = new System.Drawing.Point(163, 74);
-            this.BackupAllFilesButton.Name = "BackupAllFilesButton";
-            this.BackupAllFilesButton.Size = new System.Drawing.Size(105, 58);
-            this.BackupAllFilesButton.TabIndex = 33;
-            this.BackupAllFilesButton.Text = "Click To Backup ALL Files";
-            this.BackupAllFilesButton.UseVisualStyleBackColor = true;
-            this.BackupAllFilesButton.Click += new System.EventHandler(this.BackupAllFilesButton_Click);
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(163, 74);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(105, 58);
+            this.button1.TabIndex = 33;
+            this.button1.Text = "Click To Backup ALL Files";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // destinationLabel
             // 
@@ -334,16 +334,16 @@
             this.BackupEssentialFilesOnlyButton.UseVisualStyleBackColor = true;
             this.BackupEssentialFilesOnlyButton.Click += new System.EventHandler(this.BackupEssentialFilesOnlyButton_Click);
             // 
-            // RestoreEclipseUserButton
+            // loadEclipseFilesButton
             // 
-            this.RestoreEclipseUserButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RestoreEclipseUserButton.Location = new System.Drawing.Point(4, 3);
-            this.RestoreEclipseUserButton.Name = "RestoreEclipseUserButton";
-            this.RestoreEclipseUserButton.Size = new System.Drawing.Size(153, 55);
-            this.RestoreEclipseUserButton.TabIndex = 34;
-            this.RestoreEclipseUserButton.Text = "Restore Eclipse User";
-            this.RestoreEclipseUserButton.UseVisualStyleBackColor = true;
-            this.RestoreEclipseUserButton.Click += new System.EventHandler(this.RestoreEclipseUserButton_Click);
+            this.loadEclipseFilesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.loadEclipseFilesButton.Location = new System.Drawing.Point(4, 3);
+            this.loadEclipseFilesButton.Name = "loadEclipseFilesButton";
+            this.loadEclipseFilesButton.Size = new System.Drawing.Size(153, 55);
+            this.loadEclipseFilesButton.TabIndex = 34;
+            this.loadEclipseFilesButton.Text = "Restore Eclipse User";
+            this.loadEclipseFilesButton.UseVisualStyleBackColor = true;
+            this.loadEclipseFilesButton.Click += new System.EventHandler(this.button7_Click);
             // 
             // fileInfoView
             // 
@@ -392,18 +392,18 @@
         private System.Windows.Forms.ComboBox transferToQuickPickComboBox;
         private System.Windows.Forms.Label chooseAvailableDriveLabel;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
-        private System.Windows.Forms.Button BrowseButton;
+        private System.Windows.Forms.Button SetDestinationButton;
         private System.Windows.Forms.Button ExitButton;
         private System.Windows.Forms.TextBox destinationText;
         private System.Windows.Forms.Label thisPCEclipseINIinfoLabel;
-        private System.Windows.Forms.Button RefreshButton;
+        private System.Windows.Forms.Button refreshButton;
         private System.Windows.Forms.Panel panel2;
         private System.DirectoryServices.DirectorySearcher directorySearcher1;
         private System.DirectoryServices.DirectoryEntry directoryEntry1;
         private System.Windows.Forms.Button RestoreAllFilesButton;
         private System.Windows.Forms.TreeView fileInfoView;
         private System.Windows.Forms.Button BackupEssentialFilesOnlyButton;
-        private System.Windows.Forms.Button RestoreEclipseUserButton;
+        private System.Windows.Forms.Button loadEclipseFilesButton;
         private System.Windows.Forms.ComboBox currentUsersDropdown;
         private System.Windows.Forms.Label chooseUserLabel;
         private System.Windows.Forms.Panel backupPanel;
@@ -411,12 +411,12 @@
         private System.Windows.Forms.Panel restorePanel;
         private System.Windows.Forms.Panel chooseUserPanel;
         private System.Windows.Forms.Button RestoreEssentialFilesOnlyButton;
-        private System.Windows.Forms.Button BackupAllFilesButton;
+        private System.Windows.Forms.Button button1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Label transferProgressLabel;
         private System.Windows.Forms.CheckedListBox availableJobsCheckedListBox1;
         private System.Windows.Forms.ProgressBar transferProgressBar;
-        private System.Windows.Forms.Button BrowseForEclipseUserFolderButton;
+        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label loadingText;
     }
 }

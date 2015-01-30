@@ -41,7 +41,7 @@
             this.RefreshButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.loadingText = new System.Windows.Forms.Label();
-            this.BrowseForEclipseUserFolderButton = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.transferProgressLabel = new System.Windows.Forms.Label();
             this.transferProgressBar = new System.Windows.Forms.ProgressBar();
             this.availableJobsCheckedListBox1 = new System.Windows.Forms.CheckedListBox();
@@ -160,7 +160,7 @@
             this.panel2.AutoSize = true;
             this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panel2.Controls.Add(this.loadingText);
-            this.panel2.Controls.Add(this.BrowseForEclipseUserFolderButton);
+            this.panel2.Controls.Add(this.button3);
             this.panel2.Controls.Add(this.transferProgressLabel);
             this.panel2.Controls.Add(this.transferProgressBar);
             this.panel2.Controls.Add(this.availableJobsCheckedListBox1);
@@ -187,16 +187,16 @@
             this.loadingText.Text = "Loading Eclipse Files.... Please wait....";
             this.loadingText.Visible = false;
             // 
-            // BrowseForEclipseUserFolderButton
+            // button3
             // 
-            this.BrowseForEclipseUserFolderButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BrowseForEclipseUserFolderButton.Location = new System.Drawing.Point(183, 60);
-            this.BrowseForEclipseUserFolderButton.Name = "BrowseForEclipseUserFolderButton";
-            this.BrowseForEclipseUserFolderButton.Size = new System.Drawing.Size(149, 20);
-            this.BrowseForEclipseUserFolderButton.TabIndex = 42;
-            this.BrowseForEclipseUserFolderButton.Text = "Browse For Eclipse Folder...";
-            this.BrowseForEclipseUserFolderButton.UseVisualStyleBackColor = true;
-            this.BrowseForEclipseUserFolderButton.Click += new System.EventHandler(this.BrowseForEclipseUserFolderButton_Click);
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(183, 60);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(149, 20);
+            this.button3.TabIndex = 42;
+            this.button3.Text = "Browse For Eclipse Folder...";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.BrowseForEclipseUserFolderButton_Click);
             // 
             // transferProgressLabel
             // 
@@ -416,7 +416,7 @@
         private System.Windows.Forms.Label transferProgressLabel;
         private System.Windows.Forms.CheckedListBox availableJobsCheckedListBox1;
         private System.Windows.Forms.ProgressBar transferProgressBar;
-        private System.Windows.Forms.Button BrowseForEclipseUserFolderButton;
+        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label loadingText;
     }
 }
