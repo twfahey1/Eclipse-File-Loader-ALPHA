@@ -16,4 +16,4 @@ C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\Eclipse-F
 C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\Eclipse-File-Loader-ALPHA\WindowsFormsApplication1\obj\Debug\Eclipse File Loader.csproj.GenerateResource.Cache
 C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\Eclipse-File-Loader-ALPHA\WindowsFormsApplication1\obj\Debug\Eclipse File Helper.exe
 C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\Eclipse-File-Loader-ALPHA\WindowsFormsApplication1\obj\Debug\Eclipse File Helper.pdb
-C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\Eclipse-File-Loader-ALPHA\WindowsFormsApplication1\obj\Debug\EclipseFileManagerPlus.Form1.resources
+C:\Users\Tyler\Documents\Visual Studio 2013\Projects\EclipseFileLoader\Eclipse-File-Loader-ALPHA\WindowsFormsApplication1\obj\Debug\EclipseFileManagerPlus.MainForm.resources

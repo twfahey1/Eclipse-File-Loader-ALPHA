@@ -7,23 +7,6 @@ using System.Windows.Forms;
 
 namespace EclipseFileManagerPlus
 {
-    /// <summary>
-    /// 1) Figure out info from Eclipse.ini
-    /// 2) Build lists of EclipseObjects that contain all pertinent file path info
-    /// 3) User is given lists of valid user ini's in their MainDirectory5 parsed from the
-    /// Eclipse.ini. Give user choice if they want to backup "essential", they will get JUST the
-    /// blocks, main dictionary, spell dictionary, and optionally they can check box jobs
-    /// from the list of recent files
-    /// 4) User could and/or do a "full" backup, which will essentially give them EVERY
-    /// file in their selected users job folder.
-    /// 5) The same idea of "essential" and "full" is used for restoration function, so that
-    /// the user can restore an ini to the system, or restore all files to the system, so the
-    /// idea is the user can use the utility on both sides during a migration scenario.
-    /// 6) We are assuming the user has run Eclipse install, v5+ and the eclipse.ini will be in
-    /// their main windows drive under Windows folder as eclipse.ini, i.e. C:\Windows\eclipse.ini
-    /// </summary>
-    /// <returns></returns>
-    public partial class MainForm : Form{
     //Here's the allmighty EclipseObject, which we are using to organize all objects
     //found when scanning folders for objects. As we find objects we are creating simple
     //string based entities, which if they are INI file type will get a few extra
@@ -104,20 +87,24 @@ namespace EclipseFileManagerPlus
             }
         }
     }
- 
+    public partial class MainForm : Form
+    {
         //The variables here are used for referencing the system, the various ini parsings that take
         //place and corresponding paths
         public string CURRENT_SYSTEM_MAIN_DRIVE = Path.GetPathRoot(Environment.SystemDirectory);
-        public string USER_DOCUMENTS_PATH = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-        
         public string CURRENT_USERFILE5;
         public string CURRENT_MAINDIRECTORY5;
-        public string USER_ECLIPSE_FOLDER;
+        public static string USER_ECLIPSE_FOLDER;
         public string SELECTED_USER_INI;
         public string SELECTED_USER_JOB_FOLDER;
         public string SELECTED_USER_MAIN_DICTIONARY;
         public string USERFILE5_LINE;
+        public string USER_DOCUMENTS_PATH = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
+        //These lists and dictionaries are for referencing the objects that are browsed to
+        //or scanned for, and ultimately in each scenario the user is requesting to look
+        //at a directory for either backing up or restoring the eclipse related files
+        //in that directory.
         public List<EclipseObject> INI_LIST = new List<EclipseObject>();
         public List<EclipseObject> ECL_LIST = new List<EclipseObject>();
         public List<EclipseObject> NOT_LIST = new List<EclipseObject>();
@@ -125,9 +112,18 @@ namespace EclipseFileManagerPlus
         public List<EclipseObject> WAV_LIST = new List<EclipseObject>();
         public List<EclipseObject> ESP_LIST = new List<EclipseObject>();
         public List<EclipseObject> ESD_LIST = new List<EclipseObject>();
-
-        public List<string> RECENT_FILE_PATH_LIST = new List<string>();       
         
+
+        public List<string> RECENT_FILE_PATH_LIST = new List<string>();
+
+        public Dictionary<string, string> ECLIPSE_MAIN_INI_ARRAY = new Dictionary<string, string>();
+       
+
+        //Here's the method that parses out the eclipse.ini to a dictionary
+        //for reference. 
+        //to take the C:\Windows\Eclipse.ini and parse it out for basic info
+        //about the system. We are assuming the user has Total Eclipse installed and has
+        //actually ran it on this system.   
         public bool ReadMainEclipseINI()
         {
             string currentWindowsFolderEclipseIniLocation = CURRENT_SYSTEM_MAIN_DRIVE + "\\Windows\\eclipse.ini";
@@ -321,7 +317,6 @@ namespace EclipseFileManagerPlus
 
             return true;
         }
-
         public bool RestoreEssentialEclipseFiles(EclipseObject iniObject)
         {
             List<string> checkedFilesToCopy = checkmarkedJobsToCopy();
@@ -477,7 +472,6 @@ namespace EclipseFileManagerPlus
                 MessageBox.Show("Error: Files were not found / IO Error - Files may have been removed", "File Not Found Error", MessageBoxButtons.OK);
             }
         }
-
         public void BackupEssentialEclipseFiles(EclipseObject userIniObject, string destination)
         {
             transferProgressBar.Value = 0;
@@ -707,7 +701,6 @@ namespace EclipseFileManagerPlus
             }
             return fileList;
         }
-
         public void setupJobCheckListBox()
         {
             foreach (EclipseObject obj in ECL_LIST)
@@ -764,7 +757,6 @@ namespace EclipseFileManagerPlus
                 Console.WriteLine("File added: " + Path.GetFileName(f));
             }
         }
-
         public void ClearAllCollections()
         {
             currentUsersDropdown.Text = "";
@@ -794,6 +786,10 @@ namespace EclipseFileManagerPlus
 
         }
 
+        //Here's the method we give a source file, the location, and the destination.
+        //Yes it's an ugly method, and could definitely be more efficient, but this
+        //is getting the job done in one area of the project for now.
+       
         private void BrowseButton_Click(object sender, EventArgs e)
         {
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
@@ -809,6 +805,10 @@ namespace EclipseFileManagerPlus
             destinationText.Text = (transferToQuickPickComboBox.Text);
 
         }
+
+        ///This method will get whatever is selected, and return a list with the items as strings
+        ///which of course we can use to say Foreach file, copy those files, increment the progress
+        ///bar, of course the list.length can be used for the progress bar max
 
         private void button3_Click(object sender, EventArgs e)
         {
