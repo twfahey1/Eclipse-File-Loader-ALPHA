@@ -237,7 +237,6 @@
             this.RefreshButton.TabIndex = 32;
             this.RefreshButton.Text = "Refresh";
             this.RefreshButton.UseVisualStyleBackColor = true;
-            this.RefreshButton.Click += new System.EventHandler(this.RefreshButton_Click);
             // 
             // BrowseButton
             // 
@@ -257,7 +256,6 @@
             this.TransferToComboBox.Name = "TransferToComboBox";
             this.TransferToComboBox.Size = new System.Drawing.Size(150, 24);
             this.TransferToComboBox.TabIndex = 27;
-            this.TransferToComboBox.SelectedIndexChanged += new System.EventHandler(this.TransferToComboBox_SelectedIndexChanged);
             // 
             // restorePanel
             // 

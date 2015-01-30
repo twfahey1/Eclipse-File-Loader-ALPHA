@@ -256,7 +256,7 @@ namespace EclipseFileManagerPlus
                 }
             }
             currentUsersDropdown.DataSource = stringList;
-            ShowAllJobsInListBox();
+            SetupJobCheckListBox();
         }
 
         //Here's method to restore files back to local pc, which is based on the
@@ -650,7 +650,7 @@ namespace EclipseFileManagerPlus
 
         //Here's a method we give a source directory, a destination directory, and true/false to also
         //copy the sub directories
-        private void CopyDirectory(string sourceDirName, string destDirName, bool copySubDirs)
+        private static void CopyDirectory(string sourceDirName, string destDirName, bool copySubDirs)
         {
             // Get the subdirectories for the specified directory.
             DirectoryInfo dir = new DirectoryInfo(sourceDirName);
@@ -735,32 +735,13 @@ namespace EclipseFileManagerPlus
             return fileList;
         }
 
-        public void ShowAllJobsInListBox()
+        public void SetupJobCheckListBox()
         {
             availableJobsCheckedListBox1.Items.Clear();
             foreach (EclipseObject obj in ECL_LIST)
             {
                 //if (Path.GetDirectoryName(obj.FILE_PATH) == )
                 availableJobsCheckedListBox1.Items.Add(obj.FILE_NAME.TrimEnd(".ecl".ToCharArray()));
-
-            }
-        }
-
-        public void ShowUserJobsInListBox()
-        {
-            availableJobsCheckedListBox1.Items.Clear();
-            foreach (EclipseObject obj in ECL_LIST)
-            {
-                foreach(EclipseObject ini in INI_LIST){
-                    if (ini.FILE_NAME == currentUsersDropdown.Text)
-                    {
-                        if (obj.FILE_USER_FOLDER == ini.INI_JOB_PATH)
-                        {
-                            availableJobsCheckedListBox1.Items.Add(obj.FILE_NAME.TrimEnd(".ecl".ToCharArray()));
-                        }
-                    }                   
-
-                }
 
             }
         }
@@ -826,7 +807,6 @@ namespace EclipseFileManagerPlus
             currentUsersDropdown.Text = "";
             currentUsersDropdown.DataSource = null;
             availableJobsCheckedListBox1.Items.Clear();
-            TransferToComboBox.Items.Clear();
             //ECL_OBJ_MAP.Clear();
             INI_LIST.Clear();
             DIX_LIST.Clear();
@@ -849,6 +829,33 @@ namespace EclipseFileManagerPlus
                 loadingText.Visible = false;
             }
 
+        }
+
+        private void BrowseButton_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                this.destinationText.Text = "";
+                this.destinationText.Text = folderBrowserDialog1.SelectedPath;
+            }
+        }
+
+        private void TransferToComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            destinationText.Text = "";
+            destinationText.Text = (TransferToComboBox.Text);
+
+        }
+
+        private void RefreshButton_Click(object sender, EventArgs e)
+        {
+            TransferToComboBox.Items.Clear();
+            DriveInfo[] files = DriveInfo.GetDrives();
+            foreach (DriveInfo d in files)
+            {
+                TransferToComboBox.Items.Add(String.Format(d.Name));
+                //freeSpaceLabel.Text = (d.AvailableFreeSpace / 1000000000 + "gb free");
+            }
         }
 
         private void BackupEssentialFilesOnlyButton_Click(object sender, EventArgs e)
@@ -1001,6 +1008,11 @@ namespace EclipseFileManagerPlus
             }*/
         }
 
+        private void transferProgressBar_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void currentUsersDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
             SELECTED_USER_INI = currentUsersDropdown.Text;
@@ -1030,51 +1042,6 @@ namespace EclipseFileManagerPlus
         private void ExitButton_Click(object sender, EventArgs e)
         {
             Application.Exit();
-        }
-
-        private void ShowAllFilesButton_Click_1(object sender, EventArgs e)
-        {
-            ShowAllJobsInListBox();
-        }
-
-        private void ShowRecentFilesButton_Click_1(object sender, EventArgs e)
-        {
-            ShowRecentJobsInListBox();
-
-        }
-
-        private void BrowseButton_Click_1(object sender, EventArgs e)
-        {
-            
-                if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
-                {
-                    this.destinationText.Text = "";
-                    this.destinationText.Text = folderBrowserDialog1.SelectedPath;
-                }
-            
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            ShowUserJobsInListBox();
-        }
-
-        private void TransferToComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-                destinationText.Text = "";
-                destinationText.Text = (TransferToComboBox.Text);
-        }
-
-        private void RefreshButton_Click(object sender, EventArgs e)
-        {
-            TransferToComboBox.Items.Clear();
-            DriveInfo[] files = DriveInfo.GetDrives();
-            foreach (DriveInfo d in files)
-            {
-                TransferToComboBox.Items.Add(String.Format(d.Name));
-                //freeSpaceLabel.Text = (d.AvailableFreeSpace / 1000000000 + "gb free");
-            }
         }
 
     }

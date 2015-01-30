@@ -650,7 +650,7 @@ namespace EclipseFileManagerPlus
 
         //Here's a method we give a source directory, a destination directory, and true/false to also
         //copy the sub directories
-        private void CopyDirectory(string sourceDirName, string destDirName, bool copySubDirs)
+        private static void CopyDirectory(string sourceDirName, string destDirName, bool copySubDirs)
         {
             // Get the subdirectories for the specified directory.
             DirectoryInfo dir = new DirectoryInfo(sourceDirName);
@@ -851,6 +851,24 @@ namespace EclipseFileManagerPlus
 
         }
 
+        private void TransferToComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            destinationText.Text = "";
+            destinationText.Text = (TransferToComboBox.Text);
+
+        }
+
+        private void RefreshButton_Click(object sender, EventArgs e)
+        {
+            TransferToComboBox.Items.Clear();
+            DriveInfo[] files = DriveInfo.GetDrives();
+            foreach (DriveInfo d in files)
+            {
+                TransferToComboBox.Items.Add(String.Format(d.Name));
+                //freeSpaceLabel.Text = (d.AvailableFreeSpace / 1000000000 + "gb free");
+            }
+        }
+
         private void BackupEssentialFilesOnlyButton_Click(object sender, EventArgs e)
         {
             if (currentUsersDropdown.Text == "")
@@ -1001,6 +1019,11 @@ namespace EclipseFileManagerPlus
             }*/
         }
 
+        private void transferProgressBar_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void currentUsersDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
             SELECTED_USER_INI = currentUsersDropdown.Text;
@@ -1058,23 +1081,6 @@ namespace EclipseFileManagerPlus
         private void button1_Click(object sender, EventArgs e)
         {
             ShowUserJobsInListBox();
-        }
-
-        private void TransferToComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-                destinationText.Text = "";
-                destinationText.Text = (TransferToComboBox.Text);
-        }
-
-        private void RefreshButton_Click(object sender, EventArgs e)
-        {
-            TransferToComboBox.Items.Clear();
-            DriveInfo[] files = DriveInfo.GetDrives();
-            foreach (DriveInfo d in files)
-            {
-                TransferToComboBox.Items.Add(String.Format(d.Name));
-                //freeSpaceLabel.Text = (d.AvailableFreeSpace / 1000000000 + "gb free");
-            }
         }
 
     }
