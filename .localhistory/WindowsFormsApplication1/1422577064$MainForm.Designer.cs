@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.findEclipseFilesOnThisPCButton = new System.Windows.Forms.Button();
             this.currentSelectedFileLabel = new System.Windows.Forms.Label();
-            this.TransferToComboBox = new System.Windows.Forms.ComboBox();
+            this.transferToQuickPickComboBox = new System.Windows.Forms.ComboBox();
             this.chooseAvailableDriveLabel = new System.Windows.Forms.Label();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.BrowseButton = new System.Windows.Forms.Button();
@@ -85,14 +85,14 @@
             this.currentSelectedFileLabel.Size = new System.Drawing.Size(0, 13);
             this.currentSelectedFileLabel.TabIndex = 4;
             // 
-            // TransferToComboBox
+            // transferToQuickPickComboBox
             // 
-            this.TransferToComboBox.FormattingEnabled = true;
-            this.TransferToComboBox.Location = new System.Drawing.Point(14, 97);
-            this.TransferToComboBox.Name = "TransferToComboBox";
-            this.TransferToComboBox.Size = new System.Drawing.Size(39, 24);
-            this.TransferToComboBox.TabIndex = 7;
-            this.TransferToComboBox.SelectedIndexChanged += new System.EventHandler(this.TransferToComboBox_SelectedIndexChanged);
+            this.transferToQuickPickComboBox.FormattingEnabled = true;
+            this.transferToQuickPickComboBox.Location = new System.Drawing.Point(14, 97);
+            this.transferToQuickPickComboBox.Name = "transferToQuickPickComboBox";
+            this.transferToQuickPickComboBox.Size = new System.Drawing.Size(39, 24);
+            this.transferToQuickPickComboBox.TabIndex = 7;
+            this.transferToQuickPickComboBox.SelectedIndexChanged += new System.EventHandler(this.transferToComboBox_SelectedIndexChanged);
             // 
             // chooseAvailableDriveLabel
             // 
@@ -124,7 +124,7 @@
             this.ExitButton.TabIndex = 16;
             this.ExitButton.Text = "Exit";
             this.ExitButton.UseVisualStyleBackColor = true;
-            this.ExitButton.Click += new System.EventHandler(this.ExitButton_Click);
+            this.ExitButton.Click += new System.EventHandler(this.button3_Click);
             // 
             // destinationText
             // 
@@ -294,7 +294,7 @@
             this.backupPanel.Controls.Add(this.chooseAvailableDriveLabel);
             this.backupPanel.Controls.Add(this.RefreshButton);
             this.backupPanel.Controls.Add(this.BrowseButton);
-            this.backupPanel.Controls.Add(this.TransferToComboBox);
+            this.backupPanel.Controls.Add(this.transferToQuickPickComboBox);
             this.backupPanel.Controls.Add(this.BackupEssentialFilesOnlyButton);
             this.backupPanel.Location = new System.Drawing.Point(3, 170);
             this.backupPanel.Name = "backupPanel";
@@ -389,7 +389,7 @@
 
         private System.Windows.Forms.Button findEclipseFilesOnThisPCButton;
         private System.Windows.Forms.Label currentSelectedFileLabel;
-        private System.Windows.Forms.ComboBox TransferToComboBox;
+        private System.Windows.Forms.ComboBox transferToQuickPickComboBox;
         private System.Windows.Forms.Label chooseAvailableDriveLabel;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button BrowseButton;

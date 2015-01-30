@@ -245,7 +245,6 @@ namespace EclipseFileManagerPlus
             {
                 if (obj.FILE_TYPE == ".INI")
                 {
-                    EVENT_LOG.Add("INI file detected: " + obj.FILE_NAME + " , JobPath detected as: " + obj.INI_JOB_PATH);
                     if (obj.INI_JOB_PATH != null)
                     {
                         stringList.Add(obj.FILE_NAME);

@@ -49,7 +49,7 @@ namespace EclipseFileManagerPlus
         public string INI_BLOCK_FOLDER;
         public string INI_MAIN_DICTIONARY_NAME;
 
-        public string INI_SPELL_DIX; //This will only be something like "TylerF.esp", so need to combine w/ INI_JOB_PATH for reference
+        public string INI_SPELL_DIX;
         public string[] INI_INFO_ARRAY;
 
         public EclipseObject(string name, string type, string path)
@@ -82,6 +82,16 @@ namespace EclipseFileManagerPlus
                             this.INI_MAIN_DICTIONARY_PATH = Path.Combine(this.INI_JOB_PATH + "\\" + this.INI_MAIN_DICTIONARY_NAME);
                         }
                     }
+                    if (iniLine.StartsWith("MainDictionary="))
+                    {
+                        var parts = iniLine.Split('=');
+                        this.INI_MAIN_DICTIONARY_NAME = parts[1];
+                    }
+                    if (iniLine.StartsWith("SpellUser="))
+                    {
+                        var parts = iniLine.Split('=');
+                        this.INI_SPELL_DIX = parts[1];
+                    }
 
                     if (iniLine.StartsWith("Path") && iniLine.Contains("=BLOCK="))
                     {
@@ -89,18 +99,6 @@ namespace EclipseFileManagerPlus
                         this.INI_BLOCK_PATH = parts.Last().Replace("{JOB}", this.INI_JOB_PATH + "\\");
                         string[] INI_BLOCK_ARRAY = this.INI_BLOCK_PATH.Split('\\');
                         this.INI_BLOCK_FOLDER = INI_BLOCK_ARRAY.Last();
-                    }
-
-                    if (iniLine.StartsWith("MainDictionary="))
-                    {
-                        var parts = iniLine.Split('=');
-                        this.INI_MAIN_DICTIONARY_NAME = parts[1];
-                    }
-
-                    if (iniLine.StartsWith("SpellUser="))
-                    {
-                        var parts = iniLine.Split('=');
-                        this.INI_SPELL_DIX = parts[1];
                     }
                 }
             }
@@ -128,9 +126,7 @@ namespace EclipseFileManagerPlus
         public List<EclipseObject> ESP_LIST = new List<EclipseObject>();
         public List<EclipseObject> ESD_LIST = new List<EclipseObject>();
 
-        public List<string> RECENT_FILE_PATH_LIST = new List<string>();
-
-        public List<string> EVENT_LOG = new List<string>();
+        public List<string> RECENT_FILE_PATH_LIST = new List<string>();       
         
         public bool ReadMainEclipseINI()
         {
@@ -184,7 +180,7 @@ namespace EclipseFileManagerPlus
             DriveInfo[] files = DriveInfo.GetDrives();
             foreach (DriveInfo d in files)
             {
-                TransferToComboBox.Items.Add(String.Format(d.Name));
+                transferToQuickPickComboBox.Items.Add(String.Format(d.Name));
                 // can convert to GB free: (decided to take this out)
                 //freeSpaceLabel.Text = (d.AvailableFreeSpace / 1000000000 + "gb free");
             }
@@ -245,16 +241,13 @@ namespace EclipseFileManagerPlus
             {
                 if (obj.FILE_TYPE == ".INI")
                 {
-                    EVENT_LOG.Add("INI file detected: " + obj.FILE_NAME + " , JobPath detected as: " + obj.INI_JOB_PATH);
-                    if (obj.INI_JOB_PATH != null)
-                    {
-                        stringList.Add(obj.FILE_NAME);
-                    }
+
+                    stringList.Add(obj.FILE_NAME);
 
                 }
             }
             currentUsersDropdown.DataSource = stringList;
-            SetupJobCheckListBox();
+            setupJobCheckListBox();
         }
 
         //Here's method to restore files back to local pc, which is based on the
@@ -331,7 +324,7 @@ namespace EclipseFileManagerPlus
 
         public bool RestoreEssentialEclipseFiles(EclipseObject iniObject)
         {
-            List<string> checkedFilesToCopy = CheckmarkedJobsToCopy();
+            List<string> checkedFilesToCopy = checkmarkedJobsToCopy();
             transferProgressBar.Value = 0;
             string copyFolder = Path.GetDirectoryName(iniObject.FILE_PATH);
             Console.WriteLine("copyFolder set as " + Path.GetDirectoryName(iniObject.FILE_PATH));
@@ -491,9 +484,7 @@ namespace EclipseFileManagerPlus
             transferProgressBar.Maximum = 0;
             ///Here we use the checkmarkedJobsToCopy method to produce a list of whatever
             ///is currently checked in the file list
-            ///
-            //WriteINIBackup(destination, userIniObject.INI_INFO_ARRAY);
-            List<string> checkedFilesToCopy = CheckmarkedJobsToCopy(); //Figures out what's checked and then gives us paths
+            List<string> checkedFilesToCopy = checkmarkedJobsToCopy();
             foreach (string i in checkedFilesToCopy)
             {
                 Console.WriteLine("checkedFilesToCopy: " + i);
@@ -501,19 +492,9 @@ namespace EclipseFileManagerPlus
             ///We add size to progress bar so later on as we copy these files we will increment
             ///the progressbar
             transferProgressBar.Maximum += checkedFilesToCopy.Count;
-
-            //CopiesIni
-            string ini = userIniObject.FILE_PATH;
-            CopyFile(Path.GetFileName(ini), Path.GetDirectoryName(ini), destination);
-
-            ///All items that are to be included in essential transfer the paths are put in the
-            ///filePathArray which is then looped through and each path copied.
-            string[] filePathArray = new string[] { //All paths put in here will go in essential transfer
-                
-                userIniObject.INI_MAIN_DICTIONARY_PATH, // Main dictionary
-                Path.Combine(userIniObject.INI_JOB_PATH, userIniObject.INI_SPELL_DIX) //Spell dictionary
-            
-            }; 
+            ///Here we give the idea of the essential files main dix and spell dix paths to copy and add to progress bar
+            string[] filePathArray = new string[] { userIniObject.INI_MAIN_DICTIONARY_PATH};
+            WriteINIBackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
             transferProgressBar.PerformStep();
             Directory.CreateDirectory(Path.Combine(destination, userIniObject.INI_JOB_FOLDER)); 
             foreach (string i in filePathArray)
@@ -717,7 +698,7 @@ namespace EclipseFileManagerPlus
             }
         }
         
-        public List<String> CheckmarkedJobsToCopy()
+        public List<String> checkmarkedJobsToCopy()
         {
             List<string> fileList = new List<string>();
             foreach (string i in availableJobsCheckedListBox1.CheckedItems)
@@ -727,7 +708,7 @@ namespace EclipseFileManagerPlus
             return fileList;
         }
 
-        public void SetupJobCheckListBox()
+        public void setupJobCheckListBox()
         {
             foreach (EclipseObject obj in ECL_LIST)
             {
@@ -804,7 +785,7 @@ namespace EclipseFileManagerPlus
             if (LoadEclipseFilesFromPath(CURRENT_MAINDIRECTORY5))
             {
                 LoadDataSource(INI_LIST);
-                //SetupJobCheckListBox();
+                setupJobCheckListBox();
                 backupPanel.Visible = true;
                 restorePanel.Visible = false;
                 chooseUserPanel.Visible = true;
@@ -822,20 +803,25 @@ namespace EclipseFileManagerPlus
             }
         }
 
-        private void TransferToComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void transferToComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             destinationText.Text = "";
-            destinationText.Text = (TransferToComboBox.Text);
+            destinationText.Text = (transferToQuickPickComboBox.Text);
 
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
 
         private void RefreshButton_Click(object sender, EventArgs e)
         {
-            TransferToComboBox.Items.Clear();
+            transferToQuickPickComboBox.Items.Clear();
             DriveInfo[] files = DriveInfo.GetDrives();
             foreach (DriveInfo d in files)
             {
-                TransferToComboBox.Items.Add(String.Format(d.Name));
+                transferToQuickPickComboBox.Items.Add(String.Format(d.Name));
                 //freeSpaceLabel.Text = (d.AvailableFreeSpace / 1000000000 + "gb free");
             }
         }
@@ -967,6 +953,15 @@ namespace EclipseFileManagerPlus
             }
         }       
 
+        private void cancelButton_Click(object sender, EventArgs e)
+        {
+            if (backgroundWorker1.WorkerSupportsCancellation == true)
+            {
+                // Cancel the asynchronous operation.
+                backgroundWorker1.CancelAsync();
+            }
+        }
+
         private void RestoreEssentialFilesOnlyButton_Click(object sender, EventArgs e)
         {
             foreach (EclipseObject obj in INI_LIST)
@@ -1020,12 +1015,6 @@ namespace EclipseFileManagerPlus
                 }
             }
         }
-
-        private void ExitButton_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
     }
 }
 

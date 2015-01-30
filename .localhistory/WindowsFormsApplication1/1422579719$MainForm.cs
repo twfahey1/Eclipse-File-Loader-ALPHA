@@ -82,6 +82,16 @@ namespace EclipseFileManagerPlus
                             this.INI_MAIN_DICTIONARY_PATH = Path.Combine(this.INI_JOB_PATH + "\\" + this.INI_MAIN_DICTIONARY_NAME);
                         }
                     }
+                    if (iniLine.StartsWith("MainDictionary="))
+                    {
+                        var parts = iniLine.Split('=');
+                        this.INI_MAIN_DICTIONARY_NAME = parts[1];
+                    }
+                    if (iniLine.StartsWith("SpellUser="))
+                    {
+                        var parts = iniLine.Split('=');
+                        this.INI_SPELL_DIX = parts[1];
+                    }
 
                     if (iniLine.StartsWith("Path") && iniLine.Contains("=BLOCK="))
                     {
@@ -89,18 +99,6 @@ namespace EclipseFileManagerPlus
                         this.INI_BLOCK_PATH = parts.Last().Replace("{JOB}", this.INI_JOB_PATH + "\\");
                         string[] INI_BLOCK_ARRAY = this.INI_BLOCK_PATH.Split('\\');
                         this.INI_BLOCK_FOLDER = INI_BLOCK_ARRAY.Last();
-                    }
-
-                    if (iniLine.StartsWith("MainDictionary="))
-                    {
-                        var parts = iniLine.Split('=');
-                        this.INI_MAIN_DICTIONARY_NAME = parts[1];
-                    }
-
-                    if (iniLine.StartsWith("SpellUser="))
-                    {
-                        var parts = iniLine.Split('=');
-                        this.INI_SPELL_DIX = parts[1];
                     }
                 }
             }
@@ -128,9 +126,7 @@ namespace EclipseFileManagerPlus
         public List<EclipseObject> ESP_LIST = new List<EclipseObject>();
         public List<EclipseObject> ESD_LIST = new List<EclipseObject>();
 
-        public List<string> RECENT_FILE_PATH_LIST = new List<string>();
-
-        public List<string> EVENT_LOG = new List<string>();
+        public List<string> RECENT_FILE_PATH_LIST = new List<string>();       
         
         public bool ReadMainEclipseINI()
         {
@@ -245,11 +241,8 @@ namespace EclipseFileManagerPlus
             {
                 if (obj.FILE_TYPE == ".INI")
                 {
-                    EVENT_LOG.Add("INI file detected: " + obj.FILE_NAME + " , JobPath detected as: " + obj.INI_JOB_PATH);
-                    if (obj.INI_JOB_PATH != null)
-                    {
-                        stringList.Add(obj.FILE_NAME);
-                    }
+
+                    stringList.Add(obj.FILE_NAME);
 
                 }
             }
@@ -492,7 +485,7 @@ namespace EclipseFileManagerPlus
             ///Here we use the checkmarkedJobsToCopy method to produce a list of whatever
             ///is currently checked in the file list
             ///
-            //WriteINIBackup(destination, userIniObject.INI_INFO_ARRAY);
+            WriteINIBackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
             List<string> checkedFilesToCopy = CheckmarkedJobsToCopy(); //Figures out what's checked and then gives us paths
             foreach (string i in checkedFilesToCopy)
             {
@@ -502,14 +495,9 @@ namespace EclipseFileManagerPlus
             ///the progressbar
             transferProgressBar.Maximum += checkedFilesToCopy.Count;
 
-            //CopiesIni
-            string ini = userIniObject.FILE_PATH;
-            CopyFile(Path.GetFileName(ini), Path.GetDirectoryName(ini), destination);
-
             ///All items that are to be included in essential transfer the paths are put in the
             ///filePathArray which is then looped through and each path copied.
             string[] filePathArray = new string[] { //All paths put in here will go in essential transfer
-                
                 userIniObject.INI_MAIN_DICTIONARY_PATH, // Main dictionary
                 Path.Combine(userIniObject.INI_JOB_PATH, userIniObject.INI_SPELL_DIX) //Spell dictionary
             
