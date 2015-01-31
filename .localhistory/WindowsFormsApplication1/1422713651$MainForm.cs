@@ -271,12 +271,13 @@ namespace EclipseFileManagerPlus
 
         //Here's method to restore files back to local pc, which is based on the
         //info we get from eclipse.ini, MainDirectory5= line
-        public bool RestoredAllEclipseFiles(EclipseObject iniObject)
+        public bool RestoreAllEclipseFiles(EclipseObject iniObject)
         {
             transferProgressBar.Value = 0;
-            transferProgressBar.Maximum = 0;
+            transferProgressBar.Maximum = Directory.GetFiles(Path.GetDirectoryName(iniObject.FILE_PATH), "*", SearchOption.AllDirectories).Length;
             //First use our writeINIBackup to get an ini and a set file created right on the main dir 5 from the eclipse.ini
             WriteINIBackup(Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME), iniObject.INI_INFO_ARRAY);
+            transferProgressBar.PerformStep();
             Console.WriteLine("Ini written to: "+Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME));
             ///Next we perform a quick assessment of the folder we want to actually copy, so this will be looking at the files
             ///current path for reference, then taking the ini part off the path, and replacing with referencing the job folder name. 
@@ -287,10 +288,7 @@ namespace EclipseFileManagerPlus
             string destination = CURRENT_MAINDIRECTORY5;
             Console.WriteLine("Destinaton set as " +  destination);
             //Now, we launch the copy procedure.
-            string[] TopLevelFiles = Directory.GetFiles(copyFolder, "*", SearchOption.TopDirectoryOnly);
-            string[] SourceSubFolders = Directory.GetDirectories(copyFolder);
-
-            foreach (string i in TopLevelFiles)
+            foreach (string i in Directory.GetFiles(copyFolder, "*", SearchOption.TopDirectoryOnly))
                 try
                 {
                     CopyFile(Path.GetFileName(i), Path.GetDirectoryName(i), destination);
@@ -304,7 +302,7 @@ namespace EclipseFileManagerPlus
                     return false;
                 }
             //This will get all sub folders of main dir, blocks and anything else user has
-            foreach (string dirPath in SourceSubFolders)
+            foreach (string dirPath in Directory.GetDirectories(copyFolder))
             {
                 //creates all directories
                 
@@ -343,40 +341,6 @@ namespace EclipseFileManagerPlus
             return true;
         }
 
-        public bool RestoreAllEclipseFiles()
-        {            
-            foreach (EclipseObject iniObj in INI_LIST)
-            {
-                try
-                {
-                    //CopyFile(Path.GetFileName(iniObj.FILE_NAME), Path.GetDirectoryName(iniObj.FILE_NAME), Path.Combine(CURRENT_MAINDIRECTORY5, iniObj.FILE_NAME));
-                    CopyDirectory(Path.GetDirectoryName(iniObj.FILE_PATH), CURRENT_MAINDIRECTORY5, true);
-                    /*CopyDataList(ECL_LIST, iniObj);
-                    CopyDataList(NOT_LIST, iniObj);
-                    CopyDataList(DIX_LIST, iniObj);
-                    CopyDataList(WAV_LIST, iniObj*/
-
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    return false;
-                }
-            }
-            return false;
-        }
-
-        public void CopyDataList(List<EclipseObject>DataList, EclipseObject iniObj)
-        {
-            foreach (EclipseObject obj in DataList)
-            {
-                if (obj.FILE_USER_FOLDER == Path.GetDirectoryName(Path.GetDirectoryName(iniObj.FILE_PATH).Split('\\').Last()))
-                {
-                    CopyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), Path.Combine(CURRENT_MAINDIRECTORY5, iniObj.INI_JOB_FOLDER));
-                }
-            }
-        }
         public bool RestoreEssentialEclipseFiles(EclipseObject iniObject)
         {
             List<string> checkedFilesToCopy = CheckmarkedJobsToCopy();
@@ -485,7 +449,7 @@ namespace EclipseFileManagerPlus
         //well.
         //This method takes ALL user files and dumps to destination. Looking to add progress bar
         //to this in NumeratedDirectoryCopy method to replace this.
-        public void BackupAllEclipseFilesOld(string destination)
+        public void BackupAllEclipseFiles(string destination)
         {
             try
             {
@@ -530,30 +494,6 @@ namespace EclipseFileManagerPlus
                 Console.WriteLine(e);
                 MessageBox.Show("Error: Files were not found / IO Error - Files may have been removed", "File Not Found Error", MessageBoxButtons.OK);
             }
-        }
-
-        public bool BackupAllEclipseFiles()
-        {
-            foreach (EclipseObject iniObj in INI_LIST)
-            {
-                try
-                {
-                    //CopyFile(Path.GetFileName(iniObj.FILE_NAME), Path.GetDirectoryName(iniObj.FILE_NAME), Path.Combine(CURRENT_MAINDIRECTORY5, iniObj.FILE_NAME));
-                    CopyDirectory(Path.GetDirectoryName(iniObj.FILE_PATH), destinationText.Text, true);
-                    /*CopyDataList(ECL_LIST, iniObj);
-                    CopyDataList(NOT_LIST, iniObj);
-                    CopyDataList(DIX_LIST, iniObj);
-                    CopyDataList(WAV_LIST, iniObj*/
-
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    return false;
-                }
-            }
-            return false;
         }
 
 
@@ -771,17 +711,6 @@ namespace EclipseFileManagerPlus
             try
             {
                 DirectoryInfo[] dirs = dir.GetDirectories();
-                FileInfo[] files = dir.GetFiles();
-                //transferProgressBar.Value = 0;
-                transferProgressBar.Maximum += files.Length;
-                if (copySubDirs)
-                {
-                    foreach (DirectoryInfo subdir in dirs)
-                    {
-                        FileInfo[] subfiles = subdir.GetFiles();
-                        transferProgressBar.Maximum += subfiles.Length;
-                    }
-                }
 
 
                 if (!dir.Exists)
@@ -798,14 +727,13 @@ namespace EclipseFileManagerPlus
                 }
 
                 // Get the files in the directory and copy them to the new location.
+                FileInfo[] files = dir.GetFiles();
                 foreach (FileInfo file in files)
                 {
                     try
                     {
                         string temppath = Path.Combine(destDirName, file.Name);
                         file.CopyTo(temppath, true);
-                        TransferStatusFileAndDestinationLabel.Text = "Copying " + file.Name + " to " + temppath;
-                        transferProgressBar.PerformStep();
                     }
                     catch (System.IO.IOException e)
                     {
@@ -820,13 +748,9 @@ namespace EclipseFileManagerPlus
                     {
                         string temppath = Path.Combine(destDirName, subdir.Name);
                         CopyDirectory(subdir.FullName, temppath, copySubDirs);
-                        TransferStatusFileAndDestinationLabel.Text = "Copying " + subdir.Name + " to " + temppath;
-                        transferProgressBar.PerformStep();
                     }
                 }
             }
-
-
 
             catch (IOException e)
             {
@@ -1039,10 +963,13 @@ namespace EclipseFileManagerPlus
 
         private void RestoreAllFilesButton_Click(object sender, EventArgs e)
         {
-            TransferStatusPanel.Visible = true;
-
-                if (RestoreAllEclipseFiles())
+            //ReWriteMainEclipseINI(currentUsersDropdown.Text);
+            string findString = currentUsersDropdown.Text.ToString();
+            foreach (EclipseObject obj in INI_LIST)
+            {
+                if (obj.FILE_NAME.Equals(findString))
                 {
+                    RestoreAllEclipseFiles(obj);
                     MessageBox.Show("Files Restored");
                 }
 
@@ -1051,7 +978,8 @@ namespace EclipseFileManagerPlus
                     MessageBox.Show("User not found. Restoration not successful", "User Not Found", MessageBoxButtons.OK);
 
                 }
-        
+            }
+
 
 
         }
@@ -1079,14 +1007,10 @@ namespace EclipseFileManagerPlus
 
         private void BackupAllFilesButton_Click(object sender, EventArgs e)
         {
-            
             if (TransferCheck())
             {
-                TransferStatusPanel.Visible = true;
-                if (BackupAllEclipseFiles())
-                {
-                    MessageBox.Show("Backup Complete");
-                }
+                string SelectedUserText = currentUsersDropdown.Text.ToString();
+                BackupAllEclipseFiles(destinationText.Text);
             }
                 else
                 {
@@ -1201,48 +1125,14 @@ namespace EclipseFileManagerPlus
 
         private void RestoreSelectedJobButton_Click(object sender, EventArgs e)
         {
-            EclipseObject RestoreUser = new EclipseObject("null", "null", "null");
             List<string> checkedFilesToCopy = CheckmarkedJobsToCopy(); //Figures out what's checked and then gives us paths
             transferProgressBar.Maximum += checkedFilesToCopy.Count;
-            string SelectedUser = currentUsersDropdown.Text;
-            string destination = CURRENT_MAINDIRECTORY5;
-            foreach (EclipseObject user in INI_LIST)
-            {
-                if (user.FILE_NAME == SelectedUser)
-                {
-                    RestoreUser = user;
-                }
-            }
-            string ini = RestoreUser.FILE_PATH;
-            string FileToCopy = Path.GetFileName(ini);
-            string FileToCopyDir = Path.GetDirectoryName(ini);
-            string FileDestination = Path.Combine(destination, RestoreUser.INI_JOB_FOLDER);
-            TransferStatusFileAndDestinationLabel.Text = "Copying " + FileToCopy + "from " + FileToCopyDir + " to: " + FileDestination;
-            CopyFile(FileToCopy, FileToCopyDir, FileDestination);
+            string ini = userIniObject.FILE_PATH;
             CopyFile(Path.GetFileName(ini), Path.GetDirectoryName(ini), destination);
 
         }
 
-        static long GetDirectorySize(string p)
-        {            
-	        // 1.
-	        // Get array of all file names.
-	        string[] a = Directory.GetFiles(p, "*.*");
-	        // 2.
-	        // Calculate total bytes of all files in a loop.
-	        long b = 0;
-	        foreach (string name in a)
-	        {
-	        // 3.
-	        // Use FileInfo to get length of each file.
-	        FileInfo info = new FileInfo(name);
-	        b += info.Length;
-	        }
-	        // 4.
-	        // Return total size
-	        return b;
-        }       
+
     }
-    
 }
 

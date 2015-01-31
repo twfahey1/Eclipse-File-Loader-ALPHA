@@ -53,6 +53,7 @@
             this.currentUsersDropdown = new System.Windows.Forms.ComboBox();
             this.chooseUserLabel = new System.Windows.Forms.Label();
             this.availableJobsCheckedListBox1 = new System.Windows.Forms.CheckedListBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.TransferStatusPanel = new System.Windows.Forms.Panel();
             this.transferProgressBar = new System.Windows.Forms.ProgressBar();
             this.TransferStatusFileAndDestinationLabel = new System.Windows.Forms.Label();
@@ -62,21 +63,17 @@
             this.BrowseForEclipseUserFolderButton = new System.Windows.Forms.Button();
             this.RestoreEclipseUserButton = new System.Windows.Forms.Button();
             this.findEclipseFilesOnThisPCButton = new System.Windows.Forms.Button();
-            this.RestoreJobPanel = new System.Windows.Forms.Panel();
-            this.RestoreAllJobsButton = new System.Windows.Forms.Button();
-            this.RestoreSelectedJobButton = new System.Windows.Forms.Button();
             this.backupPanel.SuspendLayout();
             this.restorePanel.SuspendLayout();
             this.chooseUserPanel.SuspendLayout();
             this.TransferStatusPanel.SuspendLayout();
             this.InteractWithFilesFoundPanel.SuspendLayout();
-            this.RestoreJobPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // currentSelectedFileLabel
             // 
             this.currentSelectedFileLabel.AutoSize = true;
-            this.currentSelectedFileLabel.Location = new System.Drawing.Point(344, 66);
+            this.currentSelectedFileLabel.Location = new System.Drawing.Point(317, 66);
             this.currentSelectedFileLabel.Name = "currentSelectedFileLabel";
             this.currentSelectedFileLabel.Size = new System.Drawing.Size(0, 13);
             this.currentSelectedFileLabel.TabIndex = 4;
@@ -244,7 +241,7 @@
             this.RestoreAllFilesButton.Name = "RestoreAllFilesButton";
             this.RestoreAllFilesButton.Size = new System.Drawing.Size(126, 68);
             this.RestoreAllFilesButton.TabIndex = 33;
-            this.RestoreAllFilesButton.Text = "Click To Restore ALL Files Found";
+            this.RestoreAllFilesButton.Text = "Click To Restore ALL files found To Selected User";
             this.RestoreAllFilesButton.UseVisualStyleBackColor = true;
             this.RestoreAllFilesButton.Click += new System.EventHandler(this.RestoreAllFilesButton_Click);
             // 
@@ -253,7 +250,7 @@
             this.chooseUserPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.chooseUserPanel.Controls.Add(this.currentUsersDropdown);
             this.chooseUserPanel.Controls.Add(this.chooseUserLabel);
-            this.chooseUserPanel.Location = new System.Drawing.Point(209, 92);
+            this.chooseUserPanel.Location = new System.Drawing.Point(186, 92);
             this.chooseUserPanel.Name = "chooseUserPanel";
             this.chooseUserPanel.Size = new System.Drawing.Size(141, 62);
             this.chooseUserPanel.TabIndex = 41;
@@ -288,10 +285,20 @@
             this.availableJobsCheckedListBox1.Size = new System.Drawing.Size(328, 139);
             this.availableJobsCheckedListBox1.TabIndex = 33;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(7, 14);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(72, 13);
+            this.label1.TabIndex = 44;
+            this.label1.Text = "Now copying:";
+            // 
             // TransferStatusPanel
             // 
             this.TransferStatusPanel.Controls.Add(this.transferProgressBar);
             this.TransferStatusPanel.Controls.Add(this.TransferStatusFileAndDestinationLabel);
+            this.TransferStatusPanel.Controls.Add(this.label1);
             this.TransferStatusPanel.Location = new System.Drawing.Point(3, 317);
             this.TransferStatusPanel.Name = "TransferStatusPanel";
             this.TransferStatusPanel.Size = new System.Drawing.Size(328, 69);
@@ -307,9 +314,10 @@
             // 
             // TransferStatusFileAndDestinationLabel
             // 
-            this.TransferStatusFileAndDestinationLabel.Location = new System.Drawing.Point(9, 9);
+            this.TransferStatusFileAndDestinationLabel.AutoSize = true;
+            this.TransferStatusFileAndDestinationLabel.Location = new System.Drawing.Point(102, 14);
             this.TransferStatusFileAndDestinationLabel.Name = "TransferStatusFileAndDestinationLabel";
-            this.TransferStatusFileAndDestinationLabel.Size = new System.Drawing.Size(296, 21);
+            this.TransferStatusFileAndDestinationLabel.Size = new System.Drawing.Size(126, 13);
             this.TransferStatusFileAndDestinationLabel.TabIndex = 50;
             this.TransferStatusFileAndDestinationLabel.Text = "File Name To Destination";
             // 
@@ -337,7 +345,7 @@
             // loadingText
             // 
             this.loadingText.AutoSize = true;
-            this.loadingText.Location = new System.Drawing.Point(10, 65);
+            this.loadingText.Location = new System.Drawing.Point(12, 65);
             this.loadingText.Name = "loadingText";
             this.loadingText.Size = new System.Drawing.Size(187, 13);
             this.loadingText.TabIndex = 54;
@@ -347,7 +355,7 @@
             // BrowseForEclipseUserFolderButton
             // 
             this.BrowseForEclipseUserFolderButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BrowseForEclipseUserFolderButton.Location = new System.Drawing.Point(209, 61);
+            this.BrowseForEclipseUserFolderButton.Location = new System.Drawing.Point(182, 61);
             this.BrowseForEclipseUserFolderButton.Name = "BrowseForEclipseUserFolderButton";
             this.BrowseForEclipseUserFolderButton.Size = new System.Drawing.Size(149, 20);
             this.BrowseForEclipseUserFolderButton.TabIndex = 53;
@@ -369,7 +377,7 @@
             // findEclipseFilesOnThisPCButton
             // 
             this.findEclipseFilesOnThisPCButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.findEclipseFilesOnThisPCButton.Location = new System.Drawing.Point(209, 4);
+            this.findEclipseFilesOnThisPCButton.Location = new System.Drawing.Point(182, 4);
             this.findEclipseFilesOnThisPCButton.Name = "findEclipseFilesOnThisPCButton";
             this.findEclipseFilesOnThisPCButton.Size = new System.Drawing.Size(149, 59);
             this.findEclipseFilesOnThisPCButton.TabIndex = 51;
@@ -377,45 +385,11 @@
             this.findEclipseFilesOnThisPCButton.UseVisualStyleBackColor = true;
             this.findEclipseFilesOnThisPCButton.Click += new System.EventHandler(this.findEclipseFilesOnThisPCButton_Click);
             // 
-            // RestoreJobPanel
-            // 
-            this.RestoreJobPanel.Controls.Add(this.RestoreAllJobsButton);
-            this.RestoreJobPanel.Controls.Add(this.RestoreSelectedJobButton);
-            this.RestoreJobPanel.Location = new System.Drawing.Point(186, 305);
-            this.RestoreJobPanel.Name = "RestoreJobPanel";
-            this.RestoreJobPanel.Size = new System.Drawing.Size(170, 71);
-            this.RestoreJobPanel.TabIndex = 55;
-            this.RestoreJobPanel.Visible = false;
-            this.RestoreJobPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.RestoreJobPanel_Paint);
-            // 
-            // RestoreAllJobsButton
-            // 
-            this.RestoreAllJobsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RestoreAllJobsButton.Location = new System.Drawing.Point(13, 39);
-            this.RestoreAllJobsButton.Name = "RestoreAllJobsButton";
-            this.RestoreAllJobsButton.Size = new System.Drawing.Size(145, 23);
-            this.RestoreAllJobsButton.TabIndex = 36;
-            this.RestoreAllJobsButton.Text = "Restore All Jobs";
-            this.RestoreAllJobsButton.UseVisualStyleBackColor = true;
-            // 
-            // RestoreSelectedJobButton
-            // 
-            this.RestoreSelectedJobButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RestoreSelectedJobButton.Location = new System.Drawing.Point(14, 12);
-            this.RestoreSelectedJobButton.Name = "RestoreSelectedJobButton";
-            this.RestoreSelectedJobButton.Size = new System.Drawing.Size(145, 23);
-            this.RestoreSelectedJobButton.TabIndex = 35;
-            this.RestoreSelectedJobButton.Text = "Restore Selected Job";
-            this.RestoreSelectedJobButton.UseVisualStyleBackColor = true;
-            this.RestoreSelectedJobButton.Click += new System.EventHandler(this.RestoreSelectedJobButton_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(521, 427);
-            this.Controls.Add(this.RestoreJobPanel);
             this.Controls.Add(this.loadingText);
             this.Controls.Add(this.BrowseForEclipseUserFolderButton);
             this.Controls.Add(this.RestoreEclipseUserButton);
@@ -440,8 +414,8 @@
             this.chooseUserPanel.ResumeLayout(false);
             this.chooseUserPanel.PerformLayout();
             this.TransferStatusPanel.ResumeLayout(false);
+            this.TransferStatusPanel.PerformLayout();
             this.InteractWithFilesFoundPanel.ResumeLayout(false);
-            this.RestoreJobPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -465,6 +439,7 @@
         private System.Windows.Forms.ComboBox currentUsersDropdown;
         private System.Windows.Forms.Label chooseUserLabel;
         private System.Windows.Forms.CheckedListBox availableJobsCheckedListBox1;
+        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel TransferStatusPanel;
         private System.Windows.Forms.ProgressBar transferProgressBar;
         private System.Windows.Forms.Label TransferStatusFileAndDestinationLabel;
@@ -482,9 +457,6 @@
         private System.Windows.Forms.Button BrowseForEclipseUserFolderButton;
         private System.Windows.Forms.Button RestoreEclipseUserButton;
         private System.Windows.Forms.Button findEclipseFilesOnThisPCButton;
-        private System.Windows.Forms.Panel RestoreJobPanel;
-        private System.Windows.Forms.Button RestoreAllJobsButton;
-        private System.Windows.Forms.Button RestoreSelectedJobButton;
     }
 }
 

@@ -274,9 +274,10 @@ namespace EclipseFileManagerPlus
         public bool RestoredAllEclipseFiles(EclipseObject iniObject)
         {
             transferProgressBar.Value = 0;
-            transferProgressBar.Maximum = 0;
+            transferProgressBar.Maximum = Directory.GetFiles(Path.GetDirectoryName(iniObject.FILE_PATH), "*", SearchOption.AllDirectories).Length;
             //First use our writeINIBackup to get an ini and a set file created right on the main dir 5 from the eclipse.ini
             WriteINIBackup(Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME), iniObject.INI_INFO_ARRAY);
+            transferProgressBar.PerformStep();
             Console.WriteLine("Ini written to: "+Path.Combine(CURRENT_MAINDIRECTORY5, iniObject.FILE_NAME));
             ///Next we perform a quick assessment of the folder we want to actually copy, so this will be looking at the files
             ///current path for reference, then taking the ini part off the path, and replacing with referencing the job folder name. 
@@ -287,10 +288,7 @@ namespace EclipseFileManagerPlus
             string destination = CURRENT_MAINDIRECTORY5;
             Console.WriteLine("Destinaton set as " +  destination);
             //Now, we launch the copy procedure.
-            string[] TopLevelFiles = Directory.GetFiles(copyFolder, "*", SearchOption.TopDirectoryOnly);
-            string[] SourceSubFolders = Directory.GetDirectories(copyFolder);
-
-            foreach (string i in TopLevelFiles)
+            foreach (string i in Directory.GetFiles(copyFolder, "*", SearchOption.TopDirectoryOnly))
                 try
                 {
                     CopyFile(Path.GetFileName(i), Path.GetDirectoryName(i), destination);
@@ -304,7 +302,7 @@ namespace EclipseFileManagerPlus
                     return false;
                 }
             //This will get all sub folders of main dir, blocks and anything else user has
-            foreach (string dirPath in SourceSubFolders)
+            foreach (string dirPath in Directory.GetDirectories(copyFolder))
             {
                 //creates all directories
                 
@@ -485,7 +483,7 @@ namespace EclipseFileManagerPlus
         //well.
         //This method takes ALL user files and dumps to destination. Looking to add progress bar
         //to this in NumeratedDirectoryCopy method to replace this.
-        public void BackupAllEclipseFilesOld(string destination)
+        public void BackupAllEclipseFiles(string destination)
         {
             try
             {
@@ -530,30 +528,6 @@ namespace EclipseFileManagerPlus
                 Console.WriteLine(e);
                 MessageBox.Show("Error: Files were not found / IO Error - Files may have been removed", "File Not Found Error", MessageBoxButtons.OK);
             }
-        }
-
-        public bool BackupAllEclipseFiles()
-        {
-            foreach (EclipseObject iniObj in INI_LIST)
-            {
-                try
-                {
-                    //CopyFile(Path.GetFileName(iniObj.FILE_NAME), Path.GetDirectoryName(iniObj.FILE_NAME), Path.Combine(CURRENT_MAINDIRECTORY5, iniObj.FILE_NAME));
-                    CopyDirectory(Path.GetDirectoryName(iniObj.FILE_PATH), destinationText.Text, true);
-                    /*CopyDataList(ECL_LIST, iniObj);
-                    CopyDataList(NOT_LIST, iniObj);
-                    CopyDataList(DIX_LIST, iniObj);
-                    CopyDataList(WAV_LIST, iniObj*/
-
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    return false;
-                }
-            }
-            return false;
         }
 
 
@@ -772,8 +746,8 @@ namespace EclipseFileManagerPlus
             {
                 DirectoryInfo[] dirs = dir.GetDirectories();
                 FileInfo[] files = dir.GetFiles();
-                //transferProgressBar.Value = 0;
-                transferProgressBar.Maximum += files.Length;
+                transferProgressBar.Value = 0;
+                transferProgressBar.Maximum = files.Length;
                 if (copySubDirs)
                 {
                     foreach (DirectoryInfo subdir in dirs)
@@ -1039,7 +1013,6 @@ namespace EclipseFileManagerPlus
 
         private void RestoreAllFilesButton_Click(object sender, EventArgs e)
         {
-            TransferStatusPanel.Visible = true;
 
                 if (RestoreAllEclipseFiles())
                 {
@@ -1079,14 +1052,10 @@ namespace EclipseFileManagerPlus
 
         private void BackupAllFilesButton_Click(object sender, EventArgs e)
         {
-            
             if (TransferCheck())
             {
-                TransferStatusPanel.Visible = true;
-                if (BackupAllEclipseFiles())
-                {
-                    MessageBox.Show("Backup Complete");
-                }
+                string SelectedUserText = currentUsersDropdown.Text.ToString();
+                BackupAllEclipseFiles(destinationText.Text);
             }
                 else
                 {

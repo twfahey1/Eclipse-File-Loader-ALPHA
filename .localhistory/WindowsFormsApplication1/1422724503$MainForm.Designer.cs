@@ -244,7 +244,7 @@
             this.RestoreAllFilesButton.Name = "RestoreAllFilesButton";
             this.RestoreAllFilesButton.Size = new System.Drawing.Size(126, 68);
             this.RestoreAllFilesButton.TabIndex = 33;
-            this.RestoreAllFilesButton.Text = "Click To Restore ALL Files Found";
+            this.RestoreAllFilesButton.Text = "Click To Restore ALL files found To Selected User";
             this.RestoreAllFilesButton.UseVisualStyleBackColor = true;
             this.RestoreAllFilesButton.Click += new System.EventHandler(this.RestoreAllFilesButton_Click);
             // 
@@ -385,7 +385,6 @@
             this.RestoreJobPanel.Name = "RestoreJobPanel";
             this.RestoreJobPanel.Size = new System.Drawing.Size(170, 71);
             this.RestoreJobPanel.TabIndex = 55;
-            this.RestoreJobPanel.Visible = false;
             this.RestoreJobPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.RestoreJobPanel_Paint);
             // 
             // RestoreAllJobsButton

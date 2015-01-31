@@ -63,8 +63,8 @@
             this.RestoreEclipseUserButton = new System.Windows.Forms.Button();
             this.findEclipseFilesOnThisPCButton = new System.Windows.Forms.Button();
             this.RestoreJobPanel = new System.Windows.Forms.Panel();
-            this.RestoreAllJobsButton = new System.Windows.Forms.Button();
             this.RestoreSelectedJobButton = new System.Windows.Forms.Button();
+            this.RestoreAllJobsButton = new System.Windows.Forms.Button();
             this.backupPanel.SuspendLayout();
             this.restorePanel.SuspendLayout();
             this.chooseUserPanel.SuspendLayout();
@@ -244,7 +244,7 @@
             this.RestoreAllFilesButton.Name = "RestoreAllFilesButton";
             this.RestoreAllFilesButton.Size = new System.Drawing.Size(126, 68);
             this.RestoreAllFilesButton.TabIndex = 33;
-            this.RestoreAllFilesButton.Text = "Click To Restore ALL Files Found";
+            this.RestoreAllFilesButton.Text = "Click To Restore ALL files found To Selected User";
             this.RestoreAllFilesButton.UseVisualStyleBackColor = true;
             this.RestoreAllFilesButton.Click += new System.EventHandler(this.RestoreAllFilesButton_Click);
             // 
@@ -381,22 +381,11 @@
             // 
             this.RestoreJobPanel.Controls.Add(this.RestoreAllJobsButton);
             this.RestoreJobPanel.Controls.Add(this.RestoreSelectedJobButton);
-            this.RestoreJobPanel.Location = new System.Drawing.Point(186, 305);
+            this.RestoreJobPanel.Location = new System.Drawing.Point(185, 305);
             this.RestoreJobPanel.Name = "RestoreJobPanel";
             this.RestoreJobPanel.Size = new System.Drawing.Size(170, 71);
             this.RestoreJobPanel.TabIndex = 55;
-            this.RestoreJobPanel.Visible = false;
             this.RestoreJobPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.RestoreJobPanel_Paint);
-            // 
-            // RestoreAllJobsButton
-            // 
-            this.RestoreAllJobsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RestoreAllJobsButton.Location = new System.Drawing.Point(13, 39);
-            this.RestoreAllJobsButton.Name = "RestoreAllJobsButton";
-            this.RestoreAllJobsButton.Size = new System.Drawing.Size(145, 23);
-            this.RestoreAllJobsButton.TabIndex = 36;
-            this.RestoreAllJobsButton.Text = "Restore All Jobs";
-            this.RestoreAllJobsButton.UseVisualStyleBackColor = true;
             // 
             // RestoreSelectedJobButton
             // 
@@ -407,7 +396,16 @@
             this.RestoreSelectedJobButton.TabIndex = 35;
             this.RestoreSelectedJobButton.Text = "Restore Selected Job";
             this.RestoreSelectedJobButton.UseVisualStyleBackColor = true;
-            this.RestoreSelectedJobButton.Click += new System.EventHandler(this.RestoreSelectedJobButton_Click);
+            // 
+            // RestoreAllJobsButton
+            // 
+            this.RestoreAllJobsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RestoreAllJobsButton.Location = new System.Drawing.Point(13, 39);
+            this.RestoreAllJobsButton.Name = "RestoreAllJobsButton";
+            this.RestoreAllJobsButton.Size = new System.Drawing.Size(145, 23);
+            this.RestoreAllJobsButton.TabIndex = 36;
+            this.RestoreAllJobsButton.Text = "Restore All Jobs";
+            this.RestoreAllJobsButton.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 

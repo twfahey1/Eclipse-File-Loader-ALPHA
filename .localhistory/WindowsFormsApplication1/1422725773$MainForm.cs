@@ -1079,10 +1079,8 @@ namespace EclipseFileManagerPlus
 
         private void BackupAllFilesButton_Click(object sender, EventArgs e)
         {
-            
             if (TransferCheck())
             {
-                TransferStatusPanel.Visible = true;
                 if (BackupAllEclipseFiles())
                 {
                     MessageBox.Show("Backup Complete");
