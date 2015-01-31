@@ -76,8 +76,8 @@ namespace EclipseFileManagerPlus
                         this.INI_JOB_PATH = JOB_PATH_ARRAY.Last().Replace("{DOC}", Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\");
                         JOB_PATH_ARRAY = this.INI_JOB_PATH.Split('\\');
                         this.INI_JOB_FOLDER = JOB_PATH_ARRAY.Last();
-                        
-                        
+
+                        MessageBox.Show(INI_JOB_FOLDER);
                         if (this.INI_MAIN_DICTIONARY_NAME != null)
                         {
                             this.INI_MAIN_DICTIONARY_PATH = Path.Combine(this.INI_JOB_PATH + "\\" + this.INI_MAIN_DICTIONARY_NAME);
@@ -808,7 +808,7 @@ namespace EclipseFileManagerPlus
                 foreach(EclipseObject ini in INI_LIST){
                     if (ini.FILE_NAME == currentUsersDropdown.Text)
                     {
-                        if (obj.FILE_USER_FOLDER.Contains(ini.INI_JOB_FOLDER))
+                        if (obj.FILE_USER_FOLDER == ini.INI_JOB_PATH)
                         {
                             availableJobsCheckedListBox1.Items.Add(obj.FILE_NAME.TrimEnd(".ecl".ToCharArray()));
                         }
@@ -931,7 +931,7 @@ namespace EclipseFileManagerPlus
                     }
                     else
                     {
-                        EVENT_LOG.Add("INI was ignored: " + obj.FILE_NAME);
+                        //MessageBox.Show("Backup did not succeed", "Backup did not succeed", MessageBoxButtons.OK);
                     }
                 }
             }

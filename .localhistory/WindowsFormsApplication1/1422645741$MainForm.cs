@@ -76,8 +76,8 @@ namespace EclipseFileManagerPlus
                         this.INI_JOB_PATH = JOB_PATH_ARRAY.Last().Replace("{DOC}", Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\");
                         JOB_PATH_ARRAY = this.INI_JOB_PATH.Split('\\');
                         this.INI_JOB_FOLDER = JOB_PATH_ARRAY.Last();
-                        
-                        
+
+                        MessageBox.Show(INI_JOB_FOLDER);
                         if (this.INI_MAIN_DICTIONARY_NAME != null)
                         {
                             this.INI_MAIN_DICTIONARY_PATH = Path.Combine(this.INI_JOB_PATH + "\\" + this.INI_MAIN_DICTIONARY_NAME);
@@ -449,45 +449,46 @@ namespace EclipseFileManagerPlus
         //well.
         //This method takes ALL user files and dumps to destination. Looking to add progress bar
         //to this in NumeratedDirectoryCopy method to replace this.
-        public void BackupAllEclipseFiles(string destination)
+        public void BackupAllEclipseFiles(EclipseObject userIniObject, string destination)
         {
             try
             {
                 transferProgressBar.Value = 0;
-                foreach (EclipseObject userIniObject in INI_LIST)
+                var JobPathFileDirectory = Directory.GetFiles(userIniObject.INI_JOB_PATH, "*", SearchOption.AllDirectories);
+                var JobPathFileDirectoryTopLevel = Directory.GetFiles(userIniObject.INI_JOB_PATH, "*", SearchOption.TopDirectoryOnly);
+                var JobPathFolders = Directory.GetDirectories(userIniObject.INI_JOB_PATH);
+                WriteINIBackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
+                //writeINIbackup(Path.Combine(destination, userIniObject.INI_JOB_FOLDER), userIniObject.INI_INFO_ARRAY);
+                transferProgressBar.PerformStep();
+                /*string[] filePathArray = new string[] { userIniObject.INI_MAIN_DICTIONARY, userIniObject.INI_JOB_PATH, userIniObject.INI_SPELL_DIX, userIniObject.INI_BLOCK_PATH };
+                foreach (string i in filePathArray)
+                {
+                    copyFile(i, userIniObject.INI_JOB_PATH, destination);
+                }*/
+                foreach (string dirPath in JobPathFolders)
+                {
+                    Directory.CreateDirectory(Path.Combine(destination, dirPath));
+                    foreach (string file in Directory.GetFiles(dirPath))
                     {
-                    var JobPathFileDirectory = Directory.GetFiles(userIniObject.INI_JOB_PATH, "*", SearchOption.AllDirectories);
-                    var JobPathFileDirectoryTopLevel = Directory.GetFiles(userIniObject.INI_JOB_PATH, "*", SearchOption.TopDirectoryOnly);
-                    var JobPathFolders = Directory.GetDirectories(userIniObject.INI_JOB_PATH);
-                    WriteINIBackup(destination + "\\" + userIniObject.FILE_NAME, userIniObject.INI_INFO_ARRAY);
-                    transferProgressBar.PerformStep();
-                    transferProgressBar.Maximum += JobPathFileDirectory.Length;
-                    foreach (string dirPath in JobPathFolders)
-                        {
-                        Directory.CreateDirectory(Path.Combine(destination, dirPath));
-                        foreach (string file in Directory.GetFiles(dirPath))
-                            {
-                            //this copies the file as the file name, the path, and then uses a snippet to get just the folder name of the original file and use tha as the destination folder..
-                            CopyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, userIniObject.INI_JOB_FOLDER, (dirPath.Replace(Path.GetDirectoryName(dirPath) + Path.DirectorySeparatorChar, ""))));
-                            transferProgressBar.PerformStep();
-                            }
-                        }
-                
+                        //this copies the file as the file name, the path, and then uses a snippet to get just the folder name of the original file and use tha as the destination folder..
+                        CopyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, userIniObject.INI_JOB_FOLDER, (dirPath.Replace(Path.GetDirectoryName(dirPath) + Path.DirectorySeparatorChar, ""))));
+                        transferProgressBar.PerformStep();
+                    }
+                }
 
-                    foreach (string i in JobPathFileDirectoryTopLevel)
-                        try
-                        {
-                            CopyFile(Path.GetFileName(i), Path.GetDirectoryName(i), destination + "\\" + userIniObject.INI_JOB_FOLDER);
-                            //copyFile(i, userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
-                            transferProgressBar.PerformStep();
-                        }
-                        catch (IOException)
-                        {
-                            MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
-                        }
-                        //DirectoryCopy(userIniObject.INI_JOB_PATH, destination, true);
-                        MessageBox.Show("Full Backup complete", "Full Backup Complete", MessageBoxButtons.OK);
-                        }
+                foreach (string i in JobPathFileDirectoryTopLevel)
+                    try
+                    {
+                        CopyFile(Path.GetFileName(i), Path.GetDirectoryName(i), destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                        //copyFile(i, userIniObject.INI_JOB_PATH, destination + "\\" + userIniObject.INI_JOB_FOLDER);
+                        transferProgressBar.PerformStep();
+                    }
+                    catch (IOException)
+                    {
+                        MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
+                    }
+                //DirectoryCopy(userIniObject.INI_JOB_PATH, destination, true);
+                MessageBox.Show("Full Backup complete", "Full Backup Complete", MessageBoxButtons.OK);
             }
             catch (System.IO.IOException e)
             {
@@ -496,12 +497,10 @@ namespace EclipseFileManagerPlus
             }
         }
 
-
         public void BackupEssentialEclipseFiles(EclipseObject userIniObject, string destination)
         {
-            TransferStatusPanel.Visible = true;
             transferProgressBar.Value = 0;
-            transferProgressBar.Maximum = 100;
+            transferProgressBar.Maximum = 0;
             ///Here we use the checkmarkedJobsToCopy method to produce a list of whatever
             ///is currently checked in the file list
             ///
@@ -525,7 +524,8 @@ namespace EclipseFileManagerPlus
                 
                 userIniObject.INI_MAIN_DICTIONARY_PATH, // Main dictionary
                 Path.Combine(userIniObject.INI_JOB_PATH, userIniObject.INI_SPELL_DIX) //Spell dictionary
-
+                
+            
             }; 
 
             transferProgressBar.PerformStep();
@@ -534,11 +534,7 @@ namespace EclipseFileManagerPlus
             {
                 try
                 {
-                    string FileToCopy = Path.GetFileName(i);
-                    string FileToCopyDir = Path.GetDirectoryName(i);
-                    string FileDestination =  Path.Combine(destination, userIniObject.INI_JOB_FOLDER);
-                    TransferStatusFileAndDestinationLabel.Text = "Copying " + FileToCopy + "from " + FileToCopyDir + " to: " + FileDestination;
-                    CopyFile(FileToCopy, FileToCopyDir, FileDestination);
+                    CopyFile(Path.GetFileName(i), Path.GetDirectoryName(i), Path.Combine(destination, userIniObject.INI_JOB_FOLDER));
                     transferProgressBar.PerformStep();
                 }
                 catch (IOException)
@@ -550,14 +546,10 @@ namespace EclipseFileManagerPlus
             foreach (string i in userIniObject.INI_OTHER_DICTIONARY_FILE_NAME_LIST)
             {
                 string DIX_PATH_TO_GET = Path.Combine(userIniObject.INI_JOB_PATH, i);
-                
+                MessageBox.Show(DIX_PATH_TO_GET);
                 try
                 {
-                    string FileToCopy = Path.GetFileName(DIX_PATH_TO_GET);
-                    string FileToCopyDir = Path.GetDirectoryName(DIX_PATH_TO_GET);
-                    string FileDestination = Path.Combine(destination, userIniObject.INI_JOB_FOLDER);
-                    TransferStatusFileAndDestinationLabel.Text = "Copying " + FileToCopy + "from " + FileToCopyDir + " to: " + FileDestination;
-                    CopyFile(FileToCopy, FileToCopyDir, FileDestination);
+                    CopyFile(Path.GetFileName(DIX_PATH_TO_GET), Path.GetDirectoryName(DIX_PATH_TO_GET), userIniObject.INI_JOB_PATH);
                 }
                 catch (Exception e)
                 {
@@ -577,11 +569,7 @@ namespace EclipseFileManagerPlus
                             //Directory.CreateDirectory(Path.Combine(destination, dirPathFolderName));
                             foreach (string file in Directory.GetFiles(dirPath))
                             {
-                                string FileToCopy = Path.GetFileName(file);
-                                string FileToCopyDir = Path.GetDirectoryName(file);
-                                string FileDestination = Path.Combine(destination, userIniObject.INI_JOB_FOLDER, dirPathFolderName);
-                                TransferStatusFileAndDestinationLabel.Text = "Copying " + FileToCopy + "from " + FileToCopyDir + " to: " + FileDestination;
-                                CopyFile(FileToCopy, FileToCopyDir, FileDestination);
+                                CopyFile(Path.GetFileName(file), Path.GetDirectoryName(file), Path.Combine(destination, userIniObject.INI_JOB_FOLDER, dirPathFolderName));
                                 transferProgressBar.PerformStep();
                             }
                         }
@@ -605,12 +593,8 @@ namespace EclipseFileManagerPlus
                     {
                         if (obj.FILE_NAME.Contains(i))
                         {
-                            string FileToCopy = Path.GetFileName(obj.FILE_PATH);
-                            string FileToCopyDir = Path.GetDirectoryName(obj.FILE_PATH);
-                            string FileDestination = Path.Combine(destination, userIniObject.INI_JOB_FOLDER);
-                            TransferStatusFileAndDestinationLabel.Text = "Copying " + FileToCopy + "from " + FileToCopyDir + " to: " + FileDestination;
-                            CopyFile(FileToCopy, FileToCopyDir, FileDestination);
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
+                            CopyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
                         }
                     }
@@ -618,12 +602,8 @@ namespace EclipseFileManagerPlus
                     {
                         if (obj.FILE_NAME.Contains(i))
                         {
-                            string FileToCopy = Path.GetFileName(obj.FILE_PATH);
-                            string FileToCopyDir = Path.GetDirectoryName(obj.FILE_PATH);
-                            string FileDestination = Path.Combine(destination, userIniObject.INI_JOB_FOLDER);
-                            TransferStatusFileAndDestinationLabel.Text = "Copying " + FileToCopy + "from " + FileToCopyDir + " to: " + FileDestination;
-                            CopyFile(FileToCopy, FileToCopyDir, FileDestination);
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
+                            CopyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
                         }
                     }
@@ -631,12 +611,8 @@ namespace EclipseFileManagerPlus
                     {
                         if (obj.FILE_NAME.Contains(i))
                         {
-                            string FileToCopy = Path.GetFileName(obj.FILE_PATH);
-                            string FileToCopyDir = Path.GetDirectoryName(obj.FILE_PATH);
-                            string FileDestination = Path.Combine(destination, userIniObject.INI_JOB_FOLDER);
-                            TransferStatusFileAndDestinationLabel.Text = "Copying " + FileToCopy + "from " + FileToCopyDir + " to: " + FileDestination;
-                            CopyFile(FileToCopy, FileToCopyDir, FileDestination);
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
+                            CopyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
                         }
                     }
@@ -644,12 +620,8 @@ namespace EclipseFileManagerPlus
                     {
                         if (obj.FILE_NAME.Contains(i))
                         {
-                            string FileToCopy = Path.GetFileName(obj.FILE_PATH);
-                            string FileToCopyDir = Path.GetDirectoryName(obj.FILE_PATH);
-                            string FileDestination = Path.Combine(destination, userIniObject.INI_JOB_FOLDER);
-                            TransferStatusFileAndDestinationLabel.Text = "Copying " + FileToCopy + "from " + FileToCopyDir + " to: " + FileDestination;
-                            CopyFile(FileToCopy, FileToCopyDir, FileDestination);
                             Console.WriteLine("jobFile in Copystring: " + obj.FILE_NAME + " \\ + checked file=" + i);
+                            CopyFile(Path.GetFileName(obj.FILE_PATH), Path.GetDirectoryName(obj.FILE_PATH), destination + "\\" + userIniObject.INI_JOB_FOLDER);
                             transferProgressBar.PerformStep();
                         }
                     }
@@ -659,9 +631,8 @@ namespace EclipseFileManagerPlus
                 {
                     MessageBox.Show("File not found: " + i, "File Not Found Error", MessageBoxButtons.OK);
                 }
-                }
+            }
                 transferProgressBar.Value = transferProgressBar.Maximum;
-                TransferStatusFileAndDestinationLabel.Text = "Essential Backup Completed to " + destination;
                 MessageBox.Show("Essential Backup complete", "Essential Backup Complete", MessageBoxButtons.OK);
         }
 
@@ -808,7 +779,7 @@ namespace EclipseFileManagerPlus
                 foreach(EclipseObject ini in INI_LIST){
                     if (ini.FILE_NAME == currentUsersDropdown.Text)
                     {
-                        if (obj.FILE_USER_FOLDER.Contains(ini.INI_JOB_FOLDER))
+                        if (obj.FILE_USER_FOLDER == ini.INI_JOB_PATH)
                         {
                             availableJobsCheckedListBox1.Items.Add(obj.FILE_NAME.TrimEnd(".ecl".ToCharArray()));
                         }
@@ -931,7 +902,7 @@ namespace EclipseFileManagerPlus
                     }
                     else
                     {
-                        EVENT_LOG.Add("INI was ignored: " + obj.FILE_NAME);
+                        //MessageBox.Show("Backup did not succeed", "Backup did not succeed", MessageBoxButtons.OK);
                     }
                 }
             }
@@ -984,39 +955,54 @@ namespace EclipseFileManagerPlus
 
         }
 
-        private bool TransferCheck()
+        private void BackupAllFilesButton_Click(object sender, EventArgs e)
         {
-            
             if (currentUsersDropdown.Text == "")
             {
-                MessageBox.Show("Choose User to Backup from Drop Down Menu", "Choose User to Proceed", MessageBoxButtons.OK);
-                return false;
+                MessageBox.Show("Choose User to Backup from Drop Down Menu", "Choose User to Backup", MessageBoxButtons.OK);
 
             }
             else if (destinationText.Text == "")
             {
-                MessageBox.Show("Set Destination either by browse or from the available drives dropdown menu", "Set Destination to Proceed", MessageBoxButtons.OK);
-                return false;
+                MessageBox.Show("Set Destination either by browse or quick pick from the dropdown for drive select", "Set Destination", MessageBoxButtons.OK);
 
             }
             else
             {
-                return true;
-            }
-        }
+                string findString = currentUsersDropdown.Text.ToString();
+                bool done = false;
+                EclipseObject transferObject = new EclipseObject("null","null","null");
+                foreach (EclipseObject obj in INI_LIST)
+                {
+                    if (obj.FILE_NAME.Equals(findString) && done == false)
+                    {
+                        transferObject = obj;
+                        done = true;
 
-        private void BackupAllFilesButton_Click(object sender, EventArgs e)
-        {
-            if (TransferCheck())
-            {
-                string SelectedUserText = currentUsersDropdown.Text.ToString();
-                BackupAllEclipseFiles(destinationText.Text);
-            }
+                    }
+                    else
+                    {
+                        //MessageBox.Show("Backup did not succeed", "Backup did not succeed", MessageBoxButtons.OK);
+                    }
+
+                    /*if (backgroundWorker1.IsBusy != true)
+                    {
+                        // Start the asynchronous operation.
+                        backgroundWorker1.RunWorkerAsync();
+                        transferProgressLabel.Visible = true;
+                        cancelButton.Visible = true;    
+                    }*/
+                }
+                if (transferObject.FILE_NAME != "null")
+                {
+                    BackupAllEclipseFiles(transferObject, destinationText.Text);
+
+                }
                 else
                 {
-                    MessageBox.Show("Full backup failed, user object was invalid. Please restart the app.", "Backup did not succeed", MessageBoxButtons.OK);
+                    MessageBox.Show("Full backup failed, user object was invalid", "Fail", MessageBoxButtons.OK);
                 }
-            
+            }
         }       
 
         private void RestoreEssentialFilesOnlyButton_Click(object sender, EventArgs e)

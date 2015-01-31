@@ -931,7 +931,7 @@ namespace EclipseFileManagerPlus
                     }
                     else
                     {
-                        EVENT_LOG.Add("INI was ignored: " + obj.FILE_NAME);
+                        MessageBox.Show("Backup did not succeed", "Backup did not succeed", MessageBoxButtons.OK);
                     }
                 }
             }

@@ -250,7 +250,7 @@
             this.chooseUserPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.chooseUserPanel.Controls.Add(this.currentUsersDropdown);
             this.chooseUserPanel.Controls.Add(this.chooseUserLabel);
-            this.chooseUserPanel.Location = new System.Drawing.Point(186, 92);
+            this.chooseUserPanel.Location = new System.Drawing.Point(185, 82);
             this.chooseUserPanel.Name = "chooseUserPanel";
             this.chooseUserPanel.Size = new System.Drawing.Size(141, 62);
             this.chooseUserPanel.TabIndex = 41;
@@ -303,7 +303,6 @@
             this.TransferStatusPanel.Name = "TransferStatusPanel";
             this.TransferStatusPanel.Size = new System.Drawing.Size(328, 69);
             this.TransferStatusPanel.TabIndex = 50;
-            this.TransferStatusPanel.Visible = false;
             // 
             // transferProgressBar
             // 
@@ -361,7 +360,6 @@
             this.BrowseForEclipseUserFolderButton.TabIndex = 53;
             this.BrowseForEclipseUserFolderButton.Text = "Browse For Eclipse Folder...";
             this.BrowseForEclipseUserFolderButton.UseVisualStyleBackColor = true;
-            this.BrowseForEclipseUserFolderButton.Click += new System.EventHandler(this.BrowseForEclipseUserFolderButton_Click_1);
             // 
             // RestoreEclipseUserButton
             // 
@@ -372,7 +370,6 @@
             this.RestoreEclipseUserButton.TabIndex = 52;
             this.RestoreEclipseUserButton.Text = "Restore Eclipse User";
             this.RestoreEclipseUserButton.UseVisualStyleBackColor = true;
-            this.RestoreEclipseUserButton.Click += new System.EventHandler(this.RestoreEclipseUserButton_Click_1);
             // 
             // findEclipseFilesOnThisPCButton
             // 
@@ -383,7 +380,6 @@
             this.findEclipseFilesOnThisPCButton.TabIndex = 51;
             this.findEclipseFilesOnThisPCButton.Text = "Backup Eclipse User";
             this.findEclipseFilesOnThisPCButton.UseVisualStyleBackColor = true;
-            this.findEclipseFilesOnThisPCButton.Click += new System.EventHandler(this.findEclipseFilesOnThisPCButton_Click);
             // 
             // MainForm
             // 

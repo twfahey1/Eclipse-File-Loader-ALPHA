@@ -303,7 +303,6 @@
             this.TransferStatusPanel.Name = "TransferStatusPanel";
             this.TransferStatusPanel.Size = new System.Drawing.Size(328, 69);
             this.TransferStatusPanel.TabIndex = 50;
-            this.TransferStatusPanel.Visible = false;
             // 
             // transferProgressBar
             // 

@@ -250,7 +250,7 @@
             this.chooseUserPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.chooseUserPanel.Controls.Add(this.currentUsersDropdown);
             this.chooseUserPanel.Controls.Add(this.chooseUserLabel);
-            this.chooseUserPanel.Location = new System.Drawing.Point(186, 92);
+            this.chooseUserPanel.Location = new System.Drawing.Point(185, 82);
             this.chooseUserPanel.Name = "chooseUserPanel";
             this.chooseUserPanel.Size = new System.Drawing.Size(141, 62);
             this.chooseUserPanel.TabIndex = 41;
@@ -303,7 +303,6 @@
             this.TransferStatusPanel.Name = "TransferStatusPanel";
             this.TransferStatusPanel.Size = new System.Drawing.Size(328, 69);
             this.TransferStatusPanel.TabIndex = 50;
-            this.TransferStatusPanel.Visible = false;
             // 
             // transferProgressBar
             // 
