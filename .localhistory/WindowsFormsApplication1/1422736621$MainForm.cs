@@ -824,7 +824,6 @@ namespace EclipseFileManagerPlus
                         transferProgressBar.PerformStep();
                     }
                 }
-                TransferStatusFileAndDestinationLabel.Text = "Transfer Complete: " + sourceDirName + " to " + destDirName;
             }
 
 

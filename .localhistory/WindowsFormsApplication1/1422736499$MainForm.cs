@@ -824,7 +824,6 @@ namespace EclipseFileManagerPlus
                         transferProgressBar.PerformStep();
                     }
                 }
-                TransferStatusFileAndDestinationLabel.Text = "Transfer Complete: " + sourceDirName + " to " + destDirName;
             }
 
 
@@ -966,7 +965,7 @@ namespace EclipseFileManagerPlus
             WAV_LIST.Clear();
         }
 
-        private void FindEclipseFilesOnThisPCButton_Click(object sender, EventArgs e)
+        private void findEclipseFilesOnThisPCButton_Click(object sender, EventArgs e)
         {
             loadingText.Visible = true;
 

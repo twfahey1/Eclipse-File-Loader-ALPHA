@@ -300,16 +300,16 @@
             // 
             // transferProgressBar
             // 
-            this.transferProgressBar.Location = new System.Drawing.Point(10, 49);
+            this.transferProgressBar.Location = new System.Drawing.Point(10, 33);
             this.transferProgressBar.Name = "transferProgressBar";
-            this.transferProgressBar.Size = new System.Drawing.Size(295, 17);
+            this.transferProgressBar.Size = new System.Drawing.Size(295, 26);
             this.transferProgressBar.TabIndex = 53;
             // 
             // TransferStatusFileAndDestinationLabel
             // 
             this.TransferStatusFileAndDestinationLabel.Location = new System.Drawing.Point(9, 9);
             this.TransferStatusFileAndDestinationLabel.Name = "TransferStatusFileAndDestinationLabel";
-            this.TransferStatusFileAndDestinationLabel.Size = new System.Drawing.Size(296, 37);
+            this.TransferStatusFileAndDestinationLabel.Size = new System.Drawing.Size(296, 21);
             this.TransferStatusFileAndDestinationLabel.TabIndex = 50;
             this.TransferStatusFileAndDestinationLabel.Text = "File Name To Destination";
             // 
@@ -375,7 +375,7 @@
             this.findEclipseFilesOnThisPCButton.TabIndex = 51;
             this.findEclipseFilesOnThisPCButton.Text = "Backup Eclipse User";
             this.findEclipseFilesOnThisPCButton.UseVisualStyleBackColor = true;
-            this.findEclipseFilesOnThisPCButton.Click += new System.EventHandler(this.FindEclipseFilesOnThisPCButton_Click);
+            this.findEclipseFilesOnThisPCButton.Click += new System.EventHandler(this.findEclipseFilesOnThisPCButton_Click);
             // 
             // RestoreJobPanel
             // 
